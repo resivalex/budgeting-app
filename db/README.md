@@ -12,19 +12,19 @@ Before we begin, please make sure you have the following software installed:
 
 Ready to get started? Great! Just follow these steps:
 
-1. First, clone our project repository to your machine:
+1. Navigate to the database directory of the budgeting app:
 
    ```shell
-   git clone https://github.com/resivalex/budgeting-app-couchdb.git
+   cd db
    ```
 
-2. Next, navigate to the project directory:
+2. Create an `.env` file in the project directory by copying the example file:
 
    ```shell
-   cd budgeting-app-couchdb
+   cp .env.example .env
    ```
 
-3. Create an `.env` file in the project directory. This file will hold some important settings for our app. Here's an example:
+   Then edit the file to customize your settings:
 
    ```plaintext
    COUCHDB_USER=admin
@@ -32,26 +32,26 @@ Ready to get started? Great! Just follow these steps:
    PORT=9002
    ```
 
-   **Note:** Be sure to replace the values in the example with your own!
+   **Note:** Be sure to replace the values in the example with your own for security!
 
-4. Have a look at the `docker-compose.yml` file. This is the recipe Docker follows to build our app. By default, it uses the `couchdb` image and exposes port `9002`. Feel free to adjust these as necessary.
+3. Have a look at the `docker-compose.yml` file. This is the recipe Docker follows to build our app. By default, it uses the `couchdb` image.
 
-5. Time to start the app! Just run:
+4. For development, we use the `docker-compose.dev.yml` file which exposes port `9002`. Time to start the app! Just run:
 
    ```shell
-   docker-compose up -d
+   docker-compose -f docker-compose.dev.yml up -d
    ```
 
    This will start the CouchDB service in the background.
 
-6. Once the app is up and running, you can access it at [http://localhost:9002](http://localhost:9002). Give yourself a pat on the back - you did it!
+5. Once the app is up and running, you can access it at [http://localhost:9002](http://localhost:9002). Give yourself a pat on the back - you did it!
 
 ## ⚙️ Configuration
 
 The `docker-compose.yml` file lets you tweak a few things:
 
 - `image`: This is the Docker image we use for the CouchDB service. By default, it's `couchdb`.
-- `container_name`: This sets the name for our CouchDB container. By default, it's `budgeting-app-couchdb`.
+- `container_name`: This sets the name for our CouchDB container. By default, it's `budgeting_app_couchdb`.
 - `env_file`: This is the path to the `.env` file that holds the settings our app needs.
 - `volumes`: This tells Docker to link the `./data` directory in our project to the CouchDB container, giving us persistent data storage.
-- `ports`: This maps the host port to the CouchDB container port. It uses `${PORT:-5984}` by default, meaning it will use port `5984` unless you set a `
+- `ports`: (In the dev file) This maps the host port `9002` to the CouchDB container port `5984`, making the database accessible at `http://localhost:9002`.

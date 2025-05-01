@@ -12,25 +12,24 @@ The Budgeting App is your friendly companion for handling finances. This user-fr
 
 ## About 🤔
 
-The Budgeting App is all about simplifying your financial management. With an easy-to-use interface, it lets you view and manage your budgets, keep an eye on your spending, and perform various other financial operations. And don't worry, it safely stores and retrieves all your data for you!
+The Budgeting App is all about simplifying your financial management. Built with React 19 and TypeScript, it provides an easy-to-use interface that lets you view and manage your budgets, keep an eye on your spending, and perform various financial operations. The app is designed as a Progressive Web App (PWA), so it works offline and provides a mobile-friendly experience!
 
 ## Features 🌟
 
 Here's what the Budgeting App can do for you:
 
-1. **User Authentication**: Sign up and log in securely to access your financial data.
-2. **Budget Management**: Organize your income and expenses into customizable budgets.
-3. **Expense Tracking**: Add, edit, or remove expenses to track your spending.
-4. **Loading Indicator**: Provides feedback while the app is fetching your data.
-5. **Offline Mode**: No internet? No problem! Continue managing your transactions even without connectivity.
+1. **Budget Management**: Organize your income and expenses into customizable budgets with visual reporting.
+2. **Expense Tracking**: Add, edit, or remove expenses to track your spending.
+3. **Responsive UI**: Built with Bulma CSS framework for a clean, mobile-friendly interface.
+4. **Offline Mode**: Continue managing your transactions even without internet connectivity.
+5. **Data Import/Export**: Transfer data using CSV files for backup or migration.
 
 ## Getting Started 🚀
 
 Follow these simple steps to get the Budgeting App running on your computer:
 
-1. Copy the repository: `git clone https://github.com/resivalex/budgeting-app-pwa.git`
-2. Enter the project directory: `cd budgeting-app-pwa`
-3. Install what's necessary: `yarn install`
+1. Navigate to the web directory: `cd web`
+2. Install what's necessary: `yarn install`
 
 ## Usage 👨‍💻
 
@@ -44,9 +43,9 @@ This will get the app running in your default browser. If it doesn't open automa
 
 ## Contribute 👥
 
-Want to contribute to the Budgeting App? Great! Here's how you can:
+Want to contribute to the Budgeting App frontend? Great! Here's how you can:
 
-1. Copy the repository.
+1. Clone the monorepo and navigate to the web directory: `cd web`
 2. Create a new branch: `git checkout -b my-new-branch`
 3. Make your changes and commit them: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-branch`

@@ -10,16 +10,19 @@ This monorepo houses:
     *   Manages transactions (including CSV import/export).
     *   Tracks budgets and spending limits.
     *   Handles automated daily Google Drive backups.
+    *   Supports both local development and Docker deployment.
     *   ➡️ See [`backend/README.md`](backend/README.md) for details.
 
 *   **💾 Database (`db/`)**: A [CouchDB](https://couchdb.apache.org/) instance managed via [Docker Compose](https://docs.docker.com/compose/).
     *   Stores all transaction data.
+    *   Includes both development (`docker-compose.dev.yml`) and production (`docker-compose.yml`) configurations.
     *   ➡️ See [`db/README.md`](db/README.md) for configuration.
 
 *   **🖥️ Frontend (`web/`)**: A [React 19](https://reactjs.org/) PWA using [TypeScript](https://www.typescriptlang.org/) & [Yarn](https://yarnpkg.com/).
     *   Responsive UI with Bulma.
     *   Offline mode capable.
     *   Manages budgets, visualization, and transactions.
+    *   Includes Docker setup for production deployment.
     *   ➡️ See [`web/README.md`](web/README.md) for usage.
 
 ## 🚀 Getting Started
@@ -38,7 +41,7 @@ This monorepo houses:
         ```bash
         cd db
         cp .env.example .env  # Edit with your credentials
-        docker-compose up -d
+        docker-compose -f docker-compose.dev.yml up -d
         # Access CouchDB at http://localhost:9002
         cd ..
         ```
@@ -53,6 +56,15 @@ This monorepo houses:
         # API docs available at http://localhost:8000/api
         cd ..
         ```
+        
+        Or with Docker:
+        ```bash
+        cd backend
+        cp .env.example .env  # Configure settings
+        docker-compose -f docker-compose-dev.yml up
+        # API docs available at http://localhost:8000/api
+        cd ..
+        ```
 
     *   **Frontend (React PWA):**
         ```bash
@@ -60,6 +72,14 @@ This monorepo houses:
         cp .env.example .env  # Configure settings if needed
         yarn install
         yarn start
+        # Access the app at http://localhost:3000
+        ```
+        
+        Or with Docker (for production build):
+        ```bash
+        cd web
+        cp .env.example .env  # Configure settings if needed
+        docker-compose up
         # Access the app at http://localhost:3000
         ```
 

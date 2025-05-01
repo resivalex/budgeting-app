@@ -10,12 +10,12 @@ FastAPI backend for personal budgeting and expense tracking.
 
 ## Setup 🚀
 
-1.  Clone: `git clone https://github.com/resivalex/budgeting-app-backend.git && cd budgeting-app-backend`
+1.  Clone: Navigate to the backend directory: `cd backend`
 2.  Install: `poetry install`
 3.  Configure: Copy `.env.example` to `.env` and fill in values.
 4.  Google Drive: Set up credentials (see [Google Drive Backup](#google-drive-backup-)).
 5.  Migrate DB: `poetry run alembic upgrade head`
-6.  Run: `poetry run uvicorn main:app --reload` (Access at `http://localhost:8000`)
+6.  Run: `poetry run uvicorn main:app --reload` (Access API docs at `http://localhost:8000/api`)
 
 ## Google Drive Backup 🔄🕒
 
@@ -35,11 +35,11 @@ Automated daily CSV backups to Google Drive.
     # DAILY_DUMP_MINUTE=0
     ```
 
-Manual backup trigger: `/trigger-dump` API endpoint.
+Manual backup trigger: `/trigger-backup` API endpoint.
 
 ## API 🌐
 
-Explore interactive API documentation available at `/docs` when the server is running.
+Explore interactive API documentation available at `/api` when the server is running.
 
 ## Development 💻
 
