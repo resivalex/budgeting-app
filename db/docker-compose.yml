@@ -1,0 +1,13 @@
+services:
+  budgeting_app_couchdb:
+    image: couchdb
+    container_name: budgeting_app_couchdb
+    env_file:
+      - .env
+    volumes:
+      - "./data:/opt/couchdb/data"
+    networks:
+        - web
+networks:
+  web:
+    external: true

@@ -1,0 +1,8 @@
+.venv
+.venv-docker
+.idea
+.env
+docker-compose-dev.yml
+notebooks
+data
+credentials
