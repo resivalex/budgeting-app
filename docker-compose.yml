@@ -4,8 +4,9 @@ version: '3.9'
 services:
   # Database service (CouchDB)
   db:
-    image: couchdb
-    container_name: budgeting_app_couchdb
+    extends:
+      file: ./db/docker-compose.base.yml
+      service: db-prod
     env_file:
       - ./db/.env
     volumes:
@@ -13,14 +14,15 @@ services:
     ports:
       - "9002:5984"
     networks:
-      - budgeting_network
+      - web
 
   # Backend service (FastAPI)
   backend:
+    extends:
+      file: ./backend/docker-compose.base.yml
+      service: backend-prod
     build:
       context: ./backend
-    container_name: budgeting_app_backend
-    command: '/bin/bash -c "poetry run alembic upgrade head && poetry run uvicorn main:app --host=0.0.0.0 --port=8000"'
     env_file:
       - ./backend/.env
     volumes:
@@ -31,25 +33,26 @@ services:
     depends_on:
       - db
     networks:
-      - budgeting_network
+      - web
 
   # Frontend service (React PWA)
   web:
+    extends:
+      file: ./web/docker-compose.base.yml
+      service: web-prod
     build:
       context: ./web
-    container_name: budgeting_app_pwa
-    command: yarn run serve --single build --listen tcp://0.0.0.0:3000
-    volumes:
-      - "./web/build:/app/build"
     env_file:
       - ./web/.env
+    volumes:
+      - "./web/build:/app/build"
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
     depends_on:
       - backend
     networks:
-      - budgeting_network
+      - web
 
 networks:
-  budgeting_network:
-    driver: bridge
+  web:
+    external: false

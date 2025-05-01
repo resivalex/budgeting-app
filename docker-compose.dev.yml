@@ -4,8 +4,9 @@ version: '3.9'
 services:
   # Database service (CouchDB)
   db:
-    image: couchdb
-    container_name: budgeting_app_couchdb
+    extends:
+      file: ./db/docker-compose.base.yml
+      service: db-dev
     env_file:
       - ./db/.env
     volumes:
@@ -13,14 +14,15 @@ services:
     ports:
       - "9002:5984"
     networks:
-      - budgeting_network
+      - web
 
   # Backend service (FastAPI) with hot-reloading for development
   backend:
+    extends:
+      file: ./backend/docker-compose.base.yml
+      service: backend-dev
     build:
       context: ./backend
-    container_name: budgeting_app_backend
-    command: bash -c "poetry install && poetry run uvicorn main:app --host=0.0.0.0 --port=8000 --reload"
     env_file:
       - ./backend/.env
     volumes:
@@ -30,27 +32,22 @@ services:
     depends_on:
       - db
     networks:
-      - budgeting_network
+      - web
 
   # Frontend service (React PWA) with hot-reloading for development
   web:
-    image: node:18
-    container_name: budgeting_app_pwa_dev
-    working_dir: /app
-    command: bash -c "yarn install && yarn start"
+    extends:
+      file: ./web/docker-compose.base.yml
+      service: web-dev
     volumes:
       - "./web:/app"
     env_file:
       - ./web/.env
-    environment:
-      - WDS_SOCKET_PORT=3000
-    ports:
-      - "3000:3000"
     depends_on:
       - backend
     networks:
-      - budgeting_network
+      - web
 
 networks:
-  budgeting_network:
-    driver: bridge
+  web:
+    external: false

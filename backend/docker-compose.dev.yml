@@ -4,7 +4,7 @@ services:
   budgeting_app_backend:
     extends:
       file: ./docker-compose.base.yml
-      service: backend-prod
+      service: backend-dev
     networks:
       - web
 networks:

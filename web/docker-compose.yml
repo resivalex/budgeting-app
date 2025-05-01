@@ -1,15 +1,10 @@
 version: '3.9'
+
 services:
   budgeting_app_pwa:
-    container_name: budgeting_app_pwa
-    command: yarn run serve --single build --listen tcp://0.0.0.0:3000
-    build: .
-    volumes:
-      - "./build:/app/build"
-    env_file:
-      - .env
-    ports:
-      - "${PORT:-3000}:3000"
+    extends:
+      file: ./docker-compose.base.yml
+      service: web-prod
     networks:
       - web
 networks:

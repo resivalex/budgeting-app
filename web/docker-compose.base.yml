@@ -1,0 +1,43 @@
+version: '3.9'
+
+# Base configurations for Web component
+x-web-base: &web-base
+  container_name: budgeting_app_pwa
+  build: .
+  env_file:
+    - .env
+
+# Production configuration
+x-web-prod: &web-prod
+  <<: *web-base
+  command: yarn run serve --single build --listen tcp://0.0.0.0:3000
+  volumes:
+    - "./build:/app/build"
+  ports:
+    - "${PORT:-3000}:3000"
+  networks:
+    - web
+
+# Development configuration
+x-web-dev: &web-dev
+  image: node:18
+  container_name: budgeting_app_pwa_dev
+  working_dir: /app
+  command: bash -c "yarn install && yarn start"
+  volumes:
+    - ".:/app"
+  env_file:
+    - .env
+  environment:
+    - WDS_SOCKET_PORT=3000
+  ports:
+    - "3000:3000"
+  networks:
+    - web
+
+# Define actual services that can be extended
+services:
+  web-prod:
+    <<: *web-prod
+  web-dev:
+    <<: *web-dev

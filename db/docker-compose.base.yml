@@ -1,0 +1,31 @@
+version: '3.9'
+
+# Base configurations for DB component
+x-db-base: &db-base
+  image: couchdb
+  container_name: budgeting_app_couchdb
+  volumes:
+    - "./data:/opt/couchdb/data"
+  env_file:
+    - .env
+
+# Production configuration
+x-db-prod: &db-prod
+  <<: *db-base
+  networks:
+    - web
+
+# Development configuration
+x-db-dev: &db-dev
+  <<: *db-base
+  ports:
+    - "9002:5984"
+  networks:
+    - web
+
+# Define actual services that can be extended
+services:
+  db-prod:
+    <<: *db-prod
+  db-dev:
+    <<: *db-dev

@@ -1,10 +1,10 @@
 version: '3.9'
 
 services:
-  budgeting_app_backend:
+  budgeting_app_pwa_dev:
     extends:
       file: ./docker-compose.base.yml
-      service: backend-prod
+      service: web-dev
     networks:
       - web
 networks:

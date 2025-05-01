@@ -1,13 +1,12 @@
+version: '3.9'
+
 services:
   budgeting_app_couchdb:
-    image: couchdb
-    container_name: budgeting_app_couchdb
-    env_file:
-      - .env
-    volumes:
-      - "./data:/opt/couchdb/data"
+    extends:
+      file: ./docker-compose.base.yml
+      service: db-prod
     networks:
-        - web
+      - web
 networks:
   web:
     external: true
