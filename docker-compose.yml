@@ -1,0 +1,55 @@
+version: '3.9'
+
+# Root docker-compose for running all services at once
+services:
+  # Database service (CouchDB)
+  db:
+    image: couchdb
+    container_name: budgeting_app_couchdb
+    env_file:
+      - ./db/.env
+    volumes:
+      - "./db/data:/opt/couchdb/data"
+    ports:
+      - "9002:5984"
+    networks:
+      - budgeting_network
+
+  # Backend service (FastAPI)
+  backend:
+    build:
+      context: ./backend
+    container_name: budgeting_app_backend
+    command: '/bin/bash -c "poetry run alembic upgrade head && poetry run uvicorn main:app --host=0.0.0.0 --port=8000"'
+    env_file:
+      - ./backend/.env
+    volumes:
+      - "./backend/data:/app/data"
+      - "./backend/credentials:/app/credentials"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - budgeting_network
+
+  # Frontend service (React PWA)
+  web:
+    build:
+      context: ./web
+    container_name: budgeting_app_pwa
+    command: yarn run serve --single build --listen tcp://0.0.0.0:3000
+    volumes:
+      - "./web/build:/app/build"
+    env_file:
+      - ./web/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - budgeting_network
+
+networks:
+  budgeting_network:
+    driver: bridge

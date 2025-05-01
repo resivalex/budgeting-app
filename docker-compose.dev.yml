@@ -1,0 +1,56 @@
+version: '3.9'
+
+# Development docker-compose for running all services at once
+services:
+  # Database service (CouchDB)
+  db:
+    image: couchdb
+    container_name: budgeting_app_couchdb
+    env_file:
+      - ./db/.env
+    volumes:
+      - "./db/data:/opt/couchdb/data"
+    ports:
+      - "9002:5984"
+    networks:
+      - budgeting_network
+
+  # Backend service (FastAPI) with hot-reloading for development
+  backend:
+    build:
+      context: ./backend
+    container_name: budgeting_app_backend
+    command: bash -c "poetry install && poetry run uvicorn main:app --host=0.0.0.0 --port=8000 --reload"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - "./backend:/app"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - budgeting_network
+
+  # Frontend service (React PWA) with hot-reloading for development
+  web:
+    image: node:18
+    container_name: budgeting_app_pwa_dev
+    working_dir: /app
+    command: bash -c "yarn install && yarn start"
+    volumes:
+      - "./web:/app"
+    env_file:
+      - ./web/.env
+    environment:
+      - WDS_SOCKET_PORT=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - budgeting_network
+
+networks:
+  budgeting_network:
+    driver: bridge
