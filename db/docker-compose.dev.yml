@@ -1,10 +1,10 @@
-version: '3.9'
-
 services:
   budgeting_app_couchdb:
     extends:
       file: ./docker-compose.base.yml
       service: db-dev
+    ports:
+      - "9002:5984"
     networks:
       - web
 networks:

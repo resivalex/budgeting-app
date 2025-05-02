@@ -1,5 +1,3 @@
-version: '3.9'
-
 # Base configurations for Web component
 x-web-base: &web-base
   container_name: budgeting_app_pwa
@@ -11,8 +9,6 @@ x-web-base: &web-base
 x-web-prod: &web-prod
   <<: *web-base
   command: yarn run serve --single build --listen tcp://0.0.0.0:3000
-  volumes:
-    - "./build:/app/build"
   ports:
     - "${PORT:-3000}:3000"
   networks:
@@ -20,7 +16,7 @@ x-web-prod: &web-prod
 
 # Development configuration
 x-web-dev: &web-dev
-  image: node:18
+  image: node:20
   container_name: budgeting_app_pwa_dev
   working_dir: /app
   command: bash -c "yarn install && yarn start"

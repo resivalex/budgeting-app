@@ -38,17 +38,13 @@ This monorepo houses:
     
     ```bash
     # For development with hot-reloading
-    chmod +x ./dev.sh
-    ./dev.sh
+    docker-compose -f docker-compose.dev.yml up
     
     # OR for production deployment
-    chmod +x ./start.sh
-    ./start.sh
+    docker-compose up -d
     ```
     
-    These scripts will:
-    * Create .env files from examples if they don't exist
-    * For production: Build the frontend
+    This will:
     * Start all services using Docker Compose
     * Make everything accessible at:
       * Frontend: http://localhost:3000

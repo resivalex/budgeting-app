@@ -1,5 +1,3 @@
-version: '3.9'
-
 # Development docker-compose for running all services at once
 services:
   # Database service (CouchDB)

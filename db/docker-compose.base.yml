@@ -1,13 +1,16 @@
-version: '3.9'
-
-# Base configurations for DB component
 x-db-base: &db-base
   image: couchdb
   container_name: budgeting_app_couchdb
   volumes:
     - "./data:/opt/couchdb/data"
+    # Mount the custom startup script
+    - "./start-and-configure.sh:/usr/local/bin/start-and-configure.sh"
+    # Keep initdb.d in case other init scripts are needed
+    - "./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
   env_file:
     - .env
+  # Override the entrypoint to use the custom script
+  entrypoint: ["/usr/local/bin/start-and-configure.sh"]
 
 # Production configuration
 x-db-prod: &db-prod

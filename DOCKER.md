@@ -59,3 +59,11 @@ cd {component_dir} && docker-compose -f docker-compose.dev.yml up
 4. **Flexibility** - Components can be run independently or together
 5. **Maintainability** - Changes to component configurations are isolated
 6. **Encapsulation** - Configuration details are kept close to the component they affect
+
+## Technology Versions
+
+The project uses the following technology versions:
+
+- Database: CouchDB
+- Backend: Python with FastAPI
+- Frontend: React with Node.js v20 (for both development and production)
