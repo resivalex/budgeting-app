@@ -1,5 +1,5 @@
 services:
-  budgeting_app_pwa:
+  budgeting_app__web:
     extends:
       file: ./docker-compose.base.yml
       service: web-prod

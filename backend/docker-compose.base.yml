@@ -1,6 +1,6 @@
 # Base configurations for Backend component
 x-backend-base: &backend-base
-  container_name: budgeting_app_backend
+  container_name: budgeting_app__backend
   build: .
   env_file:
     - .env
@@ -18,7 +18,7 @@ x-backend-prod: &backend-prod
 # Development configuration
 x-backend-dev: &backend-dev
   <<: *backend-base
-  container_name: budgeting_app_backend__dev
+  container_name: budgeting_app__backend__dev
   command: bash -c "poetry install && poetry run uvicorn main:app --host=0.0.0.0 --port=8000 --reload"
   volumes:
     - ".:/app"

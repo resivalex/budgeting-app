@@ -1,5 +1,5 @@
 services:
-  budgeting_app_backend:
+  budgeting_app__backend:
     extends:
       file: ./docker-compose.base.yml
       service: backend-prod

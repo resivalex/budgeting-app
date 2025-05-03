@@ -1,5 +1,5 @@
 services:
-  budgeting_app_couchdb:
+  budgeting_app__db:
     extends:
       file: ./docker-compose.base.yml
       service: db-prod

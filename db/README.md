@@ -39,7 +39,7 @@ This guide will help you set up the CouchDB database for the Budgeting App using
    ```shell
    # Clean up and start container
    docker-compose -f docker-compose.dev.yml down
-   docker rm -f budgeting_app_couchdb__dev 2>/dev/null || true
+   docker rm -f budgeting_app__db__dev 2>/dev/null || true
    docker-compose -f docker-compose.dev.yml up -d
    ```
    
@@ -48,7 +48,7 @@ This guide will help you set up the CouchDB database for the Budgeting App using
    ```shell
    # Clean up and start container
    docker-compose down
-   docker rm -f budgeting_app_couchdb 2>/dev/null || true
+   docker rm -f budgeting_app__db 2>/dev/null || true
    docker-compose up -d
    ```
 

@@ -1,6 +1,6 @@
 # Base configurations for Web component
 x-web-base: &web-base
-  container_name: budgeting_app_pwa
+  container_name: budgeting_app__web
   build: .
   env_file:
     - .env
@@ -17,7 +17,7 @@ x-web-prod: &web-prod
 # Development configuration
 x-web-dev: &web-dev
   image: node:20
-  container_name: budgeting_app_pwa__dev
+  container_name: budgeting_app__web__dev
   working_dir: /app
   command: bash -c "yarn install && yarn start"
   volumes:
