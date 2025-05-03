@@ -24,8 +24,6 @@ docker-compose -f docker-compose.dev.yml up
 docker-compose up
 ```
 
-See [Docker documentation](../DOCKER.md) for full stack details.
-
 ## Google Drive Backup 🔄
 
 1. Create a Google Cloud Project with Drive API and Service Account

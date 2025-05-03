@@ -34,35 +34,17 @@ This guide will help you set up the CouchDB database for the Budgeting App using
    PORT=9002
    ```
 
-3. For development:
+3. Start the container:
 
    ```shell
-   # Clean up and start container
-   docker-compose -f docker-compose.dev.yml down
-   docker rm -f budgeting_app__db__dev 2>/dev/null || true
+   # Development
    docker-compose -f docker-compose.dev.yml up -d
-   ```
    
-   For production:
-   
-   ```shell
-   # Clean up and start container
-   docker-compose down
-   docker rm -f budgeting_app__db 2>/dev/null || true
+   # Production
    docker-compose up -d
    ```
 
 4. Access CouchDB at [http://localhost:9002](http://localhost:9002)
-
-5. Use the restart script for convenience:
-
-   ```shell
-   # Development
-   ./restart.sh dev
-   
-   # Production
-   ./restart.sh prod
-   ```
 
 ## ⚙️ Configuration
 
