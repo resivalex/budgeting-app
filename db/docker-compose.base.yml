@@ -21,6 +21,7 @@ x-db-prod: &db-prod
 # Development configuration
 x-db-dev: &db-dev
   <<: *db-base
+  container_name: budgeting_app_couchdb__dev
   ports:
     - "9002:5984"
   networks:

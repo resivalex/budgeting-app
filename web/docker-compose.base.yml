@@ -17,7 +17,7 @@ x-web-prod: &web-prod
 # Development configuration
 x-web-dev: &web-dev
   image: node:20
-  container_name: budgeting_app_pwa_dev
+  container_name: budgeting_app_pwa__dev
   working_dir: /app
   command: bash -c "yarn install && yarn start"
   volumes:
