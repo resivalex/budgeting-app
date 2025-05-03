@@ -24,8 +24,6 @@ x-backend-dev: &backend-dev
     - ".:/app"
   ports:
     - "8000:8000"
-  networks:
-    - traefik
 
 # Define actual services that can be extended
 services:

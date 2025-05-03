@@ -26,8 +26,6 @@ x-web-dev: &web-dev
     - WDS_SOCKET_PORT=3000
   ports:
     - "3000:3000"
-  networks:
-    - traefik
 
 # Define actual services that can be extended
 services:

@@ -10,8 +10,6 @@ services:
       - "./db/data:/opt/couchdb/data"
     ports:
       - "9002:5984"
-    networks:
-      - traefik
 
   backend:
     extends:
@@ -27,8 +25,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    networks:
-      - traefik
 
   web:
     extends:
@@ -40,9 +36,3 @@ services:
       - ./web/.env
     depends_on:
       - backend
-    networks:
-      - traefik
-
-networks:
-  traefik:
-    external: false

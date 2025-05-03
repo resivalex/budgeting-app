@@ -5,8 +5,3 @@ services:
       service: db-dev
     ports:
       - "9002:5984"
-    networks:
-      - traefik
-networks:
-  traefik:
-    external: true

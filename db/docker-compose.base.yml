@@ -24,8 +24,6 @@ x-db-dev: &db-dev
   container_name: budgeting_app__db__dev
   ports:
     - "9002:5984"
-  networks:
-    - traefik
 
 # Define actual services that can be extended
 services:

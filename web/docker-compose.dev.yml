@@ -3,8 +3,3 @@ services:
     extends:
       file: ./docker-compose.base.yml
       service: web-dev
-    networks:
-      - traefik
-networks:
-  traefik:
-    external: true
