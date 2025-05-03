@@ -9,10 +9,8 @@ x-web-base: &web-base
 x-web-prod: &web-prod
   <<: *web-base
   command: yarn run serve --single build --listen tcp://0.0.0.0:3000
-  ports:
-    - "${PORT:-3000}:3000"
   networks:
-    - web
+    - traefik
 
 # Development configuration
 x-web-dev: &web-dev
@@ -29,7 +27,7 @@ x-web-dev: &web-dev
   ports:
     - "3000:3000"
   networks:
-    - web
+    - traefik
 
 # Define actual services that can be extended
 services:

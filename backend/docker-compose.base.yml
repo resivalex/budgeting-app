@@ -13,7 +13,7 @@ x-backend-prod: &backend-prod
     - "./data:/app/data"
     - "./credentials:/app/credentials"
   networks:
-    - web
+    - traefik
 
 # Development configuration
 x-backend-dev: &backend-dev
@@ -25,7 +25,7 @@ x-backend-dev: &backend-dev
   ports:
     - "8000:8000"
   networks:
-    - web
+    - traefik
 
 # Define actual services that can be extended
 services:

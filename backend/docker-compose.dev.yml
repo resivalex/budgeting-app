@@ -4,7 +4,7 @@ services:
       file: ./docker-compose.base.yml
       service: backend-dev
     networks:
-      - web
+      - traefik
 networks:
-  web:
+  traefik:
     external: true

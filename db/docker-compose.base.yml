@@ -16,7 +16,7 @@ x-db-base: &db-base
 x-db-prod: &db-prod
   <<: *db-base
   networks:
-    - web
+    - traefik
 
 # Development configuration
 x-db-dev: &db-dev
@@ -25,7 +25,7 @@ x-db-dev: &db-dev
   ports:
     - "9002:5984"
   networks:
-    - web
+    - traefik
 
 # Define actual services that can be extended
 services:

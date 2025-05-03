@@ -6,7 +6,7 @@ services:
     ports:
       - "9002:5984"
     networks:
-      - web
+      - traefik
 networks:
-  web:
+  traefik:
     external: true

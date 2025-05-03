@@ -1,6 +1,5 @@
 # Development docker-compose for running all services at once
 services:
-  # Database service (CouchDB)
   db:
     extends:
       file: ./db/docker-compose.base.yml
@@ -12,9 +11,8 @@ services:
     ports:
       - "9002:5984"
     networks:
-      - web
+      - traefik
 
-  # Backend service (FastAPI) with hot-reloading for development
   backend:
     extends:
       file: ./backend/docker-compose.base.yml
@@ -30,9 +28,8 @@ services:
     depends_on:
       - db
     networks:
-      - web
+      - traefik
 
-  # Frontend service (React PWA) with hot-reloading for development
   web:
     extends:
       file: ./web/docker-compose.base.yml
@@ -44,8 +41,8 @@ services:
     depends_on:
       - backend
     networks:
-      - web
+      - traefik
 
 networks:
-  web:
+  traefik:
     external: false
