@@ -5321,9 +5321,9 @@ eslint-plugin-react-hooks@^4.3.0:
   integrity sha512-oFc7Itz9Qxh2x4gNHStv3BqJq54ExXmfC+a1NjAta66IAN87Wu0R/QArgIS9qKzX3dXKPI9H5crl9QchNMY9+g==
 
 eslint-plugin-react-hooks@^5.3.0:
-  version "6.1.0-canary-914319ae-20250423"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-6.1.0-canary-914319ae-20250423.tgz#d9c7bc05262c6cbb0483b264b08b50843b44a3c7"
-  integrity sha512-q2YhPEikT6GTQsF6sL8gPZslnLZCG4OqRrWE1ep0HOiN7Arx9O2Fr0RoR8Qv/V7zeUQyqtoS4DNcy8SbjSWhWQ==
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-6.0.0.tgz#8677408c9a21251a776ce6da6369e072080a87fb"
+  integrity sha512-NyC3yIC9fazLitYiN8eHykV5wLp/SMuUZMh+sdPSHIeN4ReXIc7if40jtGjDplAgVL/4OkN1d9gneWe9lFZgag==
   dependencies:
     "@babel/core" "^7.24.4"
     "@babel/parser" "^7.24.4"
