@@ -1,99 +1,67 @@
-# Budgeting App Monorepo
+# Budgeting App
 
-Your personal finance companion for tracking income, expenses, and managing budgets, with automated backups! ✨
+Personal finance manager with automated backups.
 
 ## Components
 
-This monorepo houses:
+- **Backend**: FastAPI Python API ([details](backend/README.md))
+- **Database**: CouchDB via Docker ([config](db/README.md))
+- **Frontend**: React 19 PWA ([usage](web/README.md))
 
-*   **⚙️ Backend (`backend/`)**: A [FastAPI](https://fastapi.tiangolo.com/) (Python) API using [Poetry](https://python-poetry.org/) & [Alembic](https://alembic.sqlalchemy.org/en/latest/).
-    *   Manages transactions (including CSV import/export).
-    *   Tracks budgets and spending limits.
-    *   Handles automated daily Google Drive backups.
-    *   ➡️ See [`backend/README.md`](backend/README.md) for details.
+## Getting Started
 
-*   **💾 Database (`db/`)**: A [CouchDB](https://couchdb.apache.org/) instance managed via [Docker Compose](https://docs.docker.com/compose/).
-    *   Stores all transaction data.
-    *   ➡️ See [`db/README.md`](db/README.md) for configuration.
+### Quick Start (Docker)
 
-*   **🖥️ Frontend (`web/`)**: A [React 19](https://reactjs.org/) PWA using [TypeScript](https://www.typescriptlang.org/) & [Yarn](https://yarnpkg.com/).
-    *   Responsive UI with Bulma.
-    *   Offline mode capable.
-    *   Manages budgets, visualization, and transactions.
-    *   ➡️ See [`web/README.md`](web/README.md) for usage.
+```bash
+# Development
+docker-compose -f docker-compose.dev.yml up
 
-## 🚀 Getting Started
+# Production
+docker-compose up -d
+```
 
-1.  **✅ Prerequisites**: Ensure [Git](https://git-scm.com/) and [Docker](https://www.docker.com/) are installed.
+Access:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000/api
+- Database: http://localhost:9002
 
-2.  **📥 Clone the repo:**
-    ```bash
-    git clone <repository-url> # Replace <repository-url> with the actual URL
-    cd budgeting-app
-    ```
+> Note: Each component can also be run independently by using the component-specific Docker Compose files.
 
-3.  **🛠️ Quick Start with Docker:**
+### Manual Setup
 
-    Run all components (database, backend, frontend) with a single command:
-    
-    ```bash
-    # For development with hot-reloading
-    docker-compose -f docker-compose.dev.yml up
-    
-    # OR for production deployment
-    docker-compose up -d
-    ```
-    
-    This will:
-    * Start all services using Docker Compose
-    * Make everything accessible at:
-      * Frontend: http://localhost:3000
-      * Backend API: http://localhost:8000/api
-      * Database: http://localhost:9002
+#### Database
+```bash
+cd db
+cp .env.example .env
+docker-compose -f docker-compose.dev.yml up -d
+```
 
-4.  **🔧 Manual Setup (Component by Component):**
+#### Backend
+```bash
+cd backend
+cp .env.example .env
+poetry install
+poetry run alembic upgrade head
+poetry run uvicorn main:app --reload
+```
 
-    For local development without Docker, you'll need [Poetry](https://python-poetry.org/) and [Node.js](https://nodejs.org/) (with [Yarn](https://yarnpkg.com/)).
+#### Frontend
+```bash
+cd web
+cp .env.example .env
+yarn install
+yarn start
+```
 
-    *   **Database (CouchDB via Docker):**
-        ```bash
-        cd db
-        cp .env.example .env  # Edit with your credentials
-        # This uses the docker-compose file specific to the db directory
-        docker-compose -f docker-compose.dev.yml up -d 
-        # Access CouchDB at http://localhost:9002
-        cd ..
-        ```
+## Features
 
-    *   **Backend (FastAPI):**
-        ```bash
-        cd backend
-        cp .env.example .env  # Configure settings
-        poetry install
-        poetry run alembic upgrade head
-        poetry run uvicorn main:app --reload
-        # API docs available at http://localhost:8000/api
-        cd ..
-        ```
+- Budget management with categories & limits
+- Transaction tracking
+- Data visualization
+- Offline support
+- Automated Google Drive backups
+- CSV import/export
 
-    *   **Frontend (React PWA):**
-        ```bash
-        cd web
-        cp .env.example .env  # Configure settings if needed
-        yarn install
-        yarn start
-        # Access the app at http://localhost:3000
-        ```
+## License
 
-## ✨ Key Features
-
-*   💰 **Budget Management**: Create budgets with custom categories & limits.
-*   📊 **Transaction Tracking**: Record and categorize income/expenses.
-*   📈 **Data Visualization**: Monitor spending and budget performance.
-*   📶 **Offline Support**: Use the app even without internet.
-*   💾 **Automated Backups**: Daily Google Drive backups for peace of mind.
-*   ↔️ **Data Import/Export**: Easily import/export data via CSV.
-
-## 📜 License
-
-This project is licensed under the [MIT License](LICENSE).
+[MIT License](LICENSE)
