@@ -3,6 +3,7 @@
 FastAPI backend for personal budgeting and expense tracking.
 
 - [Setup](#setup-)
+- [Docker Setup](#docker-setup-)
 - [Google Drive Backup](#google-drive-backup-)
 - [API](#api-)
 - [Development](#development-)
@@ -16,6 +17,33 @@ FastAPI backend for personal budgeting and expense tracking.
 4.  Google Drive: Set up credentials (see [Google Drive Backup](#google-drive-backup-)).
 5.  Migrate DB: `poetry run alembic upgrade head`
 6.  Run: `poetry run uvicorn main:app --reload` (Access API docs at `http://localhost:8000/api`)
+
+## Docker Setup 🐳
+
+This project can also be run using Docker Compose:
+
+### Development Environment
+
+```bash
+docker-compose -f docker-compose.dev.yml up
+```
+
+This will start the backend service in development mode with:
+- Hot reloading enabled
+- The entire backend directory mounted to `/app` in the container
+- Port 8000 exposed to the host
+
+### Production Environment
+
+```bash
+docker-compose up
+```
+
+This will start the backend service in production mode with:
+- Only data and credential directories mounted to the container
+- Automatic database migration on startup
+
+For more details on the Docker setup and how to run the full stack, see the project's [Docker documentation](../DOCKER.md).
 
 ## Google Drive Backup 🔄🕒
 

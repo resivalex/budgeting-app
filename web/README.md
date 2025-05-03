@@ -28,18 +28,47 @@ Here's what the Budgeting App can do for you:
 
 Follow these simple steps to get the Budgeting App running on your computer:
 
+### Local Development
+
 1. Navigate to the web directory: `cd web`
 2. Install what's necessary: `yarn install`
+3. Create an `.env` file based on `.env.example`: `cp .env.example .env`
+
+### Docker Development
+
+1. Navigate to the web directory: `cd web`
+2. Create an `.env` file based on `.env.example`: `cp .env.example .env`
+3. Start the Docker container for development: `docker-compose -f docker-compose.dev.yml up`
 
 ## Usage 👨‍💻
 
-To start the app, type the following command:
+### Running Locally
+
+To start the app in development mode, type the following command:
 
 ```shell
 yarn start
 ```
 
 This will get the app running in your default browser. If it doesn't open automatically, just click [here](http://localhost:3000).
+
+### Running with Docker
+
+#### Development Mode
+
+```shell
+docker-compose -f docker-compose.dev.yml up
+```
+
+This will start a development container with hot-reloading enabled.
+
+#### Production Mode
+
+```shell
+docker-compose up
+```
+
+This will build and serve the production-ready application.
 
 ## Contribute 👥
 

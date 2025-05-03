@@ -59,13 +59,6 @@ Ready to get started? Great! Just follow these steps:
    # CORS settings will be applied automatically on startup.
    docker-compose up -d
    ```
-   
-   For production:
-   
-   ```shell
-   # Start CouchDB with production configuration
-   docker-compose up -d
-   ```
 
 5. Once the app is up and running, you can access it at [http://localhost:9002](http://localhost:9002). Give yourself a pat on the back - you did it!
 
@@ -76,7 +69,9 @@ Ready to get started? Great! Just follow these steps:
    docker-compose -f docker-compose.dev.yml down
    
    # View container logs (useful for seeing CORS setup messages)
-   docker logs budgeting_app_couchdb
+   docker logs budgeting_app_couchdb__dev  # For development environment
+   # or
+   docker logs budgeting_app_couchdb       # For production environment
    
    # Restart the container (CORS will be reconfigured automatically)
    docker-compose -f docker-compose.dev.yml restart
@@ -93,16 +88,17 @@ We have multiple Docker Compose files that let you configure the database:
 The Docker Compose files let you tweak a few things:
 
 - `image`: This is the Docker image we use for the CouchDB service. By default, it's `couchdb`.
-- `container_name`: This sets the name for our CouchDB container. By default, it's `budgeting_app_couchdb`.
+- `container_name`: This sets the name for our CouchDB container. For development, it's `budgeting_app_couchdb__dev` and for production, it's `budgeting_app_couchdb`.
 - `env_file`: This is the path to the `.env` file that holds the settings our app needs.
-- `volumes`: This tells Docker to link the `./data` directory in our project to the CouchDB container, giving us persistent data storage.
+- `volumes`: This tells Docker to link the `./data` directory in our project to the CouchDB container, giving us persistent data storage. It also mounts our custom startup script and initialization directory.
 - `ports`: (In dev configuration) This maps the host port `9002` to the CouchDB container port `5984`, making the database accessible at `http://localhost:9002`.
+- `networks`: Uses an external network called `web` for both development and production environments.
 
 ## 🌐 CORS Configuration
 
 Cross-Origin Resource Sharing (CORS) is essential for allowing our web application to communicate with the CouchDB server when they're hosted on different domains or ports.
 
-Our Docker Compose setup automatically configures CORS settings every time the container starts. It does this by:
+Our Docker Compose setup automatically configures CORS settings every time the container starts using a custom startup script (`start-and-configure.sh`). It does this by:
 1. Starting the main CouchDB process.
 2. Waiting until the CouchDB API is responsive.
 3. Applying the necessary CORS configuration settings via the CouchDB HTTP API using `curl`.
