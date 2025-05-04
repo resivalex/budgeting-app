@@ -1,13 +1,13 @@
 import { useEffect, FC, Ref, useRef } from 'react'
 import styled from 'styled-components'
 
-const SelectContainer = styled.div<{ isExpanded: boolean }>`
-  font-size: ${(props) => (props.isExpanded ? '1rem' : '0.8rem')};
+const SelectContainer = styled.div<{ $isExpanded: boolean }>`
+  font-size: ${(props) => (props.$isExpanded ? '1rem' : '0.8rem')};
 `
 
-const AccountLabel = styled.div<{ isExpanded: boolean }>`
+const AccountLabel = styled.div<{ $isExpanded: boolean }>`
   font-size: 1rem;
-  color: ${(props) => (props.isExpanded ? 'black' : 'gray')};
+  color: ${(props) => (props.$isExpanded ? 'black' : 'gray')};
 `
 
 const SelectedOption = styled.div<{ color?: string }>`
@@ -56,7 +56,7 @@ export default function Account({
     return (
       <div className="field" onClick={onExpand}>
         {!selectedOption && (
-          <AccountLabel className="is-size-7" isExpanded={isExpanded}>
+          <AccountLabel className="is-size-7" $isExpanded={isExpanded}>
             Счёт
           </AccountLabel>
         )}
@@ -69,10 +69,10 @@ export default function Account({
 
   return (
     <div className="field">
-      <AccountLabel className="is-size-7" isExpanded={isExpanded}>
+      <AccountLabel className="is-size-7" $isExpanded={isExpanded}>
         Счёт
       </AccountLabel>
-      <SelectContainer className="control" isExpanded={isExpanded}>
+      <SelectContainer className="control" $isExpanded={isExpanded}>
         <AccountSelect value={account} onChange={handleAccountChange} ref={accountSelectRef} />
       </SelectContainer>
     </div>

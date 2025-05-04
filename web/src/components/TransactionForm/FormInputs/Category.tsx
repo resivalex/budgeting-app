@@ -12,9 +12,9 @@ interface Props {
   categoryOptions: { value: string; label: string }[]
 }
 
-const CategoryLabel = styled.div<{ isExpanded: boolean }>`
+const CategoryLabel = styled.div<{ $isExpanded: boolean }>`
   font-size: 1rem;
-  color: ${(props) => (props.isExpanded ? 'black' : 'gray')};
+  color: ${(props) => (props.$isExpanded ? 'black' : 'gray')};
 `
 
 const SelectedCategory = styled.div`
@@ -49,7 +49,7 @@ export default function Category({
   if (!isExpanded) {
     return (
       <div className="field" onClick={onExpand}>
-        <CategoryLabel className="is-size-7" isExpanded={isExpanded}>
+        <CategoryLabel className="is-size-7" $isExpanded={isExpanded}>
           Категория
         </CategoryLabel>
         <SelectedCategory>{selectedOption ? selectedOption.label : '(пусто)'}</SelectedCategory>
@@ -59,7 +59,7 @@ export default function Category({
 
   return (
     <div className="field">
-      <CategoryLabel className="is-size-7" isExpanded={isExpanded}>
+      <CategoryLabel className="is-size-7" $isExpanded={isExpanded}>
         Категория
       </CategoryLabel>
       <div className="control">

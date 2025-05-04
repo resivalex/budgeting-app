@@ -11,9 +11,9 @@ interface Props {
   comments: string[]
 }
 
-const CommentLabel = styled.div<{ isExpanded: boolean }>`
+const CommentLabel = styled.div<{ $isExpanded: boolean }>`
   font-size: 1rem;
-  color: ${(props) => (props.isExpanded ? 'black' : 'gray')};
+  color: ${(props) => (props.$isExpanded ? 'black' : 'gray')};
 `
 
 const SelectedComment = styled.div`
@@ -39,7 +39,7 @@ export default function Comment({
   if (!isExpanded) {
     return (
       <div className="field" onClick={onExpand}>
-        <CommentLabel className="is-size-7" isExpanded={isExpanded}>
+        <CommentLabel className="is-size-7" $isExpanded={isExpanded}>
           Комментарий
         </CommentLabel>
         <SelectedComment>{comment || '(пусто)'}</SelectedComment>
@@ -49,7 +49,7 @@ export default function Comment({
 
   return (
     <div className="field">
-      <CommentLabel className="is-size-7" isExpanded={isExpanded}>
+      <CommentLabel className="is-size-7" $isExpanded={isExpanded}>
         Комментарий
       </CommentLabel>
       <div className="control">

@@ -11,9 +11,9 @@ interface Props {
   alwaysShowOptionsIfEmpty: boolean
 }
 
-const Option = styled.div<{ isActive: boolean }>`
-  background-color: ${(props) => (props.isActive ? '#3273dc' : '#fff')};
-  color: ${(props) => (props.isActive ? '#fff' : '#3273dc')};
+const Option = styled.div<{ $isActive: boolean }>`
+  background-color: ${(props) => (props.$isActive ? '#3273dc' : '#fff')};
+  color: ${(props) => (props.$isActive ? '#fff' : '#3273dc')};
   border: 1px solid #3273dc;
   border-radius: 4px;
   padding: 0.4rem 0.8rem;
@@ -114,7 +114,7 @@ export default function Currency({
         {sortedOptions.map((option) => (
           <Option
             key={option.value}
-            isActive={value === option.value}
+            $isActive={value === option.value}
             onClick={() => handleOptionClick(option.value)}
           >
             {option.label}
@@ -131,7 +131,7 @@ export default function Currency({
           {alwaysShowOptionsIfEmpty && !value ? (
             renderOptions()
           ) : (
-            <Option isActive>{renderSelectedOptionLabel()}</Option>
+            <Option $isActive={true}>{renderSelectedOptionLabel()}</Option>
           )}
         </Container>
       </div>

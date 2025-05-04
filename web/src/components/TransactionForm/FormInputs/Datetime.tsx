@@ -12,9 +12,9 @@ interface Props {
   onExpand: () => void
 }
 
-const DateTimeLabel = styled.div<{ isExpanded: boolean }>`
+const DateTimeLabel = styled.div<{ $isExpanded: boolean }>`
   font-size: 1rem;
-  color: ${(props) => (props.isExpanded ? 'black' : 'gray')};
+  color: ${(props) => (props.$isExpanded ? 'black' : 'gray')};
 `
 
 const SelectedDateTime = styled.div`
@@ -25,7 +25,7 @@ export default function Datetime({ datetime, isExpanded, onDatetimeChange, onExp
   if (!isExpanded) {
     return (
       <div className="field" onClick={onExpand}>
-        <DateTimeLabel className="is-size-7" isExpanded={isExpanded}>
+        <DateTimeLabel className="is-size-7" $isExpanded={isExpanded}>
           Дата и время
         </DateTimeLabel>
         <SelectedDateTime>{datetime ? convertToLocaleTime(datetime) : 'Select'}</SelectedDateTime>
@@ -35,7 +35,7 @@ export default function Datetime({ datetime, isExpanded, onDatetimeChange, onExp
 
   return (
     <div className="field">
-      <DateTimeLabel className="is-size-7" isExpanded={isExpanded}>
+      <DateTimeLabel className="is-size-7" $isExpanded={isExpanded}>
         Дата и время
       </DateTimeLabel>
       <div className="control">

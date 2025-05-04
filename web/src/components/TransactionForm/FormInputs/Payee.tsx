@@ -12,9 +12,9 @@ interface Props {
   type: 'expense' | 'income' | 'transfer' | ''
 }
 
-const PayeeLabel = styled.div<{ isExpanded: boolean }>`
+const PayeeLabel = styled.div<{ $isExpanded: boolean }>`
   font-size: 1rem;
-  color: ${(props) => (props.isExpanded ? 'black' : 'gray')};
+  color: ${(props) => (props.$isExpanded ? 'black' : 'gray')};
 `
 
 const SelectedPayee = styled.div`
@@ -45,7 +45,7 @@ export default function Payee({
   if (!isExpanded) {
     return (
       <div className="field" onClick={onExpand}>
-        <PayeeLabel className="is-size-7" isExpanded={isExpanded}>
+        <PayeeLabel className="is-size-7" $isExpanded={isExpanded}>
           {labelText()}
         </PayeeLabel>
         <SelectedPayee>{payee || '(пусто)'}</SelectedPayee>
@@ -55,7 +55,7 @@ export default function Payee({
 
   return (
     <div className="field">
-      <PayeeLabel className="is-size-7" isExpanded={isExpanded}>
+      <PayeeLabel className="is-size-7" $isExpanded={isExpanded}>
         {labelText()}
       </PayeeLabel>
       <div className="control">
