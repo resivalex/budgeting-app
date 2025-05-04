@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useMemo } from 'react'
 import { TransactionTile } from './Transaction'
 import { TransactionDTO } from '@/types'
 import { List, AutoSizer } from 'react-virtualized'
@@ -24,7 +24,6 @@ export default function Transactions({
   onUnfocus,
 }: Props) {
   const [heights, setHeights] = useState<any>({})
-  const [hasDateHeaderMap, setHasDateHeaderMap] = useState<any>({})
   const listRef: any = useRef(null)
 
   useEffect(() => {
@@ -33,7 +32,7 @@ export default function Transactions({
     }
   }, [transactions, heights])
 
-  useEffect(() => {
+  const hasDateHeaderMap = useMemo(() => {
     const headerMap: { [transactionId: string]: boolean } = {}
     let lastDate = 'There will be a fresher transaction date'
     transactions.forEach((t) => {
@@ -44,7 +43,8 @@ export default function Transactions({
       }
       lastDate = currentDate
     })
-    setHasDateHeaderMap(headerMap)
+
+    return headerMap
   }, [transactions])
 
   if (transactions.length === 0) {
