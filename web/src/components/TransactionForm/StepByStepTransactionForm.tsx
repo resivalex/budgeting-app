@@ -114,9 +114,6 @@ function StepByStepTransactionForm({
   }))
 
   function AmountStep({ isExpanded, onExpand, onComplete }: AmountStepProps) {
-    useEffect(() => {
-      console.log('AmountStep mounted')
-    }, [])
     return (
       <Amount
         amount={amount}
