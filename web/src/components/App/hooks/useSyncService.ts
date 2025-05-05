@@ -9,95 +9,98 @@ export function useSyncService(
   instanceId: string,
   onTransactionsPull: (transactions: TransactionDTO[]) => void,
 ) {
-  const [isFailedPush, setIsFailedPush] = useState(false)
-  const [offlineMode, setOfflineMode] = useState(false)
-  const [isInitialized, setIsInitialized] = useState(false)
+  const [hasPushError, setHasPushError] = useState(false)
+  const [isOffline, setIsOffline] = useState(false)
+  const [isFirstPullComplete, setIsFirstPullComplete] = useState(false)
 
-  const loadTransactionsFromLocalCallback = useCallback(
-    async function loadTransactionsFromLocal() {
-      const docs = await dbService.readAllDocs()
-      onTransactionsPull(docs)
+  const pullFromLocalDb = useCallback(
+    async function pullFromLocalDbImpl() {
+      const transactions = await dbService.readAllDocs()
+      onTransactionsPull(transactions)
     },
     [dbService, onTransactionsPull],
   )
 
-  const pullDataFromRemoteCallback = useCallback(
-    async function pullDataFromRemote() {
-      if (!isInitialized) {
-        await loadTransactionsFromLocalCallback()
-        setIsInitialized(true)
+  const pullFromRemote = useCallback(
+    async function pullFromRemoteImpl() {
+      if (!isFirstPullComplete) {
+        await pullFromLocalDb()
+        setIsFirstPullComplete(true)
       }
 
       try {
-        const checkSettings = await backendService.getSettings()
+        const remoteSettings = await backendService.getSettings()
 
-        const dbChanged =
-          localStorage.transactionsUploadedAt !== checkSettings.transactionsUploadedAt
+        const needsDatabaseReset =
+          localStorage.transactionsUploadedAt !== remoteSettings.transactionsUploadedAt
 
-        if (dbChanged) {
+        if (needsDatabaseReset) {
           await dbService.reset()
-          localStorage.transactionsUploadedAt = checkSettings.transactionsUploadedAt
+          localStorage.transactionsUploadedAt = remoteSettings.transactionsUploadedAt
         }
 
-        const hasChanges = await dbService.pullChanges()
-        if (hasChanges) {
-          await loadTransactionsFromLocalCallback()
+        const hasChangesFromRemote = await dbService.pullChanges()
+        if (hasChangesFromRemote) {
+          await pullFromLocalDb()
         }
 
-        setOfflineMode(false)
+        setIsOffline(false)
       } catch (error: any) {
-        setOfflineMode(true)
+        setIsOffline(true)
       }
     },
-    [backendService, dbService, loadTransactionsFromLocalCallback, isInitialized],
+    [backendService, dbService, pullFromLocalDb, isFirstPullComplete],
   )
 
-  const pushDbChangesToRemoteCallback = useCallback(
-    async function pushDbChangesToRemote() {
+  const pushToRemote = useCallback(
+    async function pushToRemoteImpl() {
       try {
         await dbService.pushChanges()
-        setIsFailedPush(false)
+        setHasPushError(false)
       } catch (error) {
-        setIsFailedPush(true)
+        setHasPushError(true)
       }
     },
     [dbService],
   )
 
-  const repeatFailedPushToRemoteCallback = useCallback(
-    async function repeatFailedPushToRemote() {
-      if (!isFailedPush) {
+  const retryFailedPush = useCallback(
+    async function retryFailedPushImpl() {
+      if (!hasPushError) {
         return
       }
-      void pushDbChangesToRemoteCallback()
+      void pushToRemote()
     },
-    [isFailedPush, pushDbChangesToRemoteCallback],
+    [hasPushError, pushToRemote],
   )
 
-  const initialDelay = 0
-  const intervalDelay = 10000
-  useInterval(pullDataFromRemoteCallback, initialDelay, intervalDelay, instanceId)
-  useInterval(repeatFailedPushToRemoteCallback, 3000, intervalDelay, instanceId)
+  const immediateFirstPull = 0 // Run first pull immediately
+  const retryPushDelay = 3000 // Wait 3s before first retry
+  const syncIntervalMs = 10000 // 10s between sync operations
+  useInterval(pullFromRemote, immediateFirstPull, syncIntervalMs, instanceId)
+  useInterval(retryFailedPush, retryPushDelay, syncIntervalMs, instanceId)
 
-  async function addDbTransaction(t: TransactionDTO) {
-    await dbService.addTransaction(t)
-    await pushDbChangesToRemoteCallback()
+  // Transaction operations
+  async function addTransaction(transaction: TransactionDTO) {
+    await dbService.addTransaction(transaction)
+    await pushToRemote()
   }
 
-  async function replaceDbTransaction(t: TransactionDTO) {
-    await dbService.replaceTransaction(t)
-    await pushDbChangesToRemoteCallback()
+  async function updateTransaction(transaction: TransactionDTO) {
+    await dbService.replaceTransaction(transaction)
+    await pushToRemote()
   }
 
-  async function removeDbTransaction(id: string) {
-    await dbService.removeTransaction(id)
-    await pushDbChangesToRemoteCallback()
+  async function deleteTransaction(transactionId: string) {
+    await dbService.removeTransaction(transactionId)
+    await pushToRemote()
   }
 
+  // Public API
   return {
-    offlineMode,
-    addDbTransaction,
-    replaceDbTransaction,
-    removeDbTransaction,
+    offlineMode: isOffline,
+    addDbTransaction: addTransaction,
+    replaceDbTransaction: updateTransaction,
+    removeDbTransaction: deleteTransaction,
   }
 }
