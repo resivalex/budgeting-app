@@ -7,7 +7,6 @@ import {
   useImperativeHandle,
   useRef,
   useEffect,
-  useCallback,
 } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
@@ -174,7 +173,7 @@ export default function TransactionFormContainer({
           />
         )
       }),
-    [availableAccountNames]
+    [LimitedAccountSelect, availableAccountNames],
   )
 
   const payees = useMemo(() => {
@@ -267,19 +266,21 @@ export default function TransactionFormContainer({
   const handlePayeeChange = (payee: string) => setPayee(payee)
 
   const handlePayeeTransferAccountChange = (value: string) => {
-    setPayeeTransferAccount(value)
+    // account and payeeTransferAccount should not be the same
     if (account === value) {
       setAccount(payeeTransferAccount)
     }
+    setPayeeTransferAccount(value)
   }
 
   const handleCommentChange = (comment: string) => setComment(comment)
 
   const handleAccountChange = (value: string) => {
-    setAccount(value)
+    // account and payeeTransferAccount should not be the same
     if (payeeTransferAccount === value) {
       setPayeeTransferAccount(account)
     }
+    setAccount(value)
   }
 
   const handleCurrencyChange = (currency: string) => {
