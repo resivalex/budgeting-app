@@ -65,7 +65,11 @@ export default function TransactionFormContainer({
   const accountDetails = transactionsAggregations.accountDetails
   const navigate = useNavigate()
   const { transactionId } = useParams()
-  const curTransaction = transactions.find((t: TransactionDTO) => t._id === transactionId)
+  const curTransaction = useMemo(
+    () => transactions.find((t: TransactionDTO) => t._id === transactionId),
+    [transactions, transactionId],
+  )
+  const [lastSerializedTransaction, setLastSerializedTransaction] = useState('')
 
   const categoryExtensions = useCategoryExtensions(localStorage.categoryExpansions || '')
   const categoryOptions = useMemo(
@@ -98,12 +102,19 @@ export default function TransactionFormContainer({
     if (!transactionId) {
       return
     }
-    if (curTransaction) {
-      initializeFormFromTransaction(curTransaction)
-    } else {
+
+    if (!curTransaction) {
       navigate('/', { replace: true })
+      return
     }
-  }, [navigate, curTransaction, transactionId])
+
+    const serializedTransaction = JSON.stringify(curTransaction)
+
+    if (serializedTransaction !== lastSerializedTransaction) {
+      initializeFormFromTransaction(curTransaction)
+      setLastSerializedTransaction(serializedTransaction)
+    }
+  }, [navigate, curTransaction, transactionId, lastSerializedTransaction])
 
   const resetForm = () => {
     setType('')
