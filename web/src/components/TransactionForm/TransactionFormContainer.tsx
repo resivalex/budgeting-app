@@ -1,7 +1,16 @@
-import { useState, useMemo, FC, Ref, forwardRef, useImperativeHandle, useRef } from 'react'
+import {
+  useState,
+  useMemo,
+  FC,
+  Ref,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useEffect,
+  useCallback,
+} from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
-import { useEffect } from 'react'
 import { TransactionDTO, CategoryExpansionsDTO, TransactionsAggregations } from '@/types'
 import { convertToLocaleTime, convertToUtcTime } from '@/utils'
 import StepByStepTransactionForm from './StepByStepTransactionForm'
@@ -66,7 +75,7 @@ export default function TransactionFormContainer({
         value: c,
         label: categoryExtensions[c] || c,
       })),
-    [appCategories, categoryExtensions]
+    [appCategories, categoryExtensions],
   )
 
   const coloredAccounts = useColoredAccounts(localStorage.accountProperties || '', accountDetails)
@@ -136,7 +145,7 @@ export default function TransactionFormContainer({
 
   const availableAccountNames = useMemo(
     () => availableColoredAccounts.map((a) => a.account),
-    [availableColoredAccounts]
+    [availableColoredAccounts],
   )
 
   const AccountSelect: FC<{
@@ -225,7 +234,7 @@ export default function TransactionFormContainer({
   const adjustCurrencyAndAccounts = (type: string, currency: string) => {
     const { availableCurrencies, availableColoredAccounts } = getAvailableCurrenciesAndAccounts(
       type,
-      currency
+      currency,
     )
     if (!_.includes(availableCurrencies, currency)) {
       setCurrency('')
@@ -233,7 +242,7 @@ export default function TransactionFormContainer({
     if (
       !_.includes(
         availableColoredAccounts.map((a) => a.account),
-        account
+        account,
       )
     ) {
       setAccount('')
@@ -241,7 +250,7 @@ export default function TransactionFormContainer({
     if (
       !_.includes(
         availableColoredAccounts.map((a) => a.account),
-        payeeTransferAccount
+        payeeTransferAccount,
       )
     ) {
       setPayeeTransferAccount('')
