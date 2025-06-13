@@ -77,29 +77,34 @@ function transliterate(text: string, map: Record<string, string>): string {
     .join('')
 }
 
-function matchesCrossLanguage(suggestion: string, searchText: string): boolean {
+function matchesForTyping(suggestion: string, searchText: string): boolean {
   if (!searchText) return true
 
   const suggestionLower = suggestion.toLowerCase()
   const searchLower = searchText.toLowerCase()
 
-  // Direct match (same language)
-  if (suggestionLower.includes(searchLower)) return true
+  // Create all possible search variants
+  const searchVariants = [
+    searchLower,
+    transliterate(searchLower, rusToEngMap),
+    transliterate(searchLower, engToRusMap),
+  ].filter((variant) => variant.length > 0) // Remove empty strings
 
-  // Russian search text to English, check against suggestion
-  const searchAsEng = transliterate(searchLower, rusToEngMap)
-  if (suggestionLower.includes(searchAsEng)) return true
+  // Create all possible suggestion variants
+  const suggestionVariants = [
+    suggestionLower,
+    transliterate(suggestionLower, rusToEngMap),
+    transliterate(suggestionLower, engToRusMap),
+  ]
 
-  // English search text to Russian, check against suggestion
-  const searchAsRus = transliterate(searchLower, engToRusMap)
-  if (suggestionLower.includes(searchAsRus)) return true
-
-  // Transliterate suggestion and check cross-language matches
-  const suggestionAsEng = transliterate(suggestionLower, rusToEngMap)
-  const suggestionAsRus = transliterate(suggestionLower, engToRusMap)
-
-  if (suggestionAsEng.includes(searchLower) || suggestionAsRus.includes(searchLower)) return true
-  if (suggestionLower.includes(searchAsEng) || suggestionLower.includes(searchAsRus)) return true
+  // Check if any search variant is contained in any suggestion variant
+  for (const searchVariant of searchVariants) {
+    for (const suggestionVariant of suggestionVariants) {
+      if (suggestionVariant.includes(searchVariant)) {
+        return true
+      }
+    }
+  }
 
   return false
 }
@@ -187,7 +192,7 @@ const SuggestingInput = forwardRef((props: SuggestingInputProps, ref) => {
       return suggestions
     }
     return suggestions.filter(
-      (suggestion) => matchesCrossLanguage(suggestion, value) && suggestion !== value,
+      (suggestion) => matchesForTyping(suggestion, value) && suggestion !== value,
     )
   })()
 
