@@ -86,28 +86,15 @@ export function matchesCrossLanguage(text: string, searchQuery: string): boolean
   const textLower = text.toLowerCase()
   const queryLower = searchQuery.toLowerCase()
 
-  // Create all possible search variants
-  const searchVariants = [
-    queryLower,
-    transliterate(queryLower, rusToEngMap),
-    transliterate(queryLower, engToRusMap),
-  ].filter((variant) => variant.length > 0) // Remove empty strings
+  // Transliterate both to English and compare
+  const textAsEng = transliterate(textLower, rusToEngMap)
+  const queryAsEng = transliterate(queryLower, rusToEngMap)
+  if (textAsEng.includes(queryAsEng)) return true
 
-  // Create all possible text variants
-  const textVariants = [
-    textLower,
-    transliterate(textLower, rusToEngMap),
-    transliterate(textLower, engToRusMap),
-  ]
-
-  // Check if any search variant is contained in any text variant
-  for (const searchVariant of searchVariants) {
-    for (const textVariant of textVariants) {
-      if (textVariant.includes(searchVariant)) {
-        return true
-      }
-    }
-  }
+  // Transliterate both to Russian and compare
+  const textAsRus = transliterate(textLower, engToRusMap)
+  const queryAsRus = transliterate(queryLower, engToRusMap)
+  if (textAsRus.includes(queryAsRus)) return true
 
   return false
 }
