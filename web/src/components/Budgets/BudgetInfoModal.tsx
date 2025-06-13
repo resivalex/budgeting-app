@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown, faChevronUp, faPencilAlt, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
 import { formatFinancialAmount, convertCurrencyCodeToSymbol } from '@/utils'
 import { TransactionsContainer } from '@/components/Transactions'
 import { BudgetDTO } from './BudgetDTO'
@@ -9,7 +9,8 @@ interface Props {
   budget: BudgetDTO
   onClose: () => void
   onTransactionRemove: (id: string) => Promise<void>
-  onBudgetChange: (amount: number) => void
+  onBudgetChange: (amount: number, currency: string) => void
+  availableCurrencies: { value: string; label: string }[]
 }
 
 export default function BudgetInfoModal({
@@ -17,10 +18,12 @@ export default function BudgetInfoModal({
   onClose,
   onTransactionRemove,
   onBudgetChange,
+  availableCurrencies,
 }: Props) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [newAmount, setNewAmount] = useState(budget.amount)
+  const [newCurrency, setNewCurrency] = useState(budget.currency)
 
   if (!budget) return null
 
@@ -43,7 +46,13 @@ export default function BudgetInfoModal({
   )
 
   const handleAmountChange = () => {
-    onBudgetChange(newAmount)
+    onBudgetChange(newAmount, newCurrency)
+    setIsEditing(false)
+  }
+
+  const handleCancelEdit = () => {
+    setNewAmount(budget.amount)
+    setNewCurrency(budget.currency)
     setIsEditing(false)
   }
 
@@ -59,17 +68,29 @@ export default function BudgetInfoModal({
           <p>
             Всего:{' '}
             {isEditing ? (
-              <div style={{ display: 'inline-block' }}>
+              <span>
                 <input
                   type="number"
                   value={newAmount}
                   onChange={(e) => setNewAmount(Number(e.target.value))}
+                  style={{ width: '100px', marginRight: '5px' }}
                 />
-                <button onClick={handleAmountChange}>
-                  {/* @ts-ignore */}
-                  <FontAwesomeIcon icon={faCheck} />
+                <select
+                  value={newCurrency}
+                  onChange={(e) => setNewCurrency(e.target.value)}
+                  style={{ marginRight: '5px' }}
+                >
+                  {availableCurrencies.map((currencyOption) => (
+                    <option key={currencyOption.value} value={currencyOption.value}>
+                      {currencyOption.label}
+                    </option>
+                  ))}
+                </select>
+                <button onClick={handleAmountChange} style={{ marginRight: '5px' }}>
+                  ✓
                 </button>
-              </div>
+                <button onClick={handleCancelEdit}>✕</button>
+              </span>
             ) : (
               <strong>
                 {formatFinancialAmount(amount)} {convertCurrencyCodeToSymbol(currency)}{' '}

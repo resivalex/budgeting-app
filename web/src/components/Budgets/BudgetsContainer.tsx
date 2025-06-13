@@ -22,7 +22,7 @@ function calculateBudget(
   spendingLimit: MonthSpendingLimit,
   conversionMap: ConversionMapType,
   color: string,
-  isEditable: boolean
+  isEditable: boolean,
 ) {
   const budget: BudgetDTO = {
     name: spendingLimit.name,
@@ -54,7 +54,7 @@ function calculateBudgets(
   transactions: TransactionDTO[],
   categories: string[],
   spendingLimits: SpendingLimitsDTO,
-  monthDate: string
+  monthDate: string,
 ): BudgetDTO[] {
   const monthCurrencyConfig = spendingLimits.monthCurrencyConfigs.find((c) => c.date === monthDate)
   if (!monthCurrencyConfig) {
@@ -127,10 +127,10 @@ function calculateBudgets(
       }
 
       return result
-    }
+    },
   )
   const monthSpendingLimits: MonthSpendingLimit[] = monthSpendingLimitsWithNulls.filter(
-    (spendingLimit) => spendingLimit !== null
+    (spendingLimit) => spendingLimit !== null,
   ) as MonthSpendingLimit[]
 
   const totalLimit: MonthSpendingLimit = {
@@ -163,9 +163,9 @@ function calculateBudgets(
         spendingLimit,
         conversionMap,
         spendingLimit.color,
-        spendingLimit.isEditable
+        spendingLimit.isEditable,
       )
-    }
+    },
   )
 }
 
@@ -192,12 +192,12 @@ function calculateExpectationRatioByCurrentDate(selectedMonth: string) {
   const selectedMonthFirstDay = new Date(
     selectedMonthDate.getFullYear(),
     selectedMonthDate.getMonth(),
-    1
+    1,
   )
   const nextMonthFirstDay = new Date(
     selectedMonthDate.getFullYear(),
     selectedMonthDate.getMonth() + 1,
-    1
+    1,
   )
   const millisecondsInMonth = nextMonthFirstDay.getTime() - selectedMonthFirstDay.getTime()
   const millisecondsFromSelectedMonth = currentDate.getTime() - selectedMonthFirstDay.getTime()
@@ -270,6 +270,12 @@ export default function BudgetsContainer({
   const focusedBudget = budgets.find((budget) => budget.name === focusedBudgetName) || null
   const commonBudgetsExpectationRatio = calculateExpectationRatioByCurrentDate(selectedMonth)
 
+  // Get available currencies from transactions
+  const availableCurrencies = transactionAggregations.currencies.map((currency: string) => ({
+    value: currency,
+    label: currency,
+  }))
+
   return (
     <Budgets
       budgets={budgets}
@@ -283,6 +289,7 @@ export default function BudgetsContainer({
       focusedBudget={focusedBudget}
       commonBudgetsExpectationRatio={commonBudgetsExpectationRatio}
       onTransactionRemove={onTransactionRemove}
+      availableCurrencies={availableCurrencies}
     />
   )
 }
