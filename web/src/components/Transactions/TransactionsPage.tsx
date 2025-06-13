@@ -2,7 +2,7 @@ import { AccountDetailsDTO, TransactionDTO } from '@/types'
 import { FC, useState } from 'react'
 import TransactionsContainer from './TransactionsContainer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 export default function TransactionsPage({
   AccountSelect,
@@ -43,18 +43,26 @@ export default function TransactionsPage({
     setIsFilterExpanded(false)
   }
 
+  const handleResetFilters = () => {
+    setLocalFilterPayee('')
+    setLocalFilterComment('')
+    onFilterPayeeChange('')
+    onFilterCommentChange('')
+    setIsFilterExpanded(false)
+  }
+
   const displayFilters = () => {
     let filters = []
 
     if (filterPayee) {
-      filters.push(`Payee: ${filterPayee}`)
+      filters.push(`Получатель: ${filterPayee}`)
     }
 
     if (filterComment) {
-      filters.push(`Comment: ${filterComment}`)
+      filters.push(`Комментарий: ${filterComment}`)
     }
 
-    return filters.join(', ')
+    return filters
   }
 
   return (
@@ -84,21 +92,65 @@ export default function TransactionsPage({
         </button>
       </div>
       {isFilterExpanded ? (
-        <div style={{ marginTop: '10px' }}>
-          <input
-            value={localFilterPayee}
-            placeholder="Filter by Payee"
-            onChange={(e) => setLocalFilterPayee(e.target.value)}
-          />
-          <input
-            value={localFilterComment}
-            placeholder="Filter by Comment"
-            onChange={(e) => setLocalFilterComment(e.target.value)}
-          />
-          <button onClick={handleApplyFilters}>Search</button>
+        <div className="box mt-3">
+          <div className="field">
+            <label className="label is-small">Получатель/Плательщик</label>
+            <div className="control">
+              <input
+                className="input is-small"
+                value={localFilterPayee}
+                placeholder="Введите имя получателя или плательщика"
+                onChange={(e) => setLocalFilterPayee(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="field">
+            <label className="label is-small">Комментарий</label>
+            <div className="control">
+              <input
+                className="input is-small"
+                value={localFilterComment}
+                placeholder="Введите текст комментария"
+                onChange={(e) => setLocalFilterComment(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="field is-grouped">
+            <div className="control">
+              <button className="button is-primary is-small" onClick={handleApplyFilters}>
+                <span className="icon is-small">
+                  {/* @ts-ignore */}
+                  <FontAwesomeIcon icon={faSearch} />
+                </span>
+                <span>Найти</span>
+              </button>
+            </div>
+            <div className="control">
+              <button className="button is-light is-small" onClick={handleResetFilters}>
+                <span className="icon is-small">
+                  {/* @ts-ignore */}
+                  <FontAwesomeIcon icon={faTimes} />
+                </span>
+                <span>Сбросить</span>
+              </button>
+            </div>
+          </div>
         </div>
       ) : (
-        <div style={{ color: '#777' }}>{displayFilters()}</div>
+        displayFilters().length > 0 && (
+          <div className="notification is-light is-small mt-2" style={{ padding: '0.75rem' }}>
+            <div className="content is-small">
+              <strong>Активные фильтры:</strong>
+              <div className="tags mt-1">
+                {displayFilters().map((filter, index) => (
+                  <span key={index} className="tag is-info is-light">
+                    {filter}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        )
       )}
       <div
         style={{
