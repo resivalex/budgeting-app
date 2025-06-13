@@ -94,12 +94,12 @@ export default function TransactionsPage({
       {isFilterExpanded ? (
         <div className="box mt-3">
           <div className="field">
-            <label className="label is-small">Получатель/Плательщик</label>
+            <label className="label is-small">Получатель</label>
             <div className="control">
               <input
                 className="input is-small"
                 value={localFilterPayee}
-                placeholder="Введите имя получателя или плательщика"
+                placeholder="Введите имя получателя"
                 onChange={(e) => setLocalFilterPayee(e.target.value)}
               />
             </div>
@@ -140,10 +140,12 @@ export default function TransactionsPage({
         displayFilters().length > 0 && (
           <div className="notification is-light is-small mt-2" style={{ padding: '0.75rem' }}>
             <div className="content is-small">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              >
                 <strong>Активные фильтры:</strong>
-                <button 
-                  className="delete is-small" 
+                <button
+                  className="delete is-small"
                   onClick={handleResetFilters}
                   title="Сбросить все фильтры"
                 ></button>
