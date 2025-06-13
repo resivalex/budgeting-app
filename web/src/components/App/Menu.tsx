@@ -63,7 +63,9 @@ const Menu: React.FC<Props> = ({ handleLogout, handleExport, appVersion }) => {
         <div className="navbar-start">
           <Link
             to="/"
-            className={classNames('navbar-item', { 'is-active': location.pathname === '/' })}
+            className={classNames('navbar-item', {
+              'has-background-white-bis': location.pathname === '/',
+            })}
             onClick={toggleMenu}
             replace
           >
@@ -72,7 +74,7 @@ const Menu: React.FC<Props> = ({ handleLogout, handleExport, appVersion }) => {
           <Link
             to="/transactions"
             className={classNames('navbar-item', {
-              'is-active': location.pathname === '/transactions',
+              'has-background-white-bis': location.pathname === '/transactions',
             })}
             onClick={toggleMenu}
             replace
@@ -82,7 +84,7 @@ const Menu: React.FC<Props> = ({ handleLogout, handleExport, appVersion }) => {
           <Link
             to="/budgets"
             className={classNames('navbar-item', {
-              'is-active': location.pathname === '/budgets',
+              'has-background-white-bis': location.pathname === '/budgets',
             })}
             onClick={toggleMenu}
             replace
@@ -92,7 +94,7 @@ const Menu: React.FC<Props> = ({ handleLogout, handleExport, appVersion }) => {
           <Link
             to="/add"
             className={classNames('navbar-item', {
-              'is-active': location.pathname === '/add',
+              'has-background-white-bis': location.pathname === '/add',
             })}
             onClick={toggleMenu}
             replace
