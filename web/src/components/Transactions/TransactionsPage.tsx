@@ -140,7 +140,14 @@ export default function TransactionsPage({
         displayFilters().length > 0 && (
           <div className="notification is-light is-small mt-2" style={{ padding: '0.75rem' }}>
             <div className="content is-small">
-              <strong>Активные фильтры:</strong>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <strong>Активные фильтры:</strong>
+                <button 
+                  className="delete is-small" 
+                  onClick={handleResetFilters}
+                  title="Сбросить все фильтры"
+                ></button>
+              </div>
               <div className="tags mt-1">
                 {displayFilters().map((filter, index) => (
                   <span key={index} className="tag is-info is-light">
