@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import { TransactionDTO, AccountDetailsDTO } from '@/types'
 import TransactionsPage from './TransactionsPage'
+import { matchesCrossLanguage } from '@/utils/en-ru-matching'
 
 export default function TransactionsPageContainer({
   AccountSelect,
@@ -33,7 +34,7 @@ export default function TransactionsPageContainer({
     if (filterPayee) {
       if (
         transaction.type === 'transfer' ||
-        !transaction.payee.toLowerCase().includes(filterPayee.toLowerCase())
+        !matchesCrossLanguage(transaction.payee, filterPayee)
       ) {
         return false
       }
@@ -52,8 +53,8 @@ export default function TransactionsPageContainer({
       }
     }
 
-    // Filter by comment
-    if (filterComment && !transaction.comment.toLowerCase().includes(filterComment.toLowerCase())) {
+    // Filter by comment using cross-language matching
+    if (filterComment && !matchesCrossLanguage(transaction.comment, filterComment)) {
       return false
     }
 

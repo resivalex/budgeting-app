@@ -2,112 +2,7 @@ import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-
-// Transliteration mappings organized alphabetically
-const rusToEngMap: Record<string, string> = {
-  а: 'a',
-  б: 'b',
-  в: 'v',
-  г: 'g',
-  д: 'd',
-  е: 'e',
-  ё: 'e',
-  ж: 'zh',
-  з: 'z',
-  и: 'i',
-  й: 'y',
-  к: 'k',
-  л: 'l',
-  м: 'm',
-  н: 'n',
-  о: 'o',
-  п: 'p',
-  р: 'r',
-  с: 's',
-  т: 't',
-  у: 'u',
-  ф: 'f',
-  х: 'h',
-  ц: 'ts',
-  ч: 'ch',
-  ш: 'sh',
-  щ: 'sch',
-  ъ: '',
-  ы: 'y',
-  ь: '',
-  э: 'e',
-  ю: 'yu',
-  я: 'ya',
-}
-
-const engToRusMap: Record<string, string> = {
-  a: 'а',
-  b: 'б',
-  c: 'ц',
-  d: 'д',
-  e: 'е',
-  f: 'ф',
-  g: 'г',
-  h: 'х',
-  i: 'и',
-  j: 'ж',
-  k: 'к',
-  l: 'л',
-  m: 'м',
-  n: 'н',
-  o: 'о',
-  p: 'п',
-  q: 'к',
-  r: 'р',
-  s: 'с',
-  t: 'т',
-  u: 'у',
-  v: 'в',
-  w: 'в',
-  x: 'кс',
-  y: 'й',
-  z: 'з',
-}
-
-function transliterate(text: string, map: Record<string, string>): string {
-  return text
-    .toLowerCase()
-    .split('')
-    .map((char) => map[char] || char)
-    .join('')
-}
-
-function matchesForTyping(suggestion: string, searchText: string): boolean {
-  if (!searchText) return true
-
-  const suggestionLower = suggestion.toLowerCase()
-  const searchLower = searchText.toLowerCase()
-
-  // Create all possible search variants
-  const searchVariants = [
-    searchLower,
-    transliterate(searchLower, rusToEngMap),
-    transliterate(searchLower, engToRusMap),
-  ].filter((variant) => variant.length > 0) // Remove empty strings
-
-  // Create all possible suggestion variants
-  const suggestionVariants = [
-    suggestionLower,
-    transliterate(suggestionLower, rusToEngMap),
-    transliterate(suggestionLower, engToRusMap),
-  ]
-
-  // Check if any search variant is contained in any suggestion variant
-  for (const searchVariant of searchVariants) {
-    for (const suggestionVariant of suggestionVariants) {
-      if (suggestionVariant.includes(searchVariant)) {
-        return true
-      }
-    }
-  }
-
-  return false
-}
+import { filterSuggestions } from '@/utils/en-ru-matching'
 
 const Wrapper = styled.div`
   position: relative;
@@ -187,14 +82,7 @@ const SuggestingInput = forwardRef((props: SuggestingInputProps, ref) => {
     },
   }))
 
-  const filteredSuggestions = (() => {
-    if (!value) {
-      return suggestions
-    }
-    return suggestions.filter(
-      (suggestion) => matchesForTyping(suggestion, value) && suggestion !== value,
-    )
-  })()
+  const filteredSuggestions = filterSuggestions(suggestions, value)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
