@@ -3,6 +3,107 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
+// Transliteration mappings organized alphabetically
+const rusToEngMap: Record<string, string> = {
+  а: 'a',
+  б: 'b',
+  в: 'v',
+  г: 'g',
+  д: 'd',
+  е: 'e',
+  ё: 'e',
+  ж: 'zh',
+  з: 'z',
+  и: 'i',
+  й: 'y',
+  к: 'k',
+  л: 'l',
+  м: 'm',
+  н: 'n',
+  о: 'o',
+  п: 'p',
+  р: 'r',
+  с: 's',
+  т: 't',
+  у: 'u',
+  ф: 'f',
+  х: 'h',
+  ц: 'ts',
+  ч: 'ch',
+  ш: 'sh',
+  щ: 'sch',
+  ъ: '',
+  ы: 'y',
+  ь: '',
+  э: 'e',
+  ю: 'yu',
+  я: 'ya',
+}
+
+const engToRusMap: Record<string, string> = {
+  a: 'а',
+  b: 'б',
+  c: 'ц',
+  d: 'д',
+  e: 'е',
+  f: 'ф',
+  g: 'г',
+  h: 'х',
+  i: 'и',
+  j: 'ж',
+  k: 'к',
+  l: 'л',
+  m: 'м',
+  n: 'н',
+  o: 'о',
+  p: 'п',
+  q: 'к',
+  r: 'р',
+  s: 'с',
+  t: 'т',
+  u: 'у',
+  v: 'в',
+  w: 'в',
+  x: 'кс',
+  y: 'й',
+  z: 'з',
+}
+
+function transliterate(text: string, map: Record<string, string>): string {
+  return text
+    .toLowerCase()
+    .split('')
+    .map((char) => map[char] || char)
+    .join('')
+}
+
+function matchesCrossLanguage(suggestion: string, searchText: string): boolean {
+  if (!searchText) return true
+
+  const suggestionLower = suggestion.toLowerCase()
+  const searchLower = searchText.toLowerCase()
+
+  // Direct match (same language)
+  if (suggestionLower.includes(searchLower)) return true
+
+  // Russian search text to English, check against suggestion
+  const searchAsEng = transliterate(searchLower, rusToEngMap)
+  if (suggestionLower.includes(searchAsEng)) return true
+
+  // English search text to Russian, check against suggestion
+  const searchAsRus = transliterate(searchLower, engToRusMap)
+  if (suggestionLower.includes(searchAsRus)) return true
+
+  // Transliterate suggestion and check cross-language matches
+  const suggestionAsEng = transliterate(suggestionLower, rusToEngMap)
+  const suggestionAsRus = transliterate(suggestionLower, engToRusMap)
+
+  if (suggestionAsEng.includes(searchLower) || suggestionAsRus.includes(searchLower)) return true
+  if (suggestionLower.includes(searchAsEng) || suggestionLower.includes(searchAsRus)) return true
+
+  return false
+}
+
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
@@ -86,7 +187,7 @@ const SuggestingInput = forwardRef((props: SuggestingInputProps, ref) => {
       return suggestions
     }
     return suggestions.filter(
-      (suggestion) => suggestion.toLowerCase().includes(value.toLowerCase()) && suggestion !== value
+      (suggestion) => matchesCrossLanguage(suggestion, value) && suggestion !== value,
     )
   })()
 
