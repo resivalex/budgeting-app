@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import {
   ConfigDataDTO,
   SpendingLimitsDTO,
@@ -10,18 +10,24 @@ interface SettingsData {
   transactionsUploadedAt: string
 }
 
+const TIMEOUT = 5000 // 5 seconds
+
 class BackendService {
+  private readonly axiosInstance: AxiosInstance
   private readonly backendUrl: string
-  private readonly token?: string
 
   constructor(backendUrl: string, token?: string) {
     this.backendUrl = backendUrl
-    this.token = token
+    this.axiosInstance = axios.create({
+      baseURL: backendUrl,
+      timeout: TIMEOUT,
+      headers: { Authorization: `Bearer ${token}` },
+    })
   }
 
   async getConfig(password: string): Promise<ConfigDataDTO> {
     try {
-      const response = await axios.get(`${this.backendUrl}/config`, {
+      const response = await this.axiosInstance.get('/config', {
         params: { password: password },
       })
 
@@ -36,9 +42,7 @@ class BackendService {
   }
 
   async getSettings(): Promise<SettingsData> {
-    const response = await axios.get(`${this.backendUrl}/settings`, {
-      headers: { Authorization: `Bearer ${this.token}` },
-    })
+    const response = await this.axiosInstance.get('/settings')
 
     return {
       transactionsUploadedAt: response.data.transactions_uploaded_at,
@@ -46,9 +50,7 @@ class BackendService {
   }
 
   async getSpendingLimits(): Promise<SpendingLimitsDTO> {
-    const response = await axios.get(`${this.backendUrl}/spending-limits`, {
-      headers: { Authorization: `Bearer ${this.token}` },
-    })
+    const response = await this.axiosInstance.get('/spending-limits')
 
     const data = response.data
     return {
@@ -72,37 +74,34 @@ class BackendService {
     }
   }
 
-  async setMonthSpendingItemLimit(date: string, name: string, currency: string, amount: number): Promise<void> {
-    await axios.post(
-      `${this.backendUrl}/spending-limits/month-budget-item`,
-      { date: date, limit:{ name: name, currency: currency, amount: amount }},
-      {
-        headers: { Authorization: `Bearer ${this.token}` },
-      }
-    )
+  async setMonthSpendingItemLimit(
+    date: string,
+    name: string,
+    currency: string,
+    amount: number,
+  ): Promise<void> {
+    await this.axiosInstance.post('/spending-limits/month-budget-item', {
+      date: date,
+      limit: { name: name, currency: currency, amount: amount },
+    })
   }
 
   async getCategoryExpansions(): Promise<CategoryExpansionsDTO> {
-    const response = await axios.get(`${this.backendUrl}/category-expansions`, {
-      headers: { Authorization: `Bearer ${this.token}` },
-    })
+    const response = await this.axiosInstance.get('/category-expansions')
 
     return response.data
   }
 
   async getAccountProperties(): Promise<AccountPropertiesDTO> {
-    const response = await axios.get(`${this.backendUrl}/account-properties`, {
-      headers: { Authorization: `Bearer ${this.token}` },
-    })
+    const response = await this.axiosInstance.get('/account-properties')
 
     return response.data
   }
 
   async getExportingCsvString(): Promise<string> {
     try {
-      const response = await axios.get(`${this.backendUrl}/exporting`, {
+      const response = await this.axiosInstance.get('/exporting', {
         responseType: 'blob',
-        headers: { Authorization: `Bearer ${this.token}` },
       })
 
       return response.data
