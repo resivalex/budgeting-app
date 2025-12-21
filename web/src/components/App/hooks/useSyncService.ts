@@ -83,17 +83,17 @@ export function useSyncService(
   // Transaction operations
   async function addTransaction(transaction: TransactionDTO) {
     await dbService.addTransaction(transaction)
-    await pushToRemote()
+    void pushToRemote()
   }
 
   async function updateTransaction(transaction: TransactionDTO) {
     await dbService.replaceTransaction(transaction)
-    await pushToRemote()
+    void pushToRemote()
   }
 
   async function deleteTransaction(transactionId: string) {
     await dbService.removeTransaction(transactionId)
-    await pushToRemote()
+    void pushToRemote()
   }
 
   // Public API
