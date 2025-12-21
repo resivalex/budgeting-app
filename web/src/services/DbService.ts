@@ -64,6 +64,7 @@ export default class DbService {
         .to(this.remoteDB, {
           live: false,
           retry: false,
+          timeout: 5000,
         })
         .on('complete', () => {
           console.log('pushChanges complete')
@@ -88,6 +89,7 @@ export default class DbService {
         .from(this.remoteDB, {
           live: false,
           retry: false,
+          timeout: 5000,
         })
         .on('change', (info: any) => {
           if (info.docs_read > 0) {
