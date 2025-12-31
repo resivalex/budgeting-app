@@ -260,41 +260,41 @@ Ensure clean imports.
 
 Use this checklist to track progress:
 
-- [ ] **Phase 1: Foundation**
+- [x] **Phase 1: Foundation**
 
-  - [ ] StorageService created
-  - [ ] state/ folder created
-  - [ ] domain/ folder created
+  - [x] StorageService created
+  - [x] state/ folder created
+  - [x] domain/ folder created
 
-- [ ] **Phase 2: Transactions**
+- [x] **Phase 2: Transactions**
 
-  - [ ] transactionsAtom created
-  - [ ] TransactionDomain created
-  - [ ] useTransactionsDomain hook created
-  - [ ] All consumers migrated
-  - [ ] Old useTransactions.ts removed
+  - [x] transactionsAtom created
+  - [x] TransactionDomain created
+  - [x] useTransactionsDomain hook created
+  - [x] All consumers migrated
+  - [x] Old useTransactions.ts removed
 
-- [ ] **Phase 3: Sync**
+- [x] **Phase 3: Sync**
 
-  - [ ] syncStatusAtom created
-  - [ ] SyncDomain created
-  - [ ] useSyncDomain hook created
-  - [ ] All consumers migrated
-  - [ ] Old useSyncService.ts removed
+  - [x] syncStatusAtom created
+  - [x] SyncDomain created
+  - [x] useSyncDomain hook created
+  - [x] All consumers migrated
+  - [x] Old useSyncService.ts removed
 
-- [ ] **Phase 4: Settings**
+- [x] **Phase 4: Settings**
 
-  - [ ] configAtom created
-  - [ ] SettingsDomain created
-  - [ ] useSettingsDomain hook created
-  - [ ] All consumers migrated
-  - [ ] Old settings hooks removed
+  - [x] configAtom created
+  - [x] SettingsDomain created
+  - [x] useSettingsDomain hook created
+  - [x] All consumers migrated
+  - [x] Old settings hooks removed
 
-- [ ] **Phase 5: Cleanup**
-  - [ ] Containers slimmed down
-  - [ ] Prop drilling removed
-  - [ ] Hooks organized
-  - [ ] Exports updated
+- [x] **Phase 5: Cleanup**
+  - [x] Containers slimmed down
+  - [x] Prop drilling removed
+  - [x] Hooks organized
+  - [x] Exports updated
 
 ---
 

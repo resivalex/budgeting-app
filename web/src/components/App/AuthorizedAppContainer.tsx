@@ -1,13 +1,10 @@
-import { useState, useCallback } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import App from './App'
 import { BackendService, DbService } from '@/services'
 import { TransactionDTO } from '@/types'
-import { useCategoryExpansions } from './hooks/useCategoryExpansions'
-import { useAccountProperties } from './hooks/useAccountProperties'
-import { useTransactions } from './hooks/useTransactions'
+import { useTransactionsDomain, useSyncDomain, useSettingsDomain } from '@/hooks'
 import { v4 as uuidv4 } from 'uuid'
-import { useSyncService } from './hooks/useSyncService'
 
 const instanceId = uuidv4()
 
@@ -24,30 +21,24 @@ export default function AuthorizedAppContainer({ backendService, dbService, isLo
 
   const navigate = useNavigate()
 
-  useCategoryExpansions(backendService)
-  useAccountProperties(backendService)
+  useSettingsDomain(backendService)
 
   const {
     transactions,
     transactionsAggregations,
-    setLocalTransactions,
-    addLocalTransaction,
-    replaceLocalTransaction,
-    removeLocalTransaction,
-  } = useTransactions()
-
-  const handleUpdatedTransactionsCallback = useCallback(async function handleUpdatedTransactions(transactions: TransactionDTO[]) {
-    setLocalTransactions(transactions)
-  }, [setLocalTransactions])
+    addTransaction: addLocalTransaction,
+    updateTransaction: updateLocalTransaction,
+    deleteTransaction: deleteLocalTransaction,
+  } = useTransactionsDomain(dbService)
 
   const { offlineMode, addDbTransaction, replaceDbTransaction, removeDbTransaction } =
-    useSyncService(backendService, dbService, instanceId, handleUpdatedTransactionsCallback)
+    useSyncDomain(backendService, dbService, instanceId)
 
   const [lastNotificationText, setLastNotificationText] = useState('')
 
   async function addTransaction(t: TransactionDTO) {
     await addDbTransaction(t)
-    addLocalTransaction(t)
+    await addLocalTransaction(t)
     setLastNotificationText('Запись добавлена')
     setFilterAccountName(t.account)
     navigate('/transactions', { replace: true })
@@ -55,14 +46,14 @@ export default function AuthorizedAppContainer({ backendService, dbService, isLo
 
   async function editTransaction(t: TransactionDTO) {
     await replaceDbTransaction(t)
-    replaceLocalTransaction(t)
+    await updateLocalTransaction(t)
     setLastNotificationText('Запись изменена')
     navigate('/transactions', { replace: true })
   }
 
   async function removeTransaction(id: string) {
     await removeDbTransaction(id)
-    removeLocalTransaction(id)
+    await deleteLocalTransaction(id)
     setLastNotificationText('Запись удалена')
   }
 
