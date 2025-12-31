@@ -48,50 +48,14 @@ A comprehensive offline-first personal financial management application providin
 
 ## Technical Notes
 
-### Application Architecture
-
-- **Three-Tier Architecture**: Clean separation between frontend (React), backend (FastAPI), and database (CouchDB) layers
-- **Microservices Design**: Modular backend architecture with dedicated services for core functionality areas
-- **Offline-First Strategy**: PouchDB/CouchDB synchronization architecture enabling robust offline capabilities
-- **Progressive Web App**: Modern web technologies providing native app-like experience across all platforms
-
-### Frontend Technology Stack
-
-- **React 19 + TypeScript**: Modern component-based frontend with comprehensive type safety and performance optimization
-- **Offline Data Layer**: PouchDB for local storage with automatic CouchDB synchronization
-- **Responsive UI Framework**: Bulma CSS with custom components for consistent, mobile-first design
-- **Performance Optimization**: Virtual scrolling, memoization strategies, and efficient state management for large datasets
-
-### Backend Technology Stack
-
-- **FastAPI Framework**: Modern Python web framework with automatic OpenAPI documentation and high performance
-- **Hybrid Data Storage**: CouchDB for transactions with SQLite for configuration ensuring optimal performance
-- **External Integrations**: Google Drive API for cloud backup with comprehensive error handling and retry mechanisms
-- **Security & Authentication**: Token-based authentication with secure credential management and request authorization
-
-### Database & Synchronization
-
-- **Document Database**: CouchDB providing JSON document storage optimized for financial transaction data
-- **Real-time Replication**: Built-in CouchDB replication for bidirectional sync with conflict resolution
-- **Local Storage**: PouchDB for offline-first client-side data persistence
-- **Data Consistency**: Sophisticated synchronization logic ensuring data integrity across all devices
-
-### Deployment & Operations
-
-- **Container Architecture**: Complete Docker containerization with multi-environment configuration support
-- **Cloud Integration**: Google Drive backup integration with automated scheduling and monitoring
-- **Health Monitoring**: Comprehensive logging and health checks for operational visibility
-- **Development Workflow**: Modern development tools with type checking, automated testing, and deployment pipelines
-
-### Security & Privacy
-
-- **Data Privacy**: Local-first architecture with optional cloud synchronization respecting user privacy preferences
-- **Secure Communication**: HTTPS/TLS encryption for all client-server communications
-- **Authentication Security**: Secure token-based authentication with proper session management
-- **Backup Encryption**: Secure cloud backup with proper access controls and credential management
+- Offline-first architecture enabling full functionality without internet connection
+- Multi-currency support with configurable exchange rates
+- Real-time bidirectional synchronization with conflict resolution
+- Automated daily backups to Google Drive
+- Web-based progressive web app for cross-platform compatibility
 
 ## Component References
 
-- **[Web Frontend](./web/prd.md)**: Sophisticated React TypeScript frontend providing complete offline-first personal budgeting experience
-- **[Backend API](./backend/prd.md)**: Robust FastAPI-based backend service with comprehensive financial data management and cloud integration
-- **[Database](./db/prd.md)**: Containerized CouchDB database service providing backend data storage and synchronization foundation
+- **[Web Frontend](./web/prd.md)**: User interface and offline-first experience
+- **[Backend API](./backend/prd.md)**: Data management, authentication, and cloud integration
+- **[Database](./db/prd.md)**: Transaction storage and synchronization

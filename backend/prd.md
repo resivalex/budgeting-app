@@ -40,33 +40,11 @@ A robust FastAPI-based backend service providing comprehensive financial data ma
 
 ## Technical Notes
 
-### Architecture & Framework
-
-- **FastAPI Framework**: Modern Python web framework with automatic OpenAPI documentation and type safety
-- **Modular Design**: Clean separation of concerns with dedicated modules for core functionality areas
-- **Protocol-Based Architecture**: Consistent interfaces using Python protocols for dependency injection and testability
-- **Type Safety**: Comprehensive type annotations with Pydantic models for request/response validation
-
-### Data Storage & Processing
-
-- **Multi-Database Architecture**: Hybrid storage strategy using CouchDB for transactions and SQLite for configuration
-- **State Management**: Centralized state management system coordinating all data operations and external integrations
-- **Data Validation**: Pydantic-based data models ensuring type safety and automatic validation across all endpoints
-- **Performance Optimization**: Efficient data processing with pandas for analytics and bulk operations
-
-### Integration & Deployment
-
-- **Docker Containerization**: Complete containerized deployment with multi-environment configuration support
-- **Environment Configuration**: Flexible environment-based configuration for development, staging, and production
-- **Health Monitoring**: Comprehensive health checks and monitoring endpoints for operational visibility
-- **Scalability Design**: Architecture prepared for horizontal scaling and load balancing requirements
-
-### Development & Testing
-
-- **OpenAPI Documentation**: Automatic API documentation with interactive testing interface
-- **Type Checking**: Full mypy compatibility with comprehensive type annotations for enhanced developer experience
-- **Modular Testing**: Clean modular architecture enabling comprehensive unit and integration testing
-- **Mock-Friendly Design**: Protocol-based dependency injection facilitating easy mocking and test isolation
+- FastAPI framework with automatic OpenAPI documentation
+- Dual database architecture: CouchDB for transactions, SQLite for configuration
+- Token-based authentication and authorization
+- Docker containerization for deployment
+- Automated daily backups via APScheduler
 
 ## Module References
 

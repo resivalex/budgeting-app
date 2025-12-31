@@ -51,37 +51,14 @@ A containerized CouchDB database service that provides the backend data storage 
 
 ## Technical Notes
 
-### Architecture & Deployment
+- CouchDB official Docker image
+- Custom initialization script (`start-and-configure.sh`) for CORS setup
+- Docker volumes for persistent data storage
+- Environment-based configuration for credentials and CORS
+- Multi-environment support via Docker Compose files
 
-- **CouchDB Official Image**: Uses the official CouchDB Docker image for reliability and security updates
-- **Custom Entrypoint Script**: Enhanced startup process with automatic CORS configuration and application-specific setup
-- **Multi-Stage Configuration**: Hierarchical Docker Compose setup with base, development, and production configurations
-- **Environment Variable Configuration**: Comprehensive configuration management through .env files for different deployment environments
+## Deployment Configurations
 
-### Data Management
-
-- **Document-Based Storage**: Optimized for the application's transaction and budget document structures
-- **JSON Document Model**: Native JSON support for seamless integration with the React TypeScript frontend
-- **Index Optimization**: Database indexes optimized for common query patterns (account balances, date ranges, categories)
-- **Data Validation**: Schema validation for transaction documents and budget configurations
-
-### Network & Security
-
-- **CORS Automation**: Custom script automatically configures CORS settings based on environment variables
-- **Network Isolation**: Production configuration with isolated networks for enhanced security
-- **Port Security**: Development mode exposes ports for debugging while production mode keeps them internal
-- **Credential Management**: Secure handling of database credentials through environment variables and Docker secrets
-
-### Integration & Synchronization
-
-- **PouchDB Compatibility**: Optimized for seamless integration with PouchDB clients in the web frontend
-- **Real-time Updates**: Change feed integration for immediate data synchronization and UI updates
-- **Bulk Operations**: Optimized for bulk transaction imports and batch processing operations
-- **Conflict Handling**: Sophisticated conflict resolution strategies for concurrent data modifications
-
-### Operational Excellence
-
-- **Container Lifecycle**: Proper container startup, shutdown, and restart handling
-- **Process Management**: Background process management with proper signal handling and graceful shutdowns
-- **Resource Optimization**: Memory and CPU optimization for efficient container resource utilization
-- **Scalability Preparation**: Architecture designed to support horizontal scaling and clustering when needed
+- `docker-compose.base.yml`: Shared base configuration
+- `docker-compose.dev.yml`: Development (port 9002 exposed)
+- `docker-compose.yml`: Production (no exposed ports, internal network only)

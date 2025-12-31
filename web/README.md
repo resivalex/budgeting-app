@@ -2,6 +2,35 @@
 
 A sophisticated personal finance application that works seamlessly online and offline. Track expenses, manage budgets, and gain insights into your spending patterns across multiple currencies and accounts.
 
+## Architecture
+
+**Offline-First Design**: Uses PouchDB for local storage with bidirectional sync to CouchDB. Full functionality works offline; changes sync automatically when online.
+
+**Service Layer Pattern**:
+
+- `DbService`: Wraps PouchDB operations (CRUD, sync)
+- `BackendService`: API communication for configuration and exports
+- `TransactionAggregator`: Derives balances and suggestions from transaction data
+
+**Component Structure**:
+
+- Container components (`*Container.tsx`): Handle logic, state, and service calls
+- Presentational components: Pure UI rendering
+- Custom hooks (`hooks/`): Reusable state logic (sync, intervals, data fetching)
+
+**State Management**:
+
+- Jotai atoms for global state (spending limits, category expansions, account properties)
+- React hooks for local component state
+- Path aliases via `@/` for clean imports
+
+**Key Technical Choices**:
+
+- React 19 + TypeScript for type safety
+- Bulma CSS for responsive design
+- react-virtualized for large transaction lists
+- Service workers for PWA offline support
+
 ## Key Features 🌟
 
 ### 💸 **Smart Transaction Management**
@@ -73,14 +102,45 @@ docker-compose up
 
 ### Tech Stack
 
-- **Frontend**: React 19 + TypeScript
-- **Styling**: Bulma CSS with responsive design
-- **Storage**: Offline-first architecture with real-time sync
-- **PWA**: Full Progressive Web App capabilities
+- **Framework**: React 19 + TypeScript (strict mode)
+- **Styling**: Bulma CSS framework with styled-components for custom elements
+- **Storage**: PouchDB (local) → CouchDB (remote sync)
+- **State**: Jotai for global state, React hooks for local
+- **Routing**: React Router v7
+- **Build**: Create React App with custom webpack config
+- **PWA**: Service workers via `serviceWorkerRegistration.ts`
 
-### Contributing
+### Project Structure
 
-Create a branch, make changes, and submit a PR.
+```
+src/
+  components/
+    App/              # Main app container with auth
+      hooks/          # Custom hooks (sync, intervals, etc.)
+    TransactionForm/  # Guided transaction entry
+    Transactions/     # Transaction list with virtualization
+    Budgets/          # Budget tracking and planning
+    Home/             # Account dashboard
+  services/           # Backend API, DB, and aggregation
+  types/              # TypeScript DTOs and interfaces
+  utils/              # Date formatting, account coloring
+```
+
+### Development Workflow
+
+```bash
+yarn start          # Dev server at :3000
+yarn build          # Production build
+yarn test           # Run tests
+```
+
+### Environment Variables
+
+Create `.env` from `.env.example`:
+
+```
+REACT_APP_BACKEND_URL=http://localhost:8000
+```
 
 ## License 📝
 

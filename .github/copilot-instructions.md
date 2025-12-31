@@ -2,9 +2,28 @@
 
 ## Documentation Workflow
 
-**Always read corresponding README files before starting work** to understand current architecture and decisions. **Update READMEs at the end of your work** to keep them in sync with code changes. This ensures documentation stays current and valuable.
+**Always read both README and PRD files before starting work.** Update them at the end to keep documentation current.
 
-Relevant README files: `README.md` (root), `backend/README.md`, `web/README.md`, `db/README.md`
+### README vs PRD - Separation of Concerns
+
+**README files** (Developer-focused):
+
+- **Audience**: Developers setting up, running, or modifying the code
+- **Content**: Setup instructions, commands, architecture decisions, technical workflows, "how to" guides
+- **Examples**: Installation steps, environment config, migration commands, debugging tips
+
+**PRD files** (Requirement-focused):
+
+- **Audience**: Understanding what features do and why they exist
+- **Content**: Feature functionality, user interactions, business requirements, integration points
+- **Focus**: "What" and "why", not "how" - requirements without implementation details
+
+**Key Files**:
+
+- Root: `README.md`, `prd.md`
+- Backend: `backend/README.md`, `backend/prd.md`, module-level `prd.md` files
+- Frontend: `web/README.md`, `web/prd.md`, component-level `prd.md` files
+- Database: `db/README.md`, `db/prd.md`
 
 ## Architecture
 
@@ -114,4 +133,3 @@ def get(self) -> SpendingLimitsValue:
 - Backend uses Poetry for dependencies, Python 3.9+
 - Frontend uses Yarn, TypeScript strict mode
 - Docker Compose files: `*.base.yml` (shared), `*.dev.yml` (dev), `*.yml` (prod)
-- PRD documents in `prd.md` files describe feature requirements

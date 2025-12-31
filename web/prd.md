@@ -47,40 +47,12 @@ A sophisticated React TypeScript frontend that provides a complete offline-first
 
 ## Technical Notes
 
-### Architecture & Framework
-
-- **React 19 + TypeScript**: Modern functional component architecture with comprehensive type safety and performance optimization
-- **Component Architecture**: Sophisticated hierarchical component structure with container/presentation pattern separation (see [App PRD](./src/components/App/prd.md))
-- **Custom Hooks System**: Advanced React hooks for complex state logic, data synchronization, and application lifecycle management (see [App Hooks PRD](./src/components/App/hooks/prd.md))
-- **Service Layer Integration**: Clean separation of concerns with dedicated services for backend communication, data aggregation, and database management (see [Services PRD](./src/services/prd.md))
-
-### Data Management & Synchronization
-
-- **Offline-First Data Layer**: PouchDB for local storage with CouchDB synchronization for robust offline capabilities
-- **Real-time State Management**: Sophisticated state management with optimistic updates and background synchronization
-- **Transaction Aggregation**: Advanced data processing for balance calculations, analytics, and intelligent suggestions
-- **Multi-Currency Engine**: Complex currency conversion system with configurable exchange rates and cross-currency calculations
-
-### User Interface & Design
-
-- **Bulma CSS Framework**: Consistent styling with responsive grid system and mobile-first design principles
-- **Styled Components**: Custom styling for complex UI elements with theme consistency and dynamic styling
-- **React Virtualization**: High-performance rendering of large datasets using react-virtualized for optimal memory usage
-- **FontAwesome Integration**: Consistent iconography throughout the application with proper accessibility support
-
-### Performance & Optimization
-
-- **Memoization Strategies**: Optimized re-rendering with React.memo, useMemo, and useCallback for complex data operations
-- **Virtual Scrolling**: Efficient handling of large transaction datasets with dynamic height calculation and smooth scrolling
-- **Code Splitting**: Optimized bundle size with lazy loading and dynamic imports for improved load times
-- **Memory Management**: Proper cleanup of intervals, timeouts, and event listeners for robust performance
-
-### Cross-Platform Compatibility
-
-- **PWA Capabilities**: Full Progressive Web App features with offline functionality and mobile optimization
-- **Touch Interface**: Advanced touch interactions with long-press detection and gesture support
-- **Responsive Breakpoints**: Adaptive layouts that work seamlessly across desktop, tablet, and mobile devices
-- **Browser Compatibility**: Consistent functionality across modern browsers with proper polyfills and fallbacks
+- React 19 + TypeScript with strict type checking
+- PouchDB/CouchDB for offline-first data synchronization
+- Container/presentation component pattern for clean separation
+- Bulma CSS framework for responsive mobile-first design
+- React virtualization for efficient large dataset rendering
+- Progressive Web App with service worker support
 
 ## Component References
 
