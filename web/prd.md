@@ -49,6 +49,8 @@ A sophisticated React TypeScript frontend that provides a complete offline-first
 
 - React 19 + TypeScript with strict type checking
 - PouchDB/CouchDB for offline-first data synchronization
+- Jotai for centralized reactive state management
+- Domain-driven design with pure TypeScript domain services
 - Container/presentation component pattern for clean separation
 - Bulma CSS framework for responsive mobile-first design
 - React virtualization for efficient large dataset rendering
@@ -56,10 +58,12 @@ A sophisticated React TypeScript frontend that provides a complete offline-first
 
 ## Component References
 
-- **[App](./src/components/App/prd.md)**: Main application orchestrator with authentication, navigation, and core functionality
-- **[App Hooks](./src/components/App/hooks/prd.md)**: Sophisticated React hooks for data management, synchronization, and application state
-- **[Services](./src/services/prd.md)**: Backend communication, database management, and data aggregation services
+- **[State](./src/state/prd.md)**: Jotai atoms for centralized reactive state management
+- **[Domain](./src/domain/prd.md)**: Pure TypeScript business logic services
+- **[Hooks](./src/hooks/prd.md)**: Domain adapter hooks wiring services to state
+- **[Services](./src/services/prd.md)**: Infrastructure services (backend, database, storage)
+- **[App](./src/components/App/prd.md)**: Main application orchestrator with authentication and navigation
 - **[Home](./src/components/Home/prd.md)**: Account dashboard providing clean overview of financial position
-- **[Transactions](./src/components/Transactions/prd.md)**: Advanced transaction management with filtering, search, and virtualized display
-- **[TransactionForm](./src/components/TransactionForm/prd.md)**: Step-by-step transaction creation and editing interface
-- **[Budgets](./src/components/Budgets/prd.md)**: Comprehensive budget management and tracking system
+- **[Transactions](./src/components/Transactions/prd.md)**: Advanced transaction management with filtering and search
+- **[TransactionForm](./src/components/TransactionForm/prd.md)**: Step-by-step transaction creation and editing
+- **[Budgets](./src/components/Budgets/prd.md)**: Comprehensive budget management and tracking

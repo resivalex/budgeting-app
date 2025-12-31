@@ -25,7 +25,7 @@ The main application orchestrator that provides a complete offline-first budgeti
 
 - **Unauthenticated State**: Login interface with backend URL and password authentication
 - **Service Setup**: Automatic initialization of backend and database services upon successful authentication
-- **Data Synchronization**: Integration with sophisticated hooks system (see [hooks PRD](./hooks/prd.md)) for real-time data management
+- **Data Synchronization**: Integration with domain hooks (see [hooks PRD](../../hooks/prd.md)) for real-time data management via Jotai atoms
 - **Main Interface**: Full-featured budgeting interface with navigation, filtering, and transaction management
 - **Offline Handling**: Graceful degradation with offline overlay when backend connectivity is lost
 
@@ -41,7 +41,7 @@ The main application orchestrator that provides a complete offline-first budgeti
 - Built with React TypeScript using modern functional components and hooks architecture
 - Implements sophisticated authentication flow with localStorage-based session management
 - Uses React Router for client-side routing with protected route patterns
-- Integrates comprehensive hook system for data management (useTransactions, useSyncService, etc.)
+- Integrates domain hooks (useTransactionsDomain, useSyncDomain, useSettingsDomain) with Jotai state management
 - Features dynamic service initialization with proper dependency injection patterns
 - Implements forwardRef and useImperativeHandle for advanced component composition
 - Uses react-select with custom styling for enhanced account selection components
@@ -56,3 +56,5 @@ The main application orchestrator that provides a complete offline-first budgeti
 - Features configurable timing and retry mechanisms for robust network operations
 - Uses proper React patterns for state lifting and component composition
 - Implements localStorage integration for persistent user preferences and session management
+- Jotai Provider at application root enables atom access throughout component tree
+- Domain services instantiated per-hook with memoization for performance optimization

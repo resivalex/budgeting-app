@@ -6,6 +6,18 @@ A comprehensive service layer providing backend communication, local database ma
 
 ## Functionality
 
+### StorageService
+
+- **Typed LocalStorage Access**: Type-safe abstraction over localStorage with compile-time key validation
+- **JSON Serialization**: Automatic JSON serialization/deserialization for complex objects
+- **Configuration Storage**: Manages config object (backendUrl, backendToken, dbUrl)
+- **Transaction Timestamp Storage**: Stores transactionsUploadedAt for database reset detection
+- **Category Expansions Cache**: Persists category expansion mappings for offline access
+- **Account Properties Cache**: Stores account visual properties for consistent theming
+- **Null-Safe Operations**: Graceful handling of missing keys returning null instead of throwing
+- **Remove Operations**: Clean key removal with proper cleanup
+- **Existence Checking**: Has method for checking key presence without reading values
+
 ### BackendService
 
 - **Authentication Management**: Secure login with password-based authentication and token-based authorization for subsequent requests

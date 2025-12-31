@@ -6,27 +6,62 @@ A sophisticated personal finance application that works seamlessly online and of
 
 **Offline-First Design**: Uses PouchDB for local storage with bidirectional sync to CouchDB. Full functionality works offline; changes sync automatically when online.
 
-**Service Layer Pattern**:
+**Domain Services + Jotai Atoms Pattern**:
 
-- `DbService`: Wraps PouchDB operations (CRUD, sync)
+Clean separation between business logic and UI using a layered architecture:
+
+```
+React Components (UI)
+    ↓ useAtom, domain.method()
+Jotai Atoms (State)
+    ↓ atom.set()
+Domain Services (Business Logic)
+    ↓ service.method()
+Infrastructure Services (DB, API)
+```
+
+**Infrastructure Layer** (`services/`):
+
+- `DbService`: PouchDB operations (CRUD, sync)
 - `BackendService`: API communication for configuration and exports
-- `TransactionAggregator`: Derives balances and suggestions from transaction data
+- `StorageService`: Typed localStorage abstraction
+- `TransactionAggregator`: Balance calculations and suggestions
+
+**Domain Layer** (`domain/`):
+
+Pure TypeScript classes with no React dependencies:
+
+- `TransactionDomain`: Transaction CRUD business logic
+- `SyncDomain`: Sync orchestration (pull/push, database reset)
+- `SettingsDomain`: Settings loading and caching
+
+**State Layer** (`state/`):
+
+Jotai atoms for centralized reactive state:
+
+- `transactionsAtom`: Transaction list + derived aggregations
+- `syncStatusAtom`: Sync state (offline, errors)
+- `configAtom`: Settings (categoryExpansions, accountProperties)
+
+**Hooks Layer** (`hooks/`):
+
+React hooks that wire domains to atoms:
+
+- `useTransactionsDomain`: Transaction state management
+- `useSyncDomain`: Sync lifecycle management
+- `useSettingsDomain`: Settings loading
 
 **Component Structure**:
 
-- Container components (`*Container.tsx`): Handle logic, state, and service calls
+- Container components (`*Container.tsx`): Read atoms, call domain methods, render UI
 - Presentational components: Pure UI rendering
-- Custom hooks (`hooks/`): Reusable state logic (sync, intervals, data fetching)
-
-**State Management**:
-
-- Jotai atoms for global state (spending limits, category expansions, account properties)
-- React hooks for local component state
 - Path aliases via `@/` for clean imports
 
 **Key Technical Choices**:
 
 - React 19 + TypeScript for type safety
+- Jotai for centralized state management
+- Domain-driven design for business logic
 - Bulma CSS for responsive design
 - react-virtualized for large transaction lists
 - Service workers for PWA offline support
@@ -114,14 +149,16 @@ docker-compose up
 
 ```
 src/
+  state/              # Jotai atoms (reactive state holders)
+  domain/             # Domain services (pure business logic)
+  hooks/              # Domain adapter hooks
+  services/           # Infrastructure (API, DB, Storage)
   components/
     App/              # Main app container with auth
-      hooks/          # Custom hooks (sync, intervals, etc.)
     TransactionForm/  # Guided transaction entry
     Transactions/     # Transaction list with virtualization
     Budgets/          # Budget tracking and planning
     Home/             # Account dashboard
-  services/           # Backend API, DB, and aggregation
   types/              # TypeScript DTOs and interfaces
   utils/              # Date formatting, account coloring
 ```
