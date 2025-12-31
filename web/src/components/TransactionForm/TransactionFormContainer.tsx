@@ -10,32 +10,14 @@ import {
 } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
-import { TransactionDTO, CategoryExpansionsDTO, TransactionsAggregations } from '@/types'
+import { TransactionDTO, TransactionsAggregations } from '@/types'
 import { convertToLocaleTime, convertToUtcTime } from '@/utils'
 import StepByStepTransactionForm from './StepByStepTransactionForm'
 import { useNavigate, useParams } from 'react-router-dom'
-import { TransactionAggregator } from '@/services'
-import { useColoredAccounts } from '@/utils'
-
-function useCategoryExtensions(localStorageCategoryExpansions: string): { [name: string]: string } {
-  return useMemo(() => {
-    const categoryExpansions: CategoryExpansionsDTO = localStorageCategoryExpansions
-      ? JSON.parse(localStorageCategoryExpansions)
-      : { expansions: [] }
-
-    const categoryNameToExtendedMap: { [name: string]: string } = {}
-    categoryExpansions.expansions.forEach((e) => {
-      categoryNameToExtendedMap[e.name] = e.expandedName
-    })
-
-    return categoryNameToExtendedMap
-  }, [localStorageCategoryExpansions])
-}
+import { useTransactionFormDomain } from '@/hooks'
 
 export default function TransactionFormContainer({
   LimitedAccountSelect,
-  transactions,
-  transactionsAggregations,
   onApply,
 }: {
   LimitedAccountSelect: FC<{
@@ -44,8 +26,6 @@ export default function TransactionFormContainer({
     availableNames: string[]
     ref?: Ref<{ focus: () => void }>
   }>
-  transactions: TransactionDTO[]
-  transactionsAggregations: TransactionsAggregations
   onApply: (t: TransactionDTO) => Promise<void>
 }) {
   const [type, setType] = useState<'income' | 'expense' | 'transfer' | ''>('expense')
@@ -58,11 +38,16 @@ export default function TransactionFormContainer({
   const [comment, setComment] = useState('')
   const [datetime, setDatetime] = useState(new Date().toISOString())
 
-  const appCategories: string[] = transactionsAggregations.categories
-  const appCurrencies: string[] = transactionsAggregations.currencies
-  const appPayees: string[] = transactionsAggregations.payees
-  const appComments: string[] = transactionsAggregations.comments
-  const accountDetails = transactionsAggregations.accountDetails
+  const {
+    categoryOptions,
+    coloredAccounts,
+    transactions,
+    allCurrencies,
+    allPayees,
+    allComments,
+    domain,
+  } = useTransactionFormDomain()
+
   const navigate = useNavigate()
   const { transactionId } = useParams()
   const curTransaction = useMemo(
@@ -70,18 +55,6 @@ export default function TransactionFormContainer({
     [transactions, transactionId],
   )
   const lastSerializedTransactionRef = useRef('')
-
-  const categoryExtensions = useCategoryExtensions(localStorage.categoryExpansions || '')
-  const categoryOptions = useMemo(
-    () =>
-      appCategories.map((c) => ({
-        value: c,
-        label: categoryExtensions[c] || c,
-      })),
-    [appCategories, categoryExtensions],
-  )
-
-  const coloredAccounts = useColoredAccounts(localStorage.accountProperties || '', accountDetails)
 
   const initializeFormFromTransaction = (t: TransactionDTO) => {
     setType(t.type)
@@ -134,24 +107,10 @@ export default function TransactionFormContainer({
     }
   }, [transactionId])
 
-  const getAvailableCurrenciesAndAccounts = (type: string, currency: string) => {
-    const availableCurrencies =
-      type === 'transfer'
-        ? appCurrencies.filter((c) => coloredAccounts.filter((a) => a.currency === c).length > 1)
-        : appCurrencies
-    const availableColoredAccounts = coloredAccounts.filter((a) => a.currency === currency)
-
-    return {
-      availableCurrencies,
-      availableColoredAccounts,
-    }
-  }
-
-  const { availableCurrencies } = getAvailableCurrenciesAndAccounts(type, currency)
-
-  const availableColoredAccounts = useMemo(() => {
-    return coloredAccounts.filter((a) => a.currency === currency)
-  }, [coloredAccounts, currency])
+  const { availableCurrencies, availableColoredAccounts } = useMemo(
+    () => domain.getAvailableCurrenciesAndAccounts(type, currency, allCurrencies, coloredAccounts),
+    [domain, type, currency, allCurrencies, coloredAccounts],
+  )
 
   const availableAccountNames = useMemo(
     () => availableColoredAccounts.map((a) => a.account),
@@ -187,21 +146,15 @@ export default function TransactionFormContainer({
     [LimitedAccountSelect, availableAccountNames],
   )
 
-  const payees = useMemo(() => {
-    if (!category) {
-      return appPayees
-    }
-    const transactionAggregator = new TransactionAggregator(transactions)
-    return transactionAggregator.getRecentPayeesByCategory(category)
-  }, [category, transactions, appPayees])
+  const payees = useMemo(
+    () => domain.getPayeesByCategory(category, transactions, allPayees),
+    [domain, category, transactions, allPayees],
+  )
 
-  const comments = useMemo(() => {
-    if (!category) {
-      return appComments
-    }
-    const transactionAggregator = new TransactionAggregator(transactions)
-    return transactionAggregator.getRecentCommentsByCategory(category)
-  }, [category, transactions, appComments])
+  const comments = useMemo(
+    () => domain.getCommentsByCategory(category, transactions, allComments),
+    [domain, category, transactions, allComments],
+  )
 
   const handleDatetimeChange = (value: Date | null) => {
     if (value) {
@@ -211,15 +164,15 @@ export default function TransactionFormContainer({
     }
   }
 
-  const isValid = !!(
-    datetime &&
-    amount &&
-    account &&
-    (type === 'transfer' || category) &&
-    type &&
-    currency &&
-    (type !== 'transfer' || payeeTransferAccount)
-  )
+  const isValid = domain.validateTransaction({
+    datetime,
+    amount,
+    account,
+    category,
+    type,
+    currency,
+    payeeTransferAccount,
+  })
 
   const handleSave = async () => {
     if (type === '') {
@@ -228,41 +181,29 @@ export default function TransactionFormContainer({
     if (!isValid) {
       return
     }
-    await onApply({
-      _id: transactionId || uuidv4(),
+    const transaction = domain.buildTransactionDTO({
+      id: transactionId || uuidv4(),
       datetime: convertToUtcTime(datetime),
-      account: account,
-      category: type === 'transfer' ? '' : category,
-      type: type,
-      amount: (parseFloat(amount) || 0).toFixed(2),
-      currency: currency,
-      payee: type === 'transfer' ? payeeTransferAccount : payee,
-      comment: comment,
+      account,
+      category,
+      type,
+      amount,
+      currency,
+      payee,
+      payeeTransferAccount,
+      comment,
     })
+    await onApply(transaction)
   }
 
-  const adjustCurrencyAndAccounts = (type: string, currency: string) => {
-    const { availableCurrencies, availableColoredAccounts } = getAvailableCurrenciesAndAccounts(
-      type,
-      currency,
-    )
-    if (!_.includes(availableCurrencies, currency)) {
+  const adjustCurrencyAndAccounts = (newType: string, newCurrency: string) => {
+    if (domain.shouldResetCurrency(newType, newCurrency, allCurrencies, coloredAccounts)) {
       setCurrency('')
     }
-    if (
-      !_.includes(
-        availableColoredAccounts.map((a) => a.account),
-        account,
-      )
-    ) {
+    if (domain.shouldResetAccount(account, newCurrency, coloredAccounts)) {
       setAccount('')
     }
-    if (
-      !_.includes(
-        availableColoredAccounts.map((a) => a.account),
-        payeeTransferAccount,
-      )
-    ) {
+    if (domain.shouldResetAccount(payeeTransferAccount, newCurrency, coloredAccounts)) {
       setPayeeTransferAccount('')
     }
   }

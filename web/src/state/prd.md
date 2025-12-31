@@ -27,6 +27,13 @@ Centralized reactive state management using Jotai atoms that provide a clean, ty
 - **Granular Atom Access**: Separate derived atoms for categoryExpansions and accountProperties enabling selective subscriptions
 - **Null-Safe Defaults**: Proper initialization with null values for graceful handling of unloaded configuration
 
+### Spending Limits State (`spendingLimitsAtom.ts`)
+
+- **Budget Configuration Storage**: Holds spending limits with per-month and per-currency configurations
+- **Month Currency Configs**: Stores currency conversion configurations for each budget month
+- **Empty State Defaults**: Proper initialization with empty arrays for unloaded state
+- **Reactive Updates**: Automatic UI updates when spending limits are fetched or modified
+
 ## Technical Notes
 
 - Built with Jotai for atomic state management with minimal boilerplate

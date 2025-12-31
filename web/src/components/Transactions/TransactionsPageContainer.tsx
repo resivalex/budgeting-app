@@ -1,7 +1,9 @@
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { TransactionDTO, AccountDetailsDTO } from '@/types'
 import TransactionsPage from './TransactionsPage'
-import { matchesCrossLanguage } from '@/utils/en-ru-matching'
+import { TransactionFilterDomain } from '@/domain'
+
+const filterDomain = new TransactionFilterDomain()
 
 export default function TransactionsPageContainer({
   AccountSelect,
@@ -29,37 +31,15 @@ export default function TransactionsPageContainer({
   onFilterCommentChange: (comment: string) => void
   onRemove: (id: string) => Promise<void>
 }) {
-  const filteredTransactions = transactions.filter((transaction) => {
-    // Filter by payee (exclude transfers and check for payee match if filterPayee is set)
-    if (filterPayee) {
-      if (
-        transaction.type === 'transfer' ||
-        !matchesCrossLanguage(transaction.payee, filterPayee)
-      ) {
-        return false
-      }
-    }
-
-    // Filter by account name
-    if (filterAccountName) {
-      if (transaction.type === 'transfer') {
-        if (![transaction.account, transaction.payee].includes(filterAccountName)) {
-          return false
-        }
-      } else {
-        if (transaction.account !== filterAccountName) {
-          return false
-        }
-      }
-    }
-
-    // Filter by comment using cross-language matching
-    if (filterComment && !matchesCrossLanguage(transaction.comment, filterComment)) {
-      return false
-    }
-
-    return true
-  })
+  const filteredTransactions = useMemo(
+    () =>
+      filterDomain.filterTransactions(transactions, {
+        accountName: filterAccountName,
+        payee: filterPayee,
+        comment: filterComment,
+      }),
+    [transactions, filterAccountName, filterPayee, filterComment],
+  )
 
   return (
     <TransactionsPage

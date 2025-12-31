@@ -40,6 +40,30 @@ React hooks that bridge domain services and Jotai atoms, managing lifecycle, orc
 - **Independent Loading**: Handles categoryExpansions and accountProperties independently
 - **Effect-Based Loading**: Uses useEffect for lifecycle-aware settings initialization
 
+### useBudgetsDomain
+
+- **Spending Limits State**: Manages spendingLimitsAtom for budget data
+- **Budget Calculations**: Computes budgets from transactions, categories, and limits
+- **Month Selection**: Tracks selected month with automatic latest-month selection
+- **Expectation Ratio**: Calculates current month progress for visualization
+- **Budget Updates**: Persists budget item changes and refreshes limits
+- **Automatic Loading**: Loads spending limits on mount via domain
+
+### useTransactionFormDomain
+
+- **Category Options**: Provides category options with expanded labels from atoms
+- **Colored Accounts**: Integrates with useColoredAccounts for account display
+- **Transaction Access**: Exposes transactions from atom for form initialization
+- **Aggregation Data**: Provides currencies, payees, and comments from aggregations
+- **Domain Instance**: Provides TransactionFormDomain for form logic methods
+
+### useColoredAccounts
+
+- **Account Coloring**: Merges account details with user-defined color properties
+- **Atom Integration**: Reads accountProperties from configAtom
+- **Aggregations Integration**: Reads accountDetails from transactionsAggregationsAtom
+- **Memoized Merge**: Efficiently combines data with proper memoization
+
 ## Technical Notes
 
 - Built with React hooks (useState, useEffect, useCallback, useMemo, useRef)

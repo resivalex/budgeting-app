@@ -275,36 +275,36 @@ Update `src/components/App/AuthorizedAppContainer.tsx`.
 
 Use this checklist to track progress:
 
-- [ ] **Phase 1: Budgets**
+- [x] **Phase 1: Budgets**
 
-  - [ ] spendingLimitsAtom created
-  - [ ] BudgetsDomain created
-  - [ ] useBudgetsDomain hook created
-  - [ ] BudgetsContainer refactored
-  - [ ] All localStorage access removed from BudgetsContainer
+  - [x] spendingLimitsAtom created
+  - [x] BudgetsDomain created
+  - [x] useBudgetsDomain hook created
+  - [x] BudgetsContainer refactored
+  - [x] All localStorage access removed from BudgetsContainer
 
-- [ ] **Phase 2: Transaction Form**
+- [x] **Phase 2: Transaction Form**
 
-  - [ ] TransactionFormDomain created
-  - [ ] useTransactionFormDomain hook created
-  - [ ] TransactionFormContainer refactored
-  - [ ] All localStorage access removed from TransactionFormContainer
+  - [x] TransactionFormDomain created
+  - [x] useTransactionFormDomain hook created
+  - [x] TransactionFormContainer refactored
+  - [x] All localStorage access removed from TransactionFormContainer
 
-- [ ] **Phase 3: Transaction Filtering**
+- [x] **Phase 3: Transaction Filtering**
 
-  - [ ] TransactionFilterDomain created
-  - [ ] TransactionsPageContainer refactored
+  - [x] TransactionFilterDomain created
+  - [x] TransactionsPageContainer refactored
 
-- [ ] **Phase 4: Home & Account Coloring**
+- [x] **Phase 4: Home & Account Coloring**
 
-  - [ ] useColoredAccountsDomain hook created
-  - [ ] HomeContainer refactored
-  - [ ] Old useColoredAccounts util removed
+  - [x] useColoredAccounts hook created
+  - [x] HomeContainer refactored
+  - [x] useTransactionFormDomain updated to use shared hook
 
-- [ ] **Phase 5: Export & Auth**
-  - [ ] Export logic moved to domain
-  - [ ] AuthorizedAppContainer cleaned up
-  - [ ] All containers use StorageService via atoms
+- [x] **Phase 5: Export & Auth**
+  - [x] ExportDomain created
+  - [x] AuthDomain created
+  - [x] AuthorizedAppContainer cleaned up
 
 ---
 

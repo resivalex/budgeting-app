@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import App from './App'
-import { BackendService, DbService } from '@/services'
+import { BackendService, DbService, StorageService } from '@/services'
 import { TransactionDTO } from '@/types'
 import { useTransactionsDomain, useSyncDomain, useSettingsDomain } from '@/hooks'
+import { ExportDomain, AuthDomain } from '@/domain'
 import { v4 as uuidv4 } from 'uuid'
 
 const instanceId = uuidv4()
@@ -18,6 +19,10 @@ export default function AuthorizedAppContainer({ backendService, dbService, isLo
   const [filterAccountName, setFilterAccountName] = useState('')
   const [filterPayee, setFilterPayee] = useState('')
   const [filterComment, setFilterComment] = useState('')
+
+  const storageService = useMemo(() => new StorageService(), [])
+  const exportDomain = useMemo(() => new ExportDomain(backendService), [backendService])
+  const authDomain = useMemo(() => new AuthDomain(storageService), [storageService])
 
   const navigate = useNavigate()
 
@@ -58,31 +63,16 @@ export default function AuthorizedAppContainer({ backendService, dbService, isLo
   }
 
   function handleLogout() {
-    localStorage.removeItem('config')
-    window.location.reload()
+    authDomain.logout()
   }
 
   async function handleExport() {
-    const csvString = await backendService.getExportingCsvString()
-    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.setAttribute('href', url)
-    const fileName = new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replaceAll('-', '')
-      .replaceAll(':', '')
-      .replace('T', '-')
-    link.setAttribute('download', `${fileName}.csv`)
-    link.style.visibility = 'hidden'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    await exportDomain.exportToCsv()
   }
 
   return (
     <App
+      backendService={backendService}
       transactions={transactions}
       transactionAggregations={transactionsAggregations}
       filterAccountName={filterAccountName}

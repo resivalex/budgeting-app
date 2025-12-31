@@ -12,6 +12,7 @@ import { appVersion } from '@/version'
 import { TransactionsPageContainer } from '../Transactions'
 import OfflineOverlay from './OfflineOverlay'
 import ColoredAccountSelect from './ColoredAccountSelect'
+import { BackendService } from '@/services'
 
 type LimitedAccountSelectType = FC<{
   value: string
@@ -27,6 +28,7 @@ type FullAccountSelectType = FC<{
 }>
 
 export default function App({
+  backendService,
   transactions,
   transactionAggregations,
   filterAccountName,
@@ -45,6 +47,7 @@ export default function App({
   onRemoveTransaction,
   onDismissNotification,
 }: {
+  backendService: BackendService
   transactions: TransactionDTO[]
   transactionAggregations: TransactionsAggregations
   filterAccountName: string
@@ -85,7 +88,7 @@ export default function App({
           />
         )
       }),
-    [transactionAggregations.accountDetails]
+    [transactionAggregations.accountDetails],
   )
 
   const FullAccountSelect: FullAccountSelectType = useMemo(
@@ -106,13 +109,13 @@ export default function App({
             value={value}
             onChange={onChange}
             availableAccountNames={transactionAggregations.accountDetails.map(
-              (account) => account.account
+              (account) => account.account,
             )}
             emptyOption="Все счета"
           />
         )
       }),
-    [transactionAggregations.accountDetails]
+    [transactionAggregations.accountDetails],
   )
 
   return (
@@ -144,10 +147,7 @@ export default function App({
           }}
         >
           <Routes>
-            <Route
-              path="/"
-              element={<HomeContainer accountDetails={transactionAggregations.accountDetails} />}
-            />
+            <Route path="/" element={<HomeContainer />} />
             <Route
               path="/transactions"
               element={
@@ -169,7 +169,7 @@ export default function App({
               path="/budgets"
               element={
                 <BudgetsContainer
-                  transactions={transactions}
+                  backendService={backendService}
                   transactionAggregations={transactionAggregations}
                   onTransactionRemove={onRemoveTransaction}
                 />
@@ -180,8 +180,6 @@ export default function App({
               element={
                 <TransactionFormContainer
                   LimitedAccountSelect={LimitedAccountSelect}
-                  transactions={transactions}
-                  transactionsAggregations={transactionAggregations}
                   onApply={onAddTransaction}
                 />
               }
@@ -191,8 +189,6 @@ export default function App({
               element={
                 <TransactionFormContainer
                   LimitedAccountSelect={LimitedAccountSelect}
-                  transactions={transactions}
-                  transactionsAggregations={transactionAggregations}
                   onApply={onEditTransaction}
                 />
               }

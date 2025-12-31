@@ -10,3 +10,5 @@ export type { SyncStatus } from './syncStatusAtom'
 
 export { configAtom, categoryExpansionsAtom, accountPropertiesAtom } from './configAtom'
 export type { ConfigState } from './configAtom'
+
+export { spendingLimitsAtom } from './spendingLimitsAtom'

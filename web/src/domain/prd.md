@@ -2,7 +2,7 @@
 
 ## Overview
 
-Pure TypeScript business logic layer providing framework-agnostic domain services for transactions, synchronization, and settings management with clear separation from UI concerns.
+Pure TypeScript business logic layer providing framework-agnostic domain services for transactions, synchronization, settings, budgets, forms, filtering, export, and authentication with clear separation from UI concerns.
 
 ## Functionality
 
@@ -34,6 +34,44 @@ Pure TypeScript business logic layer providing framework-agnostic domain service
 - **Cache Management**: Stores fetched settings in localStorage for offline access
 - **Cached Value Retrieval**: Provides methods to access cached settings without network calls
 - **Error Recovery**: Gracefully handles network errors by falling back to cached values
+
+### BudgetsDomain
+
+- **Spending Limits Loading**: Fetches spending limits from backend with localStorage caching
+- **Budget Calculations**: Computes budget totals with multi-currency conversion support
+- **Currency Conversion**: Builds conversion maps from currency config for accurate totals
+- **Month Filtering**: Filters transactions and limits to selected month
+- **Available Months**: Extracts and sorts months with spending limit configurations
+- **Expectation Ratio**: Calculates current month progress for budget visualization
+- **Budget Item Updates**: Persists budget limit changes to backend
+
+### TransactionFormDomain
+
+- **Category Extensions Mapping**: Builds category name to extended label mappings
+- **Category Options**: Generates dropdown options with expanded labels
+- **Currency/Account Filtering**: Filters currencies and accounts for transfer transactions
+- **Payee/Comment Filtering**: Returns context-specific suggestions based on selected category
+- **Form Validation**: Validates transaction form fields before submission
+- **Transaction Building**: Constructs TransactionDTO from form values with proper formatting
+- **Reset Detection**: Determines when currency/account selections need clearing
+
+### TransactionFilterDomain
+
+- **Transaction Filtering**: Filters transactions by account, payee, and comment criteria
+- **Cross-Language Matching**: Supports English-Russian keyboard layout matching
+- **Transfer Handling**: Special logic for filtering transfer transactions by either account
+- **Modular Filter Methods**: Separate methods for each filter type enabling reuse
+
+### ExportDomain
+
+- **CSV Export**: Fetches transaction CSV from backend and triggers browser download
+- **File Naming**: Generates timestamped filenames for exported files
+- **Blob Handling**: Creates downloadable blob URLs with proper MIME types
+
+### AuthDomain
+
+- **Logout Handling**: Clears stored configuration and triggers application reload
+- **Storage Cleanup**: Uses StorageService for consistent localStorage access
 
 ## Technical Notes
 

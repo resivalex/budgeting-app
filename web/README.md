@@ -34,6 +34,11 @@ Pure TypeScript classes with no React dependencies:
 - `TransactionDomain`: Transaction CRUD business logic
 - `SyncDomain`: Sync orchestration (pull/push, database reset)
 - `SettingsDomain`: Settings loading and caching
+- `BudgetsDomain`: Budget calculations, currency conversion, month filtering
+- `TransactionFormDomain`: Form validation, category extensions, suggestions
+- `TransactionFilterDomain`: Transaction filtering with cross-language matching
+- `ExportDomain`: CSV export with blob handling
+- `AuthDomain`: Logout and storage cleanup
 
 **State Layer** (`state/`):
 
@@ -42,6 +47,7 @@ Jotai atoms for centralized reactive state:
 - `transactionsAtom`: Transaction list + derived aggregations
 - `syncStatusAtom`: Sync state (offline, errors)
 - `configAtom`: Settings (categoryExpansions, accountProperties)
+- `spendingLimitsAtom`: Budget limits and currency configurations
 
 **Hooks Layer** (`hooks/`):
 
@@ -50,6 +56,9 @@ React hooks that wire domains to atoms:
 - `useTransactionsDomain`: Transaction state management
 - `useSyncDomain`: Sync lifecycle management
 - `useSettingsDomain`: Settings loading
+- `useBudgetsDomain`: Budget calculations and month selection
+- `useTransactionFormDomain`: Form data with category options
+- `useColoredAccounts`: Account coloring from atoms
 
 **Component Structure**:
 
