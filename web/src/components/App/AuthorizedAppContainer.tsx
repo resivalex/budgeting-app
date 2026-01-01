@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import App from './App'
-import { BackendService, DbService, StorageService } from '@/services'
+import { useServices } from '@/services'
 import { TransactionDTO } from '@/types'
 import { useTransactionsDomain, useSyncDomain, useSettingsDomain } from '@/hooks'
 import { ExportDomain, AuthDomain } from '@/domain'
@@ -10,17 +10,16 @@ import { v4 as uuidv4 } from 'uuid'
 const instanceId = uuidv4()
 
 interface Props {
-  backendService: BackendService
-  dbService: DbService
   isLoading: boolean
 }
 
-export default function AuthorizedAppContainer({ backendService, dbService, isLoading }: Props) {
+export default function AuthorizedAppContainer({ isLoading }: Props) {
+  const { backendService, dbService, storageService } = useServices()
+
   const [filterAccountName, setFilterAccountName] = useState('')
   const [filterPayee, setFilterPayee] = useState('')
   const [filterComment, setFilterComment] = useState('')
 
-  const storageService = useMemo(() => new StorageService(), [])
   const exportDomain = useMemo(() => new ExportDomain(backendService), [backendService])
   const authDomain = useMemo(() => new AuthDomain(storageService), [storageService])
 
@@ -72,7 +71,6 @@ export default function AuthorizedAppContainer({ backendService, dbService, isLo
 
   return (
     <App
-      backendService={backendService}
       transactions={transactions}
       transactionAggregations={transactionsAggregations}
       filterAccountName={filterAccountName}

@@ -13,6 +13,7 @@ Pure TypeScript business logic layer providing framework-agnostic domain service
 - **Transaction Updates**: Modifies existing transactions with atomic replace operations
 - **Transaction Deletion**: Removes transactions by ID with proper cleanup
 - **Automatic Sorting**: Ensures transactions are always sorted in descending chronological order
+- **Aggregations**: Computes account balances, categories, currencies, payees, and comments from transactions
 - **No State Coupling**: Returns data without directly updating application state for clean separation
 
 ### SyncDomain
@@ -70,6 +71,8 @@ Pure TypeScript business logic layer providing framework-agnostic domain service
 
 ### AuthDomain
 
+- **Login**: Authenticates with backend using URL and password, stores config in localStorage
+- **Session Check**: Verifies if user is logged in via stored configuration
 - **Logout Handling**: Clears stored configuration and triggers application reload
 - **Storage Cleanup**: Uses StorageService for consistent localStorage access
 

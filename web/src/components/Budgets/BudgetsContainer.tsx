@@ -1,20 +1,19 @@
 import { useState } from 'react'
-import { BackendService } from '@/services'
+import { useServices } from '@/services'
 import { useBudgetsDomain } from '@/hooks'
 import Budgets from './Budgets'
 import { TransactionsAggregations } from '@/types'
 
 interface BudgetsContainerProps {
-  backendService: BackendService
   transactionAggregations: TransactionsAggregations
   onTransactionRemove: (id: string) => Promise<void>
 }
 
 export default function BudgetsContainer({
-  backendService,
   transactionAggregations,
   onTransactionRemove,
 }: BudgetsContainerProps) {
+  const { backendService } = useServices()
   const [focusedBudgetName, setFocusedBudgetName] = useState('')
 
   const {

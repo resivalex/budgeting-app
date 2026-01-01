@@ -1,6 +1,14 @@
-import { TransactionDTO } from '@/types'
-import { DbService } from '@/services'
+import { TransactionDTO, TransactionsAggregations } from '@/types'
+import { DbService, TransactionAggregator } from '@/services'
 import _ from 'lodash'
+
+const emptyAggregations: TransactionsAggregations = {
+  accountDetails: [],
+  categories: [],
+  currencies: [],
+  payees: [],
+  comments: [],
+}
 
 class TransactionDomain {
   private dbService: DbService
@@ -24,6 +32,20 @@ class TransactionDomain {
 
   async deleteTransaction(transactionId: string): Promise<void> {
     await this.dbService.removeTransaction(transactionId)
+  }
+
+  static getAggregations(transactions: TransactionDTO[]): TransactionsAggregations {
+    if (transactions.length === 0) {
+      return emptyAggregations
+    }
+    const aggregator = new TransactionAggregator(transactions)
+    return {
+      accountDetails: aggregator.getAccountDetails(),
+      categories: aggregator.getSortedCategories(),
+      currencies: aggregator.getSortedCurrencies(),
+      payees: aggregator.getRecentPayees(),
+      comments: aggregator.getRecentComments(),
+    }
   }
 
   private sortTransactions(transactions: TransactionDTO[]): TransactionDTO[] {

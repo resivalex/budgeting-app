@@ -1,15 +1,7 @@
 import { atom } from 'jotai'
 import { TransactionDTO, TransactionsAggregations } from '@/types'
-import { TransactionAggregator } from '@/services'
+import { TransactionDomain } from '@/domain'
 import _ from 'lodash'
-
-const emptyAggregations: TransactionsAggregations = {
-  accountDetails: [],
-  categories: [],
-  currencies: [],
-  payees: [],
-  comments: [],
-}
 
 export const rawTransactionsAtom = atom<TransactionDTO[]>([])
 
@@ -26,15 +18,5 @@ export const transactionsAtom = atom(
 
 export const transactionsAggregationsAtom = atom<TransactionsAggregations>((get) => {
   const transactions = get(rawTransactionsAtom)
-  if (transactions.length === 0) {
-    return emptyAggregations
-  }
-  const aggregator = new TransactionAggregator(transactions)
-  return {
-    accountDetails: aggregator.getAccountDetails(),
-    categories: aggregator.getSortedCategories(),
-    currencies: aggregator.getSortedCurrencies(),
-    payees: aggregator.getRecentPayees(),
-    comments: aggregator.getRecentComments(),
-  }
+  return TransactionDomain.getAggregations(transactions)
 })

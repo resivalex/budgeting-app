@@ -12,7 +12,6 @@ import { appVersion } from '@/version'
 import { TransactionsPageContainer } from '../Transactions'
 import OfflineOverlay from './OfflineOverlay'
 import ColoredAccountSelect from './ColoredAccountSelect'
-import { BackendService } from '@/services'
 
 type LimitedAccountSelectType = FC<{
   value: string
@@ -28,7 +27,6 @@ type FullAccountSelectType = FC<{
 }>
 
 export default function App({
-  backendService,
   transactions,
   transactionAggregations,
   filterAccountName,
@@ -47,7 +45,6 @@ export default function App({
   onRemoveTransaction,
   onDismissNotification,
 }: {
-  backendService: BackendService
   transactions: TransactionDTO[]
   transactionAggregations: TransactionsAggregations
   filterAccountName: string
@@ -169,7 +166,6 @@ export default function App({
               path="/budgets"
               element={
                 <BudgetsContainer
-                  backendService={backendService}
                   transactionAggregations={transactionAggregations}
                   onTransactionRemove={onRemoveTransaction}
                 />

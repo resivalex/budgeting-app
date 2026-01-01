@@ -26,19 +26,20 @@ Infrastructure Services (DB, API)
 - `BackendService`: API communication for configuration and exports
 - `StorageService`: Typed localStorage abstraction
 - `TransactionAggregator`: Balance calculations and suggestions
+- `ServiceContext`: React context for dependency injection (`ServiceProvider`, `useServices`)
 
 **Domain Layer** (`domain/`):
 
 Pure TypeScript classes with no React dependencies:
 
-- `TransactionDomain`: Transaction CRUD business logic
+- `TransactionDomain`: Transaction CRUD business logic + aggregations
 - `SyncDomain`: Sync orchestration (pull/push, database reset)
 - `SettingsDomain`: Settings loading and caching
 - `BudgetsDomain`: Budget calculations, currency conversion, month filtering
 - `TransactionFormDomain`: Form validation, category extensions, suggestions
 - `TransactionFilterDomain`: Transaction filtering with cross-language matching
 - `ExportDomain`: CSV export with blob handling
-- `AuthDomain`: Logout and storage cleanup
+- `AuthDomain`: Login, logout, and session management
 
 **State Layer** (`state/`):
 

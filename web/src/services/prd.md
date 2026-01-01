@@ -53,6 +53,14 @@ A comprehensive service layer providing backend communication, local database ma
 - **Data Sorting**: Efficient sorting algorithms for optimal performance with large transaction datasets
 - **Deduplication**: Smart deduplication logic for suggestions and analytics to maintain data quality
 
+### ServiceContext
+
+- **Dependency Injection**: React Context-based service provider for clean dependency injection
+- **ServiceProvider Component**: Wraps application with service instances (BackendService, DbService, StorageService)
+- **useServices Hook**: Type-safe hook to access all services from any component within the provider
+- **Centralized Instantiation**: Services created once at app root and shared throughout component tree
+- **Eliminates Props Drilling**: Components access services via context instead of prop chains
+
 ## Technical Notes
 
 - **BackendService**: Built with axios for HTTP communication with proper authentication headers and error handling

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Login from './Login'
-import { DbService, BackendService } from '@/services'
+import { DbService, BackendService, ServiceProvider } from '@/services'
 import AuthorizedAppContainer from './AuthorizedAppContainer'
 
 type ConfigType = {
@@ -63,10 +63,8 @@ export default function AppContainer() {
     return null
   }
   return (
-    <AuthorizedAppContainer
-      backendService={backendService}
-      dbService={dbService}
-      isLoading={isLoading}
-    />
+    <ServiceProvider backendService={backendService} dbService={dbService}>
+      <AuthorizedAppContainer isLoading={isLoading} />
+    </ServiceProvider>
   )
 }

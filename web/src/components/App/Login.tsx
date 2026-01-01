@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { ConfigDataDTO } from '@/types'
-import { BackendService } from '@/services'
+import { AuthDomain } from '@/domain'
+import { StorageService } from '@/services'
 
 interface Props {
   onSuccessfulLogin: () => void
@@ -11,12 +11,14 @@ export default function Login({ onSuccessfulLogin }: Props) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
+  const authDomain = new AuthDomain(new StorageService())
+
   const onLoginSuccess = useCallback(() => {
     onSuccessfulLogin()
   }, [onSuccessfulLogin])
 
   useEffect(() => {
-    if (localStorage.getItem('config')) {
+    if (authDomain.isLoggedIn()) {
       onLoginSuccess()
     }
   }, [onLoginSuccess])
@@ -28,10 +30,7 @@ export default function Login({ onSuccessfulLogin }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const backendService = new BackendService(backendUrl)
-      const config: ConfigDataDTO = await backendService.getConfig(password)
-
-      localStorage.config = JSON.stringify(config)
+      await authDomain.login(backendUrl, password)
       onLoginSuccess()
     } catch (err: any) {
       setError(err.message)
