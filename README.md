@@ -31,21 +31,51 @@ Web (PouchDB) <--sync--> CouchDB <--read--> Backend (FastAPI)
 
 ## Getting Started
 
+### Development vs Production Modes
+
+**Development Mode** (`make dev-up`):
+
+- **Access**: Services exposed on localhost ports (3000, 8000, 9002)
+- **Hot-reload**: Source code mounted as volumes for live updates
+- **Network**: Uses default Docker bridge network
+- **Isolation**: Independent of other Docker projects
+
+**Production Mode** (`make up`):
+
+- **Access**: Services routed through Traefik reverse proxy
+- **Volumes**: Only data and credentials mounted (no source code)
+- **Network**: Uses shared external `traefik` network
+- **Routing**: Managed by Traefik labels for domain-based access
+
+Use **development mode** for active development with hot-reload. Use **production mode** for deployed environments with Traefik routing.
+
+### Prerequisites (Production Only)
+
+The production setup uses an external `traefik` network managed by Traefik (reverse proxy shared across projects). The Makefile handles network creation automatically.
+
 ### Quick Start (Docker)
 
 ```bash
 # Development
-docker-compose -f docker-compose.dev.yml up
+make dev-up
 
-# Production
-docker-compose up -d
+# Production (traefik network created automatically)
+make up
+
+# Other commands
+make down          # Stop production services
+make restart       # Restart production services
+make logs          # View production logs
+make dev-down      # Stop development services
 ```
 
-Access:
+**Development Access:**
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8000/api
 - Database: http://localhost:9002
+
+**Production Access:** Services are routed through Traefik based on your configured domains.
 
 > Note: Each component can also be run independently by using the component-specific Docker Compose files.
 
