@@ -2,7 +2,16 @@
 
 ## Documentation Workflow
 
-**Always read both README and PRD files before starting work.** Update them at the end to keep documentation current.
+**Always read both README and PRD files before starting work.** Update them after making code changes to keep documentation synchronized.
+
+### Documentation Update Workflow
+
+When making code changes:
+
+1. **Identify affected directories** - Determine which directories contain modified files
+2. **Read existing documentation** - Fully read README and PRD files in affected directories before updating
+3. **Update README files** - Reflect technical changes (architecture, setup, commands, workflows)
+4. **Update PRD files** - Reflect requirement changes (features, functionality, integrations)
 
 ### README vs PRD - Separation of Concerns
 
@@ -11,12 +20,16 @@
 - **Audience**: Developers setting up, running, or modifying the code
 - **Content**: Setup instructions, commands, architecture decisions, technical workflows, "how to" guides
 - **Examples**: Installation steps, environment config, migration commands, debugging tips
+- **Include**: High-level architecture, key innovations, design rationale, usage examples, API surface
+- **Exclude**: Specific method signatures, line-by-line explanations, low-level algorithms, implementation details
 
 **PRD files** (Requirement-focused):
 
 - **Audience**: Understanding what features do and why they exist
 - **Content**: Feature functionality, user interactions, business requirements, integration points
 - **Focus**: "What" and "why", not "how" - requirements without implementation details
+- **Include**: Feature descriptions, user workflows, business logic, data flows, integration points
+- **Exclude**: Technical implementation, code structure, deployment details, architectural decisions
 
 **Key Files**:
 
@@ -67,6 +80,32 @@ cd web && yarn build
 
 Write clean, self-documenting code without obvious comments:
 
+**Documentation in code**: Minimal and purposeful
+
+```python
+# Good - Single-line docstrings for modules and classes only
+"""Service for managing transaction synchronization."""
+
+class TransactionService:
+    """Handles transaction CRUD operations and sync logic."""
+
+    def sync_with_remote(self, transactions: list[Transaction]) -> SyncResult:
+        # Method is self-documenting, no docstring needed
+        ...
+
+# Avoid - Obvious comments and verbose docstrings
+def calculate_total(items):
+    """
+    This function calculates the total.
+    Args: items - list of items
+    Returns: total
+    """
+    total = 0  # Initialize total to zero
+    for item in items:  # Loop through items
+        total += item.price  # Add price to total
+    return total  # Return the result
+```
+
 **Naming**: Descriptive and concise
 
 ```typescript
@@ -90,7 +129,7 @@ def _get_currency_config(self, value: SpendingLimitsValue, date: str) -> Currenc
 def process(self, v, d):  # Unclear what this does
 ```
 
-**No obvious comments**: Code clarity over comments
+**No obvious comments**: Code clarity over comments; clean up redundant comments after refactoring
 
 ```typescript
 // Good
