@@ -200,6 +200,7 @@ async def restore_backup(file: UploadFile, request: Request):
     try:
         zip_bytes = file.file.read()
         result = backup_service.restore_from_zip(zip_bytes)
+        create_state().mark_transactions_uploaded()
         return result
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

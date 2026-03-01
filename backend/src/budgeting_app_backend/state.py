@@ -88,3 +88,6 @@ class State:
 
     def get_account_properties(self):
         return self._account_properties.get()
+
+    def mark_transactions_uploaded(self):
+        self._upload_details.set(uploaded_at=datetime.utcnow().isoformat())
