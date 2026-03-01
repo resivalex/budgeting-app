@@ -43,6 +43,16 @@ export default function AuthorizedAppContainer({ isLoading }: Props) {
   } = useTransactionsDomain(dbService)
 
   useEffect(() => {
+    console.log(
+      '[Migration] effect fired — migrationRanRef:',
+      migrationRanRef.current,
+      'needsMigration:',
+      migrationDomain.needsMigration(),
+      'transactions:',
+      transactions.length,
+      'spendingLimits:',
+      spendingLimits.limits.length,
+    )
     if (migrationRanRef.current) return
     if (!migrationDomain.needsMigration()) {
       migrationRanRef.current = true
@@ -52,12 +62,20 @@ export default function AuthorizedAppContainer({ isLoading }: Props) {
 
     migrationRanRef.current = true
     ;(async () => {
+      console.log('[Migration] starting...')
       const allDocs = await dbService.readAllDocs()
+      console.log('[Migration] readAllDocs returned', allDocs.length, 'docs')
       await migrationDomain.migrateBudgetNames(allDocs, spendingLimits, (docs) =>
         dbService.bulkUpdate(docs),
       )
       await loadTransactions()
-    })()
+      console.log('[Migration] pushing changes to CouchDB...')
+      await dbService.pushChanges()
+      console.log('[Migration] push complete')
+    })().catch((err) => {
+      console.error('[Migration] error:', err)
+      migrationRanRef.current = false
+    })
   }, [transactions, spendingLimits, migrationDomain, dbService, loadTransactions])
 
   const { offlineMode, addDbTransaction, replaceDbTransaction, removeDbTransaction } =
