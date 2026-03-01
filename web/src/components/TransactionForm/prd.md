@@ -17,6 +17,8 @@ A comprehensive transaction creation and editing interface that provides a guide
 - **Multi-currency Support**: Handles different currencies with proper conversion and display
 - **Account Management**: Integrates with colored account system for visual identification
 - **Category Extensions**: Supports expanded category names for better organization
+- **Budget Name Auto-Assignment**: When a category is selected, the form automatically resolves and assigns the corresponding `budget_name` by looking up which budget owns that category in spending limits
+- **Budget Name Dropdown**: Users can manually select or change the `budget_name` via a dropdown listing all budget names available for the selected category
 - **Date/Time Handling**: Proper timezone conversion between local and UTC times
 - **Save Operations**: Async save handling with loading states and error management
 

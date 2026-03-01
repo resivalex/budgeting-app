@@ -82,10 +82,6 @@ export default class DbService {
     })
   }
 
-  async bulkUpdate(docs: any[]): Promise<void> {
-    await this.localDB.bulkDocs(docs)
-  }
-
   async pullChanges(): Promise<boolean> {
     this.onLoading(true)
 

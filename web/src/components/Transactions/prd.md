@@ -8,7 +8,7 @@ A comprehensive transaction management interface that provides efficient viewing
 
 - **Virtualized Transaction List**: High-performance scrolling through large transaction datasets using react-virtualized for optimal memory usage
 - **Date-Based Grouping**: Automatic grouping of transactions by date with clear visual headers showing formatted dates in Russian locale
-- **Transaction Tiles**: Compact transaction display showing essential information (category, account, payee, amount, currency) with visual indicators for transaction types
+- **Transaction Tiles**: Compact transaction display showing essential information (category, account, payee, amount, currency) with visual indicators for transaction types; non-empty `budget_name` is shown as a colored badge on the tile
 - **Long Press Interaction**: Touch-friendly long press detection to focus on specific transactions for detailed operations
 - **Transaction Details Modal**: Comprehensive modal displaying all transaction fields with edit and delete capabilities in Russian interface
 - **Advanced Filtering System**: Multi-field filtering by account, payee, and comment with cross-language search matching for English/Russian text

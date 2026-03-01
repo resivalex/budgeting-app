@@ -1,12 +1,10 @@
-import { useState, useMemo, useEffect, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAtomValue } from 'jotai'
 import App from './App'
 import { useServices } from '@/services'
 import { TransactionDTO } from '@/types'
 import { useTransactionsDomain, useSyncDomain, useSettingsDomain } from '@/hooks'
-import { ExportDomain, AuthDomain, MigrationDomain } from '@/domain'
-import { spendingLimitsAtom } from '@/state'
+import { ExportDomain, AuthDomain } from '@/domain'
 import { v4 as uuidv4 } from 'uuid'
 
 const instanceId = uuidv4()
@@ -24,10 +22,6 @@ export default function AuthorizedAppContainer({ isLoading }: Props) {
 
   const exportDomain = useMemo(() => new ExportDomain(backendService), [backendService])
   const authDomain = useMemo(() => new AuthDomain(storageService), [storageService])
-  const migrationDomain = useMemo(() => new MigrationDomain(), [])
-
-  const spendingLimits = useAtomValue(spendingLimitsAtom)
-  const migrationRanRef = useRef(false)
 
   const navigate = useNavigate()
 
@@ -39,44 +33,7 @@ export default function AuthorizedAppContainer({ isLoading }: Props) {
     addTransaction: addLocalTransaction,
     updateTransaction: updateLocalTransaction,
     deleteTransaction: deleteLocalTransaction,
-    loadTransactions,
   } = useTransactionsDomain(dbService)
-
-  useEffect(() => {
-    console.log(
-      '[Migration] effect fired — migrationRanRef:',
-      migrationRanRef.current,
-      'needsMigration:',
-      migrationDomain.needsMigration(),
-      'transactions:',
-      transactions.length,
-      'spendingLimits:',
-      spendingLimits.limits.length,
-    )
-    if (migrationRanRef.current) return
-    if (!migrationDomain.needsMigration()) {
-      migrationRanRef.current = true
-      return
-    }
-    if (transactions.length === 0 || spendingLimits.limits.length === 0) return
-
-    migrationRanRef.current = true
-    ;(async () => {
-      console.log('[Migration] starting...')
-      const allDocs = await dbService.readAllDocs()
-      console.log('[Migration] readAllDocs returned', allDocs.length, 'docs')
-      await migrationDomain.migrateBudgetNames(allDocs, spendingLimits, (docs) =>
-        dbService.bulkUpdate(docs),
-      )
-      await loadTransactions()
-      console.log('[Migration] pushing changes to CouchDB...')
-      await dbService.pushChanges()
-      console.log('[Migration] push complete')
-    })().catch((err) => {
-      console.error('[Migration] error:', err)
-      migrationRanRef.current = false
-    })
-  }, [transactions, spendingLimits, migrationDomain, dbService, loadTransactions])
 
   const { offlineMode, addDbTransaction, replaceDbTransaction, removeDbTransaction } =
     useSyncDomain(backendService, dbService, instanceId)

@@ -67,12 +67,6 @@ Pure TypeScript business logic layer providing framework-agnostic domain service
 - **Transfer Handling**: Special logic for filtering transfer transactions by either account
 - **Modular Filter Methods**: Separate methods for each filter type enabling reuse
 
-### MigrationDomain
-
-- **Budget Name Migration**: One-time migration assigning `budget_name` to existing transactions based on category-to-budget lookup from spending limits
-- **Version Gating**: Uses localStorage-based version tracking to ensure each migration runs only once
-- **Batch Updates**: Applies migration changes in bulk for efficiency
-
 ### ExportDomain
 
 - **CSV Export**: Fetches transaction CSV from backend and triggers browser download
