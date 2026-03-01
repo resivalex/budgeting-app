@@ -40,8 +40,7 @@ class State:
 
     def importing(self, content: bytes):
         csv_exporting = TransactionsCsvExporting(url=self._db_url)
-        
-        # Use Google Drive for dumps during import
+
         dump = TransactionsGoogleDriveDump(
             credentials_path=self._google_drive_credentials_path,
             folder_id=self._google_drive_folder_id
@@ -55,7 +54,6 @@ class State:
 
     def exporting(self) -> bytes:
         csv_exporting = TransactionsCsvExporting(url=self._db_url)
-
         return csv_exporting.perform().encode("utf-8")
 
     def transactions(self) -> List:
@@ -63,18 +61,6 @@ class State:
 
     def settings(self) -> UploadDetailsValue:
         return self._upload_details.get()
-
-    def dump(self):
-        csv_exporting = TransactionsCsvExporting(url=self._db_url)
-        content = csv_exporting.perform().encode("utf-8")
-
-        dump = TransactionsGoogleDriveDump(
-            credentials_path=self._google_drive_credentials_path,
-            folder_id=self._google_drive_folder_id
-        )
-        upload_result = dump.put(content)
-
-        return upload_result
 
     def set_spending_limits(self, value: SpendingLimitsValue):
         self._spending_limits.set(value)

@@ -47,19 +47,30 @@ docker-compose -f docker-compose.dev.yml up
 docker-compose up
 ```
 
-## Google Drive Backup 🔄
+## Backup & Restore
 
-1. Create a Google Cloud Project with Drive API and Service Account
-2. Save JSON key to `credentials/google-drive-credentials.json`
-3. Create & share Drive folder with service account
-4. Add to `.env`:
+Full-database backup as a ZIP archive containing both SQLite and CouchDB data.
+
+**Endpoints:**
+
+- `GET /backup` — download a ZIP archive with both databases
+- `POST /restore` — upload a ZIP archive to restore both databases
+- `POST /trigger-backup` — create backup and upload to Google Drive (if configured)
+
+**ZIP structure:**
+
+```
+backup.zip
+├── sqlite/budgeting-app.sqlite3   # Full SQLite database copy
+└── couchdb/budgeting.json          # All CouchDB documents as JSON
+```
+
+**Google Drive (optional):** scheduled backups upload the ZIP to Google Drive when credentials are configured:
 
 ```dotenv
 GOOGLE_DRIVE_CREDENTIALS_PATH=credentials/google-drive-credentials.json
 GOOGLE_DRIVE_FOLDER_ID=your_google_drive_folder_id
 ```
-
-Trigger manual backup: `/trigger-backup` endpoint
 
 ## Development 💻
 
@@ -91,7 +102,7 @@ poetry run alembic upgrade head
   - `protocols/`: Interface definitions
   - `settings/`: Configuration management (SQLite)
   - `transactions/`: Transaction data access (CouchDB)
-  - `backup/`: Automated Google Drive backups
+  - `backup/`: Full backup/restore (ZIP with SQLite + CouchDB)
   - `importing/`, `exporting/`: CSV data transfer
 
 ### Testing

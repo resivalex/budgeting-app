@@ -29,14 +29,11 @@ SQLITE_PATH = os.getenv("SQLITE_PATH")
 GOOGLE_DRIVE_CREDENTIALS_PATH = os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
 GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
 
-# Get the schedule configuration with defaults
 DAILY_BACKUP_HOUR = int(os.getenv("DAILY_DUMP_HOUR", "3"))
 DAILY_BACKUP_MINUTE = int(os.getenv("DAILY_DUMP_MINUTE", "0"))
 
-# Create FastAPI app
 app = FastAPI(docs_url="/api")
 
-# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -45,18 +42,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Set up logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
 
+
 def create_state() -> State:
-    """
-    Create and return a new State instance.
-    Used as a factory for getting the application state.
-    """
     sqlite_connection = SqliteConnection(sqlite_path=SQLITE_PATH)
     app_settings = SqlSettings(sql_connection=sqlite_connection)
     return State(
@@ -67,35 +60,32 @@ def create_state() -> State:
         google_drive_folder_id=GOOGLE_DRIVE_FOLDER_ID
     )
 
-# Initialize backup service with state factory
-backup_service = BackupService(state_factory=create_state)
 
-# Create backup scheduler
+backup_service = BackupService(sqlite_path=SQLITE_PATH, db_url=DB_URL)
+
 backup_scheduler = BackupScheduler(
     backup_service=backup_service,
     hour=DAILY_BACKUP_HOUR,
-    minute=DAILY_BACKUP_MINUTE
+    minute=DAILY_BACKUP_MINUTE,
+    google_drive_credentials_path=GOOGLE_DRIVE_CREDENTIALS_PATH,
+    google_drive_folder_id=GOOGLE_DRIVE_FOLDER_ID,
 )
 
-# Start the scheduler on app startup
 @app.on_event("startup")
 def start_scheduler():
-    """Start the backup scheduler when the app starts"""
     try:
         backup_scheduler.start()
     except Exception as e:
         logger.error(f"Failed to start backup scheduler: {str(e)}")
 
-# Shut down the scheduler on app shutdown
+
 @app.on_event("shutdown")
 def shutdown_scheduler():
-    """Shut down the backup scheduler when the app shuts down"""
     try:
         backup_scheduler.shutdown()
     except Exception as e:
         logger.error(f"Error shutting down backup scheduler: {str(e)}")
 
-# Authentication
 def check_authorization(request: Request):
     authorization = request.headers.get("authorization")
 
@@ -114,8 +104,6 @@ def check_authorization(request: Request):
         raise HTTPException(status_code=400, detail="Not authenticated")
 
 
-# API Endpoints
-
 @app.get("/", tags=["System"])
 async def root() -> str:
     return "OK"
@@ -123,9 +111,6 @@ async def root() -> str:
 
 @app.get("/health", tags=["System"])
 async def health():
-    """
-    Health check endpoint that also returns information about the scheduler.
-    """
     return {
         "status": "healthy",
         "scheduler_running": backup_scheduler.scheduler.running,
@@ -174,10 +159,6 @@ async def exporting(request: Request):
 
 @app.post("/trigger-backup", tags=["Admin"])
 async def trigger_backup(request: Request):
-    """
-    Manually trigger a backup to Google Drive.
-    Useful for testing or for manually initiating a backup.
-    """
     check_authorization(request)
     try:
         result = backup_scheduler.trigger_backup_now()
@@ -194,6 +175,33 @@ async def trigger_backup(request: Request):
             status_code=500,
             detail=f"Error triggering backup: {str(e)}"
         )
+
+
+@app.get("/backup", tags=["Admin"])
+async def download_backup(request: Request):
+    check_authorization(request)
+    try:
+        zip_bytes = backup_service.create_backup_zip()
+        return StreamingResponse(
+            iter([zip_bytes]),
+            media_type="application/zip",
+            headers={"Content-Disposition": "attachment;filename=backup.zip"},
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creating backup: {str(e)}")
+
+
+@app.post("/restore", tags=["Admin"])
+async def restore_backup(file: UploadFile, request: Request):
+    check_authorization(request)
+    try:
+        zip_bytes = file.file.read()
+        result = backup_service.restore_from_zip(zip_bytes)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error restoring backup: {str(e)}")
 
 
 @app.post("/spending-limits", tags=["State"])

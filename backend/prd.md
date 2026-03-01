@@ -12,7 +12,7 @@ A robust FastAPI-based backend service providing comprehensive financial data ma
 - **Authentication & Authorization**: Token-based authentication system with secure credential management and request authorization
 - **Multi-Currency Financial Operations**: Complete financial transaction management with multi-currency support and real-time data processing
 - **Real-time Data Synchronization**: Bidirectional data sync capabilities supporting offline-first client architecture with conflict resolution
-- **Automated Backup Systems**: Scheduled and manual backup operations to Google Drive ensuring data protection and disaster recovery
+- **Automated Backup Systems**: Full-database backup as ZIP archive (SQLite + CouchDB), with restore capability and optional Google Drive upload
 - **Configuration Management**: Comprehensive user preference and application settings management with persistent storage
 
 ### Data Management Layer
@@ -25,7 +25,8 @@ A robust FastAPI-based backend service providing comprehensive financial data ma
 
 ### External Integrations
 
-- **Google Drive Backup**: Automated cloud backup integration with scheduled daily backups and manual trigger capabilities
+- **Google Drive Backup**: Optional scheduled cloud backup upload of ZIP archives
+- **Full Database Restore**: Restore both SQLite and CouchDB from a single ZIP archive
 - **Database Synchronization**: CouchDB integration for real-time data replication and offline synchronization support
 - **Cross-Platform Compatibility**: API design optimized for web, mobile, and desktop client applications
 - **Third-Party Extensions**: Extensible architecture supporting future integrations with banking APIs and financial services
@@ -54,4 +55,4 @@ A robust FastAPI-based backend service providing comprehensive financial data ma
 - **[Transactions](./src/budgeting_app_backend/transactions/prd.md)**: Core transaction data management with database access and backup integration
 - **[Exporting](./src/budgeting_app_backend/exporting/prd.md)**: Data export functionality transforming transaction data into standardized CSV format
 - **[Importing](./src/budgeting_app_backend/importing/prd.md)**: Data import functionality with complete database reconstruction and backup automation
-- **[Backup](./src/budgeting_app_backend/backup/prd.md)**: Automated and manual backup system with Google Drive integration and scheduling
+- **[Backup](./src/budgeting_app_backend/backup/prd.md)**: Full backup/restore system with ZIP archives containing SQLite and CouchDB snapshots
