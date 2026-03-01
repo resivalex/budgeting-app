@@ -1,7 +1,7 @@
 """Scheduler for automated backups to Google Drive."""
 
-import io
 import logging
+from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from typing import Dict, Any, Optional
@@ -57,7 +57,9 @@ class BackupScheduler:
                 credentials_path=self._google_drive_credentials_path,
                 folder_id=self._google_drive_folder_id,
             )
-            result = drive.upload_file(zip_bytes, mime_type="application/zip")
+            today = datetime.now().strftime("%Y-%m-%d")
+            filename = f"backup-{today}.zip"
+            result = drive.upload_file(zip_bytes, mime_type="application/zip", filename=filename)
             logger.info(f"Uploaded backup to Google Drive: {result.get('name')}")
         except Exception as e:
             logger.error(f"Failed to upload backup to Google Drive: {str(e)}")

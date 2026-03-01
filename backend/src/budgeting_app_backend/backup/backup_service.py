@@ -92,7 +92,7 @@ class BackupService:
             "doc_count": len(docs),
             "docs": docs,
         }
-        return json.dumps(dump_data, ensure_ascii=False).encode("utf-8")
+        return json.dumps(dump_data, ensure_ascii=False, indent=2).encode("utf-8")
 
     def _restore_sqlite(self, db_bytes: bytes):
         tmp_path = self._sqlite_path + ".tmp"

@@ -15,6 +15,7 @@ from budgeting_app_backend import (
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.openapi.utils import get_openapi
+from datetime import datetime
 import os
 import re
 import logging
@@ -182,10 +183,12 @@ async def download_backup(request: Request):
     check_authorization(request)
     try:
         zip_bytes = backup_service.create_backup_zip()
+        today = datetime.now().strftime("%Y-%m-%d")
+        filename = f"backup-{today}.zip"
         return StreamingResponse(
             iter([zip_bytes]),
             media_type="application/zip",
-            headers={"Content-Disposition": "attachment;filename=backup.zip"},
+            headers={"Content-Disposition": f"attachment;filename={filename}"},
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating backup: {str(e)}")

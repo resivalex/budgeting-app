@@ -42,18 +42,10 @@ class GoogleDriveService:
         )
         return build('drive', 'v3', credentials=credentials)
     
-    def upload_file(self, file_content, mime_type='text/csv'):
-        """Upload file to Google Drive.
-        
-        Args:
-            file_content: File content as bytes
-            mime_type: MIME type (default: 'text/csv')
-            
-        Returns:
-            Dict with file id, name, and link
-        """
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d_%H-%M-%S")
-        filename = f"budget_transactions_dump_{timestamp}.csv"
+    def upload_file(self, file_content, mime_type='text/csv', filename=None):
+        if filename is None:
+            timestamp = datetime.utcnow().strftime("%Y-%m-%d_%H-%M-%S")
+            filename = f"budget_transactions_dump_{timestamp}.csv"
         
         file_obj = io.BytesIO(file_content)
         
