@@ -14,8 +14,9 @@ This guide will help you set up the CouchDB database for the Budgeting App using
 **Data Storage**:
 
 - Transaction documents stored in `budgeting` database
-- Each transaction is a JSON document with `_id` (UUID) and `_rev` (revision)
+- Each transaction is a JSON document with `_id` (UUID), `_rev` (revision), and fields like `budget_name` (defaults to `""` for legacy documents)
 - Frontend PouchDB syncs directly with CouchDB (no backend intermediary needed)
+- CouchDB is schemaless — new fields (e.g., `budget_name`) are added without migrations; the frontend defaults missing fields on read
 
 **CORS Configuration**:
 

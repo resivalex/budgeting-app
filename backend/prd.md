@@ -17,10 +17,10 @@ A robust FastAPI-based backend service providing comprehensive financial data ma
 
 ### Data Management Layer
 
-- **Transaction Operations**: Complete CRUD operations for financial transactions with bulk processing and data validation
-- **Budget Management**: Sophisticated budget configuration with spending limits, currency conversion, and monthly tracking
+- **Transaction Operations**: Complete CRUD operations for financial transactions with bulk processing, data validation, and budget name association for multi-budget support
+- **Budget Management**: Sophisticated budget configuration with spending limits, currency conversion, monthly tracking, and named budgets for transaction grouping
 - **User Preferences**: Flexible user configuration storage including account properties, category expansions, and visual customization
-- **Import/Export Operations**: CSV-based data import and export functionality for backup, migration, and external integration
+- **Import/Export Operations**: CSV-based data import and export functionality for backup, migration, and external integration with backward compatibility for evolving transaction fields (e.g., budget_name defaults for older CSVs)
 - **Data Integrity**: Comprehensive data validation, error handling, and consistency checks across all operations
 
 ### External Integrations

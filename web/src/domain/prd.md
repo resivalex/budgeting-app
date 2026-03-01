@@ -39,7 +39,10 @@ Pure TypeScript business logic layer providing framework-agnostic domain service
 ### BudgetsDomain
 
 - **Spending Limits Loading**: Fetches spending limits from backend with localStorage caching
-- **Budget Calculations**: Computes budget totals with multi-currency conversion support
+- **Budget Calculations**: Computes budget totals with multi-currency conversion support using transaction `budget_name` matching
+- **Budget Matching**: Matches transactions to budgets exclusively by `budget_name` field rather than category
+- **Rest Budget**: Collects unassigned transactions (empty `budget_name`) into a "Другое" (Rest) budget
+- **Total Budget**: Computes "ОБЩИЙ" (Total) by summing spent amounts across all real budgets
 - **Currency Conversion**: Builds conversion maps from currency config for accurate totals
 - **Month Filtering**: Filters transactions and limits to selected month
 - **Available Months**: Extracts and sorts months with spending limit configurations
@@ -50,10 +53,11 @@ Pure TypeScript business logic layer providing framework-agnostic domain service
 
 - **Category Extensions Mapping**: Builds category name to extended label mappings
 - **Category Options**: Generates dropdown options with expanded labels
+- **Budget Name Resolution**: Resolves available budget names for a given category from spending limits
 - **Currency/Account Filtering**: Filters currencies and accounts for transfer transactions
 - **Payee/Comment Filtering**: Returns context-specific suggestions based on selected category
 - **Form Validation**: Validates transaction form fields before submission
-- **Transaction Building**: Constructs TransactionDTO from form values with proper formatting
+- **Transaction Building**: Constructs TransactionDTO from form values with proper formatting, including `budget_name`
 - **Reset Detection**: Determines when currency/account selections need clearing
 
 ### TransactionFilterDomain
@@ -62,6 +66,12 @@ Pure TypeScript business logic layer providing framework-agnostic domain service
 - **Cross-Language Matching**: Supports English-Russian keyboard layout matching
 - **Transfer Handling**: Special logic for filtering transfer transactions by either account
 - **Modular Filter Methods**: Separate methods for each filter type enabling reuse
+
+### MigrationDomain
+
+- **Budget Name Migration**: One-time migration assigning `budget_name` to existing transactions based on category-to-budget lookup from spending limits
+- **Version Gating**: Uses localStorage-based version tracking to ensure each migration runs only once
+- **Batch Updates**: Applies migration changes in bulk for efficiency
 
 ### ExportDomain
 

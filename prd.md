@@ -8,8 +8,8 @@ A comprehensive offline-first personal financial management application providin
 
 ### Personal Financial Management
 
-- **Comprehensive Transaction Tracking**: Complete financial transaction management with intelligent categorization, multi-currency support, and historical analysis
-- **Advanced Budget Planning**: Sophisticated budget creation and tracking with spending limits, color-coded categories, and real-time progress monitoring
+- **Comprehensive Transaction Tracking**: Complete financial transaction management with intelligent categorization, explicit budget assignment per transaction, multi-currency support, and historical analysis
+- **Advanced Budget Planning**: Sophisticated budget creation and tracking with named budgets, spending limits, color-coded categories, and real-time progress monitoring. Budget calculation uses the transaction's `budget_name` field as the single source of truth
 - **Multi-Account Management**: Unified management of multiple financial accounts with color-coded identification and real-time balance tracking
 - **Multi-Currency Operations**: Full support for multiple currencies with configurable exchange rates and automatic conversion across all features
 - **Intelligent Analytics**: Advanced financial analytics with spending patterns, budget variance analysis, and predictive insights
@@ -25,14 +25,14 @@ A comprehensive offline-first personal financial management application providin
 ### Data Management & Security
 
 - **Automated Cloud Backup**: Scheduled daily backups to Google Drive with manual trigger capabilities for comprehensive data protection
-- **Import/Export Capabilities**: CSV-based data import and export functionality for backup, migration, and external system integration
+- **Import/Export Capabilities**: CSV-based data import and export functionality (including budget_name) for backup, migration, and external system integration
 - **Secure Authentication**: Password-based authentication with token management and automatic session restoration
 - **Data Integrity**: Comprehensive data validation, error handling, and consistency checks across all operations
 - **Privacy Protection**: Local-first data architecture with optional cloud synchronization ensuring user data privacy
 
 ### User Experience & Interface
 
-- **Intuitive Transaction Entry**: Step-by-step guided transaction creation with intelligent suggestions based on historical patterns
+- **Intuitive Transaction Entry**: Step-by-step guided transaction creation with automatic budget assignment from category, manual budget name selection, and intelligent suggestions based on historical patterns
 - **Advanced Search & Filtering**: Powerful search capabilities with cross-language support and sophisticated filtering options
 - **Visual Budget Tracking**: Color-coded budget progress indicators with multi-segment progress bars and expectation ratios
 - **Responsive Design**: Mobile-first interface with adaptive layouts optimized for all device sizes and orientations

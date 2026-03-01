@@ -110,12 +110,12 @@ yarn start
 
 ## Features
 
-- Budget management with categories & limits
-- Transaction tracking
+- Budget management with named budgets, spending limits, and category mapping
+- Transaction tracking with explicit budget assignment per transaction
 - Data visualization
-- Offline support
+- Offline support with one-time data migration for legacy transactions
 - Automated Google Drive backups
-- CSV import/export
+- CSV import/export (round-trips budget_name)
 
 ## License
 

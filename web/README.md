@@ -22,7 +22,7 @@ Infrastructure Services (DB, API)
 
 **Infrastructure Layer** (`services/`):
 
-- `DbService`: PouchDB operations (CRUD, sync)
+- `DbService`: PouchDB operations (CRUD, sync, bulk updates)
 - `BackendService`: API communication for configuration and exports
 - `StorageService`: Typed localStorage abstraction
 - `TransactionAggregator`: Balance calculations and suggestions
@@ -35,8 +35,9 @@ Pure TypeScript classes with no React dependencies:
 - `TransactionDomain`: Transaction CRUD business logic + aggregations
 - `SyncDomain`: Sync orchestration (pull/push, database reset)
 - `SettingsDomain`: Settings loading and caching
-- `BudgetsDomain`: Budget calculations, currency conversion, month filtering
-- `TransactionFormDomain`: Form validation, category extensions, suggestions
+- `BudgetsDomain`: Budget calculations by `budget_name`, currency conversion, month filtering
+- `TransactionFormDomain`: Form validation, category extensions, suggestions, budget name lookup
+- `MigrationDomain`: One-time data migrations (e.g., backfilling `budget_name` on existing transactions)
 - `TransactionFilterDomain`: Transaction filtering with cross-language matching
 - `ExportDomain`: CSV export with blob handling
 - `AuthDomain`: Login, logout, and session management
@@ -58,7 +59,7 @@ React hooks that wire domains to atoms:
 - `useSyncDomain`: Sync lifecycle management
 - `useSettingsDomain`: Settings loading
 - `useBudgetsDomain`: Budget calculations and month selection
-- `useTransactionFormDomain`: Form data with category options
+- `useTransactionFormDomain`: Form data with category options and budget name options
 - `useColoredAccounts`: Account coloring from atoms
 
 **Component Structure**:
