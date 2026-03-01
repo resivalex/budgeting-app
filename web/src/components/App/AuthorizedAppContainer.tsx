@@ -19,6 +19,8 @@ export default function AuthorizedAppContainer({ isLoading }: Props) {
   const [filterAccountName, setFilterAccountName] = useState('')
   const [filterPayee, setFilterPayee] = useState('')
   const [filterComment, setFilterComment] = useState('')
+  const [filterCategory, setFilterCategory] = useState('')
+  const [filterBudgetName, setFilterBudgetName] = useState('')
 
   const exportDomain = useMemo(() => new ExportDomain(backendService), [backendService])
   const authDomain = useMemo(() => new AuthDomain(storageService), [storageService])
@@ -76,9 +78,13 @@ export default function AuthorizedAppContainer({ isLoading }: Props) {
       filterAccountName={filterAccountName}
       filterPayee={filterPayee}
       filterComment={filterComment}
+      filterCategory={filterCategory}
+      filterBudgetName={filterBudgetName}
       onFilterAccountNameChange={setFilterAccountName}
       onFilterPayeeChange={setFilterPayee}
       onFilterCommentChange={setFilterComment}
+      onFilterCategoryChange={setFilterCategory}
+      onFilterBudgetNameChange={setFilterBudgetName}
       isLoading={isLoading}
       offlineMode={offlineMode}
       lastNotificationText={lastNotificationText}

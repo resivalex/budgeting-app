@@ -5,6 +5,8 @@ interface TransactionFilters {
   accountName: string
   payee: string
   comment: string
+  category: string
+  budgetName: string
 }
 
 class TransactionFilterDomain {
@@ -12,7 +14,7 @@ class TransactionFilterDomain {
     transactions: TransactionDTO[],
     filters: TransactionFilters,
   ): TransactionDTO[] {
-    const { accountName, payee, comment } = filters
+    const { accountName, payee, comment, category, budgetName } = filters
 
     return transactions.filter((transaction) => {
       if (!this.matchesPayeeFilter(transaction, payee)) {
@@ -24,6 +26,14 @@ class TransactionFilterDomain {
       }
 
       if (!this.matchesCommentFilter(transaction, comment)) {
+        return false
+      }
+
+      if (!this.matchesCategoryFilter(transaction, category)) {
+        return false
+      }
+
+      if (!this.matchesBudgetNameFilter(transaction, budgetName)) {
         return false
       }
 
@@ -53,6 +63,26 @@ class TransactionFilterDomain {
     }
 
     return transaction.account === filterAccountName
+  }
+
+  private matchesCategoryFilter(transaction: TransactionDTO, filterCategory: string): boolean {
+    if (!filterCategory) {
+      return true
+    }
+
+    if (transaction.type === 'transfer') {
+      return false
+    }
+
+    return transaction.category === filterCategory
+  }
+
+  private matchesBudgetNameFilter(transaction: TransactionDTO, filterBudgetName: string): boolean {
+    if (!filterBudgetName) {
+      return true
+    }
+
+    return transaction.budget_name === filterBudgetName
   }
 
   private matchesCommentFilter(transaction: TransactionDTO, filterComment: string): boolean {

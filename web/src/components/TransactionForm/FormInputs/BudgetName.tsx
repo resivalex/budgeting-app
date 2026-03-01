@@ -39,7 +39,7 @@ export default function BudgetName({
     }
   }, [isExpanded])
 
-  const allOptions = [{ value: '', label: '(без бюджета)' }, ...budgetNameOptions]
+  const allOptions = [...budgetNameOptions, { value: '', label: '(без бюджета)' }]
   const selectedOption = allOptions.find((option) => option.value === budgetName)
 
   const handleBudgetNameChange = (value: string) => {

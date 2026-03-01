@@ -32,6 +32,8 @@ export default function App({
   filterAccountName,
   filterPayee,
   filterComment,
+  filterCategory,
+  filterBudgetName,
   isLoading,
   offlineMode,
   lastNotificationText,
@@ -40,6 +42,8 @@ export default function App({
   onFilterAccountNameChange,
   onFilterPayeeChange,
   onFilterCommentChange,
+  onFilterCategoryChange,
+  onFilterBudgetNameChange,
   onAddTransaction,
   onEditTransaction,
   onRemoveTransaction,
@@ -50,6 +54,8 @@ export default function App({
   filterAccountName: string
   filterPayee: string
   filterComment: string
+  filterCategory: string
+  filterBudgetName: string
   isLoading: boolean
   offlineMode: boolean
   lastNotificationText: string
@@ -58,6 +64,8 @@ export default function App({
   onFilterAccountNameChange: (accountName: string) => void
   onFilterPayeeChange: (payee: string) => void
   onFilterCommentChange: (comment: string) => void
+  onFilterCategoryChange: (category: string) => void
+  onFilterBudgetNameChange: (budgetName: string) => void
   onAddTransaction: (transaction: TransactionDTO) => Promise<void>
   onEditTransaction: (transaction: TransactionDTO) => Promise<void>
   onRemoveTransaction: (id: string) => Promise<void>
@@ -152,12 +160,17 @@ export default function App({
                   AccountSelect={FullAccountSelect}
                   transactions={transactions}
                   accountDetails={transactionAggregations.accountDetails}
+                  categories={transactionAggregations.categories}
                   filterAccountName={filterAccountName}
                   filterPayee={filterPayee}
                   filterComment={filterComment}
+                  filterCategory={filterCategory}
+                  filterBudgetName={filterBudgetName}
                   onFilterAccountNameChange={onFilterAccountNameChange}
                   onFilterPayeeChange={onFilterPayeeChange}
                   onFilterCommentChange={onFilterCommentChange}
+                  onFilterCategoryChange={onFilterCategoryChange}
+                  onFilterBudgetNameChange={onFilterBudgetNameChange}
                   onRemove={onRemoveTransaction}
                 />
               }

@@ -9,10 +9,16 @@ export default function TransactionsPage({
   filterAccountName,
   filterPayee,
   filterComment,
+  filterCategory,
+  filterBudgetName,
+  categories,
+  budgetNames,
   transactions,
   onFilterAccountNameChange,
   onFilterPayeeChange,
   onFilterCommentChange,
+  onFilterCategoryChange,
+  onFilterBudgetNameChange,
   onRemove,
 }: {
   AccountSelect: FC<{
@@ -22,16 +28,24 @@ export default function TransactionsPage({
   filterAccountName: string
   filterPayee: string
   filterComment: string
+  filterCategory: string
+  filterBudgetName: string
+  categories: string[]
+  budgetNames: string[]
   transactions: TransactionDTO[]
   accountDetails: AccountDetailsDTO[]
   onFilterAccountNameChange: (accountName: string) => void
   onFilterPayeeChange: (payee: string) => void
   onFilterCommentChange: (comment: string) => void
+  onFilterCategoryChange: (category: string) => void
+  onFilterBudgetNameChange: (budgetName: string) => void
   onRemove: (id: string) => Promise<void>
 }) {
   const [isFilterExpanded, setIsFilterExpanded] = useState(false)
   const [localFilterPayee, setLocalFilterPayee] = useState(filterPayee)
   const [localFilterComment, setLocalFilterComment] = useState(filterComment)
+  const [localFilterCategory, setLocalFilterCategory] = useState(filterCategory)
+  const [localFilterBudgetName, setLocalFilterBudgetName] = useState(filterBudgetName)
 
   const handleSearchIconClick = () => {
     setIsFilterExpanded(!isFilterExpanded)
@@ -40,14 +54,20 @@ export default function TransactionsPage({
   const handleApplyFilters = () => {
     onFilterPayeeChange(localFilterPayee)
     onFilterCommentChange(localFilterComment)
+    onFilterCategoryChange(localFilterCategory)
+    onFilterBudgetNameChange(localFilterBudgetName)
     setIsFilterExpanded(false)
   }
 
   const handleResetFilters = () => {
     setLocalFilterPayee('')
     setLocalFilterComment('')
+    setLocalFilterCategory('')
+    setLocalFilterBudgetName('')
     onFilterPayeeChange('')
     onFilterCommentChange('')
+    onFilterCategoryChange('')
+    onFilterBudgetNameChange('')
     setIsFilterExpanded(false)
   }
 
@@ -60,6 +80,14 @@ export default function TransactionsPage({
 
     if (filterComment) {
       filters.push(`Комментарий: ${filterComment}`)
+    }
+
+    if (filterCategory) {
+      filters.push(`Категория: ${filterCategory}`)
+    }
+
+    if (filterBudgetName) {
+      filters.push(`Бюджет: ${filterBudgetName}`)
     }
 
     return filters
@@ -113,6 +141,42 @@ export default function TransactionsPage({
                 placeholder="Введите текст комментария"
                 onChange={(e) => setLocalFilterComment(e.target.value)}
               />
+            </div>
+          </div>
+          <div className="field">
+            <label className="label is-small">Категория</label>
+            <div className="control">
+              <div className="select is-small">
+                <select
+                  value={localFilterCategory}
+                  onChange={(e) => setLocalFilterCategory(e.target.value)}
+                >
+                  <option value="">(все)</option>
+                  {categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label is-small">Бюджет</label>
+            <div className="control">
+              <div className="select is-small">
+                <select
+                  value={localFilterBudgetName}
+                  onChange={(e) => setLocalFilterBudgetName(e.target.value)}
+                >
+                  <option value="">(все)</option>
+                  {budgetNames.map((b) => (
+                    <option key={b} value={b}>
+                      {b}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
           <div className="field is-grouped">

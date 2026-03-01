@@ -262,6 +262,17 @@ export default function TransactionFormContainer({
 
   const handleBudgetNameChange = (budgetName: string) => setBudgetName(budgetName)
 
+  const matchingBudgetNames = useMemo(
+    () => domain.getBudgetNamesForCategory(category, spendingLimits),
+    [domain, category, spendingLimits],
+  )
+
+  const orderedBudgetNameOptions = useMemo(() => {
+    const matching = budgetNameOptions.filter((o) => matchingBudgetNames.includes(o.value))
+    const nonMatching = budgetNameOptions.filter((o) => !matchingBudgetNames.includes(o.value))
+    return [...matching, ...nonMatching]
+  }, [budgetNameOptions, matchingBudgetNames])
+
   const viewDatetime = new Date(datetime)
 
   if (coloredAccounts.length === 0) {
@@ -296,7 +307,7 @@ export default function TransactionFormContainer({
       // Dropdown options
       accounts={availableColoredAccounts}
       categoryOptions={categoryOptions}
-      budgetNameOptions={budgetNameOptions}
+      budgetNameOptions={orderedBudgetNameOptions}
       currencies={availableCurrencies}
       payees={payees}
       comments={comments}

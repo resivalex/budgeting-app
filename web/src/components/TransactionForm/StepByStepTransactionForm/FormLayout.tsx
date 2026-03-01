@@ -165,7 +165,7 @@ function FormLayout({
           {CategoryStep({
             isExpanded: currentStep === categoryStep,
             onExpand: () => setCurrentStep(categoryStep),
-            onComplete: () => setCurrentStep(budgetNameStep),
+            onComplete: () => setCurrentStep(payeeStep),
           })}
           {BudgetNameStep({
             isExpanded: currentStep === budgetNameStep,
