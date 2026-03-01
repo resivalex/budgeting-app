@@ -15,7 +15,7 @@ A complete set of specialized form input components that provide an intuitive st
 - **Comment Field**: Free-text input for additional transaction context and notes
 - **Currency Selection**: Currency picker integrated with account and system currency settings
 - **Date/Time Picker**: Full datetime selection with timezone handling and locale formatting
-- **Budget Name Selection**: Dropdown for selecting the `budget_name` linking the transaction to a named budget; auto-populated when a category is chosen, with manual override supported
+- **Budget Name Selection**: Dropdown for selecting the `budget_name` linking the transaction to a named budget; auto-populated when a category is chosen; lists budgets matching the current category first, then remaining budgets, then "(без бюджета)" last; does not auto-receive focus when advancing from category (user clicks to expand manually)
 - **Save Button**: Validation-aware save control that activates when all required fields are complete
 
 Each component supports expand/collapse states for guided step-by-step form completion, keyboard navigation, and provides immediate visual feedback for user interactions.

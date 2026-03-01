@@ -41,7 +41,7 @@ Pure TypeScript business logic layer providing framework-agnostic domain service
 - **Spending Limits Loading**: Fetches spending limits from backend with localStorage caching
 - **Budget Calculations**: Computes budget totals with multi-currency conversion support using transaction `budget_name` matching
 - **Budget Matching**: Matches transactions to budgets exclusively by `budget_name` field rather than category
-- **Rest Budget**: Collects unassigned transactions (empty `budget_name`) into a "Другое" (Rest) budget
+- **Rest Budget**: Collects unassigned transactions — those with empty `budget_name` or a `budget_name` not matching any defined budget — into a "Другое" (Rest) budget
 - **Total Budget**: Computes "ОБЩИЙ" (Total) by summing spent amounts across all real budgets
 - **Currency Conversion**: Builds conversion maps from currency config for accurate totals
 - **Month Filtering**: Filters transactions and limits to selected month
@@ -62,8 +62,8 @@ Pure TypeScript business logic layer providing framework-agnostic domain service
 
 ### TransactionFilterDomain
 
-- **Transaction Filtering**: Filters transactions by account, payee, and comment criteria
-- **Cross-Language Matching**: Supports English-Russian keyboard layout matching
+- **Transaction Filtering**: Filters transactions by account, payee, comment, category, and budget_name criteria
+- **Cross-Language Matching**: Supports English-Russian keyboard layout matching for payee and comment filters
 - **Transfer Handling**: Special logic for filtering transfer transactions by either account
 - **Modular Filter Methods**: Separate methods for each filter type enabling reuse
 

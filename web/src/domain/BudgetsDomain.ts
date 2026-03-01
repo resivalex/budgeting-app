@@ -84,7 +84,14 @@ class BudgetsDomain {
     const realBudgets = monthSpendingLimits.map((spendingLimit) =>
       this.calculateSingleBudget(monthTransactions, spendingLimit, conversionMap),
     )
-    const restBudget = this.calculateSingleBudget(monthTransactions, restLimit, conversionMap)
+
+    const assignedTransactionIds = new Set(
+      realBudgets.flatMap((b) => b.transactions.map((t) => t._id)),
+    )
+    const unassignedTransactions = monthTransactions.filter(
+      (t) => !assignedTransactionIds.has(t._id),
+    )
+    const restBudget = this.calculateRestBudget(unassignedTransactions, restLimit, conversionMap)
 
     const totalBudget: BudgetResult = {
       name: totalLimit.name,
@@ -268,8 +275,6 @@ class BudgetsDomain {
     }
 
     const matchesTransaction = (transaction: TransactionDTO): boolean => {
-      if (spendingLimit.name === 'ОБЩИЙ') return false
-      if (spendingLimit.name === 'Другое') return transaction.budget_name === ''
       return transaction.budget_name === spendingLimit.name
     }
 
@@ -282,6 +287,32 @@ class BudgetsDomain {
           parseFloat(transaction.amount) *
           conversionMap[transaction.currency][budget.currency]
       }
+    })
+
+    return budget
+  }
+
+  private calculateRestBudget(
+    unassignedTransactions: TransactionDTO[],
+    restLimit: MonthSpendingLimit,
+    conversionMap: ConversionMapType,
+  ): BudgetResult {
+    const budget: BudgetResult = {
+      name: restLimit.name,
+      color: restLimit.color,
+      currency: restLimit.currency,
+      amount: restLimit.amount,
+      categories: restLimit.categories,
+      transactions: [],
+      spentAmount: 0,
+      isEditable: restLimit.isEditable,
+    }
+
+    unassignedTransactions.forEach((transaction) => {
+      budget.transactions.push(transaction)
+      const sign = transaction.type === 'expense' ? 1 : -1
+      budget.spentAmount +=
+        sign * parseFloat(transaction.amount) * conversionMap[transaction.currency][budget.currency]
     })
 
     return budget

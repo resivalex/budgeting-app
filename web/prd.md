@@ -22,7 +22,7 @@ A sophisticated React TypeScript frontend that provides a complete offline-first
 
 ### Financial Transaction Management
 
-- **Advanced Transaction Interface**: Comprehensive transaction viewing with virtualized lists, advanced filtering, and intelligent search capabilities (see [Transactions PRD](./src/components/Transactions/prd.md))
+- **Advanced Transaction Interface**: Comprehensive transaction viewing with virtualized lists, advanced filtering (account, payee, comment, category, budget_name), and intelligent search capabilities (see [Transactions PRD](./src/components/Transactions/prd.md))
 - **Step-by-Step Transaction Entry**: Guided transaction creation with intelligent field suggestions, validation, and automatic budget name assignment (see [TransactionForm PRD](./src/components/TransactionForm/prd.md))
 - **Smart Data Input**: Intelligent autocomplete for categories, payees, and comments based on historical transaction patterns
 - **Budget Name Assignment**: Transactions carry a `budget_name` linking them to a specific budget; auto-assigned from category on entry, visible as a badge in the transaction list, and editable via dropdown
@@ -32,7 +32,7 @@ A sophisticated React TypeScript frontend that provides a complete offline-first
 
 - **Visual Budget Tracking**: Sophisticated budget management with color-coded progress indicators, multi-segment progress bars, and real-time spending analytics (see [Budgets PRD](./src/components/Budgets/prd.md))
 - **Monthly Budget Planning**: Comprehensive month-by-month budget management with historical tracking and expectation ratios
-- **Budget-Name-Based Calculations**: Budget totals computed by matching transaction `budget_name` to budget name; transactions without a budget name are collected under "Другое" (Rest)
+- **Budget-Name-Based Calculations**: Budget totals computed by matching transaction `budget_name` to budget name; transactions without a recognised budget name (empty or unknown) are collected under "Другое" (Rest)
 - **Data Migration**: One-time migration assigns budget names to existing transactions based on category-to-budget mapping, ensuring continuity after feature rollout
 
 ### Account & Data Management

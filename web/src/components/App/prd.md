@@ -16,7 +16,7 @@ The main application orchestrator that provides a complete offline-first budgeti
 - **Account Selection Components**: Sophisticated color-coded account selectors with balance display and filtering capabilities
 - **Menu System**: Responsive hamburger menu with navigation links, version display, and administrative functions
 - **Data Export Functionality**: CSV export generation with timestamped filenames for backup and analysis
-- **Filter Management**: Comprehensive filtering system for transactions by account, payee, and comment with persistent state
+- **Filter Management**: Comprehensive filtering system for transactions by account, payee, comment, category, and budget_name with persistent state
 - **Transaction Operations**: Complete CRUD operations with optimistic updates and background synchronization
 - **Error Handling**: Robust error management with user-friendly error messages and recovery mechanisms
 - **Configuration Management**: Secure configuration storage and retrieval with localStorage persistence

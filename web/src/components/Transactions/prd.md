@@ -11,9 +11,9 @@ A comprehensive transaction management interface that provides efficient viewing
 - **Transaction Tiles**: Compact transaction display showing essential information (category, account, payee, amount, currency) with visual indicators for transaction types; non-empty `budget_name` is shown as a colored badge on the tile
 - **Long Press Interaction**: Touch-friendly long press detection to focus on specific transactions for detailed operations
 - **Transaction Details Modal**: Comprehensive modal displaying all transaction fields with edit and delete capabilities in Russian interface
-- **Advanced Filtering System**: Multi-field filtering by account, payee, and comment with cross-language search matching for English/Russian text
-- **Expandable Filter Interface**: Collapsible search panel with dedicated inputs for payee and comment filtering
-- **Active Filter Display**: Visual indication of applied filters with tag-based display and quick reset functionality
+- **Advanced Filtering System**: Multi-field filtering by account, payee, comment, category, and budget_name with cross-language search matching for English/Russian text
+- **Expandable Filter Interface**: Collapsible search panel with text inputs for payee and comment, and select dropdowns for category and budget_name
+- **Active Filter Display**: Visual indication of applied filters (payee, comment, category, budget_name) with tag-based display and quick reset functionality
 - **Account-Based Filtering**: Smart account filtering that handles both regular transactions and transfers (searches both source and destination accounts)
 - **Transaction Type Visualization**: Color-coded amounts (green for income, red for expenses) with proper formatting and currency symbols
 - **Transfer Display**: Special handling for transfer transactions showing source and destination accounts with arrow indicators
