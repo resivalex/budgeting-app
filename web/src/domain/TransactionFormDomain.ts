@@ -1,4 +1,9 @@
-import { TransactionDTO, CategoryExpansionsDTO, ColoredAccountDetailsDTO } from '@/types'
+import {
+  TransactionDTO,
+  CategoryExpansionsDTO,
+  ColoredAccountDetailsDTO,
+  SpendingLimitsDTO,
+} from '@/types'
 import { TransactionAggregator } from '@/services'
 
 interface CategoryOption {
@@ -101,6 +106,12 @@ class TransactionFormDomain {
     )
   }
 
+  getBudgetNamesForCategory(category: string, spendingLimits: SpendingLimitsDTO): string[] {
+    return spendingLimits.limits
+      .filter((limit) => limit.categories.includes(category))
+      .map((limit) => limit.name)
+  }
+
   buildTransactionDTO(params: {
     id: string
     datetime: string
@@ -112,6 +123,7 @@ class TransactionFormDomain {
     payee: string
     payeeTransferAccount: string
     comment: string
+    budget_name: string
   }): TransactionDTO {
     return {
       _id: params.id,
@@ -123,6 +135,7 @@ class TransactionFormDomain {
       currency: params.currency,
       payee: params.type === 'transfer' ? params.payeeTransferAccount : params.payee,
       comment: params.comment,
+      budget_name: params.budget_name,
     }
   }
 

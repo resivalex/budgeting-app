@@ -52,6 +52,11 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
           <p>
             <strong>Категория:</strong> {category}
           </p>
+          {transaction.budget_name && (
+            <p>
+              <strong>Бюджет:</strong> {transaction.budget_name}
+            </p>
+          )}
           <p>
             <strong>Тип:</strong> {translateType(type)}
           </p>

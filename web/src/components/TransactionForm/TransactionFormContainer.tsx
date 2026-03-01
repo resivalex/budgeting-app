@@ -36,15 +36,18 @@ export default function TransactionFormContainer({
   const [payeeTransferAccount, setPayeeTransferAccount] = useState('')
   const [payee, setPayee] = useState('')
   const [comment, setComment] = useState('')
+  const [budgetName, setBudgetName] = useState('')
   const [datetime, setDatetime] = useState(new Date().toISOString())
 
   const {
     categoryOptions,
+    budgetNameOptions,
     coloredAccounts,
     transactions,
     allCurrencies,
     allPayees,
     allComments,
+    spendingLimits,
     domain,
   } = useTransactionFormDomain()
 
@@ -68,6 +71,7 @@ export default function TransactionFormContainer({
       setPayee(t.payee)
     }
     setComment(t.comment)
+    setBudgetName(t.budget_name || '')
     setDatetime(convertToLocaleTime(t.datetime))
   }
 
@@ -98,6 +102,7 @@ export default function TransactionFormContainer({
     setPayee('')
     setPayeeTransferAccount('')
     setComment('')
+    setBudgetName('')
     setDatetime(new Date().toISOString())
   }
 
@@ -192,6 +197,7 @@ export default function TransactionFormContainer({
       payee,
       payeeTransferAccount,
       comment,
+      budget_name: budgetName,
     })
     await onApply(transaction)
   }
@@ -242,7 +248,19 @@ export default function TransactionFormContainer({
 
   const handleCategoryChange = (category: string) => {
     setCategory(category)
+    const budgetNames = domain.getBudgetNamesForCategory(category, spendingLimits)
+    if (budgetNames.length === 1) {
+      setBudgetName(budgetNames[0])
+    } else if (budgetNames.length === 0) {
+      setBudgetName('')
+    } else {
+      if (!budgetNames.includes(budgetName)) {
+        setBudgetName(budgetNames[0])
+      }
+    }
   }
+
+  const handleBudgetNameChange = (budgetName: string) => setBudgetName(budgetName)
 
   const viewDatetime = new Date(datetime)
 
@@ -260,6 +278,7 @@ export default function TransactionFormContainer({
       account={account}
       currency={currency}
       category={category}
+      budgetName={budgetName}
       payee={payee}
       payeeTransferAccount={payeeTransferAccount}
       comment={comment}
@@ -269,6 +288,7 @@ export default function TransactionFormContainer({
       onAmountChange={handleAmountChange}
       onAccountChange={handleAccountChange}
       onCategoryChange={handleCategoryChange}
+      onBudgetNameChange={handleBudgetNameChange}
       onPayeeChange={handlePayeeChange}
       onPayeeTransferAccountChange={handlePayeeTransferAccountChange}
       onCommentChange={handleCommentChange}
@@ -276,6 +296,7 @@ export default function TransactionFormContainer({
       // Dropdown options
       accounts={availableColoredAccounts}
       categoryOptions={categoryOptions}
+      budgetNameOptions={budgetNameOptions}
       currencies={availableCurrencies}
       payees={payees}
       comments={comments}

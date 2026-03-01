@@ -24,4 +24,7 @@ def _recreate_database(server, db_name):
 def _parse_text(text: str):
     stream = io.StringIO(text)
 
-    return pd.read_csv(stream, dtype=str).fillna("").to_dict(orient="records")
+    df = pd.read_csv(stream, dtype=str).fillna("")
+    if "budget_name" not in df.columns:
+        df["budget_name"] = ""
+    return df.to_dict(orient="records")

@@ -59,7 +59,6 @@ class BudgetsDomain {
 
   calculateBudgets(
     transactions: TransactionDTO[],
-    categories: string[],
     spendingLimits: SpendingLimitsDTO,
     monthDate: string,
   ): BudgetResult[] {
@@ -80,15 +79,25 @@ class BudgetsDomain {
       currencyConfig.mainCurrency,
       conversionMap,
     )
-    const restLimit = this.buildRestLimit(
-      categories,
-      totalLimit.categories,
-      currencyConfig.mainCurrency,
-    )
+    const restLimit = this.buildRestLimit(currencyConfig.mainCurrency)
 
-    return [totalLimit, ...monthSpendingLimits, restLimit].map((spendingLimit) =>
+    const realBudgets = monthSpendingLimits.map((spendingLimit) =>
       this.calculateSingleBudget(monthTransactions, spendingLimit, conversionMap),
     )
+    const restBudget = this.calculateSingleBudget(monthTransactions, restLimit, conversionMap)
+
+    const totalBudget: BudgetResult = {
+      name: totalLimit.name,
+      color: totalLimit.color,
+      currency: totalLimit.currency,
+      amount: totalLimit.amount,
+      categories: totalLimit.categories,
+      transactions: realBudgets.flatMap((b) => b.transactions),
+      spentAmount: realBudgets.reduce((sum, b) => sum + b.spentAmount, 0),
+      isEditable: totalLimit.isEditable,
+    }
+
+    return [totalBudget, ...realBudgets, restBudget]
   }
 
   getAvailableMonths(spendingLimits: SpendingLimitsDTO): string[] {
@@ -231,17 +240,13 @@ class BudgetsDomain {
     return totalLimit
   }
 
-  private buildRestLimit(
-    allCategories: string[],
-    usedCategories: string[],
-    mainCurrency: string,
-  ): MonthSpendingLimit {
+  private buildRestLimit(mainCurrency: string): MonthSpendingLimit {
     return {
       name: 'Другое',
       color: '#b6b6b6',
       currency: mainCurrency,
       amount: 0,
-      categories: allCategories.filter((category) => !usedCategories.includes(category)),
+      categories: [],
       isEditable: false,
     }
   }
@@ -262,13 +267,14 @@ class BudgetsDomain {
       isEditable: spendingLimit.isEditable,
     }
 
-    const categoriesMap: { [category: string]: boolean } = {}
-    spendingLimit.categories.forEach((category) => {
-      categoriesMap[category] = true
-    })
+    const matchesTransaction = (transaction: TransactionDTO): boolean => {
+      if (spendingLimit.name === 'ОБЩИЙ') return false
+      if (spendingLimit.name === 'Другое') return transaction.budget_name === ''
+      return transaction.budget_name === spendingLimit.name
+    }
 
     transactions.forEach((transaction) => {
-      if (categoriesMap[transaction.category]) {
+      if (matchesTransaction(transaction)) {
         budget.transactions.push(transaction)
         const sign = transaction.type === 'expense' ? 1 : -1
         budget.spentAmount +=

@@ -32,6 +32,12 @@ export interface CategoryStepProps {
   onComplete: () => void
 }
 
+export interface BudgetNameStepProps {
+  isExpanded: boolean
+  onExpand: () => void
+  onComplete: () => void
+}
+
 export interface PayeeStepProps {
   isExpanded: boolean
   onExpand: () => void
@@ -62,6 +68,7 @@ const currencyStep = 'currency'
 const amountStep = 'amount'
 const accountStep = 'account'
 const categoryStep = 'category'
+const budgetNameStep = 'budgetName'
 const payeeStep = 'payee'
 const payeeTransferAccountStep = 'payeeTransferAccount'
 const commentStep = 'comment'
@@ -74,6 +81,7 @@ function FormLayout({
   TypeStep,
   AccountStep,
   CategoryStep,
+  BudgetNameStep,
   PayeeStep,
   PayeeTransferAccountStep,
   CommentStep,
@@ -86,6 +94,7 @@ function FormLayout({
   TypeStep: FC<TypeStepProps>
   AccountStep: FC<AccountStepProps>
   CategoryStep: FC<CategoryStepProps>
+  BudgetNameStep: FC<BudgetNameStepProps>
   PayeeStep: FC<PayeeStepProps>
   PayeeTransferAccountStep: FC<PayeeTransferAccountStepProps>
   CommentStep: FC<CommentStepProps>
@@ -156,6 +165,11 @@ function FormLayout({
           {CategoryStep({
             isExpanded: currentStep === categoryStep,
             onExpand: () => setCurrentStep(categoryStep),
+            onComplete: () => setCurrentStep(budgetNameStep),
+          })}
+          {BudgetNameStep({
+            isExpanded: currentStep === budgetNameStep,
+            onExpand: () => setCurrentStep(budgetNameStep),
             onComplete: () => setCurrentStep(payeeStep),
           })}
           {PayeeStep({

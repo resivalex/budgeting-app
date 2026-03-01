@@ -53,7 +53,10 @@ export default class DbService {
   async readAllDocs(): Promise<any[]> {
     console.log('readAllDocs')
     const result = await this.localDB.allDocs({ include_docs: true })
-    return result.rows.map((row: any) => row.doc)
+    return result.rows.map((row: any) => ({
+      ...row.doc,
+      budget_name: row.doc.budget_name ?? '',
+    }))
   }
 
   async pushChanges(): Promise<boolean> {
@@ -77,6 +80,10 @@ export default class DbService {
           reject(err)
         })
     })
+  }
+
+  async bulkUpdate(docs: any[]): Promise<void> {
+    await this.localDB.bulkDocs(docs)
   }
 
   async pullChanges(): Promise<boolean> {

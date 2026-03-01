@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { spendingLimitsAtom, transactionsAtom, transactionsAggregationsAtom } from '@/state'
+import { spendingLimitsAtom, transactionsAtom } from '@/state'
 import { BudgetsDomain, BudgetResult } from '@/domain'
 import { BackendService, StorageService } from '@/services'
 
@@ -17,7 +17,6 @@ interface UseBudgetsDomainReturn {
 export function useBudgetsDomain(backendService: BackendService): UseBudgetsDomainReturn {
   const [spendingLimits, setSpendingLimits] = useAtom(spendingLimitsAtom)
   const transactions = useAtomValue(transactionsAtom)
-  const aggregations = useAtomValue(transactionsAggregationsAtom)
   const [selectedMonth, setSelectedMonth] = useState<string>('')
 
   const storageService = useMemo(() => new StorageService(), [])
@@ -41,13 +40,8 @@ export function useBudgetsDomain(backendService: BackendService): UseBudgetsDoma
 
   const budgets = useMemo(() => {
     if (!selectedMonth) return []
-    return budgetsDomain.calculateBudgets(
-      transactions,
-      aggregations.categories,
-      spendingLimits,
-      selectedMonth,
-    )
-  }, [budgetsDomain, transactions, aggregations.categories, spendingLimits, selectedMonth])
+    return budgetsDomain.calculateBudgets(transactions, spendingLimits, selectedMonth)
+  }, [budgetsDomain, transactions, spendingLimits, selectedMonth])
 
   const expectationRatio = useMemo(
     () => budgetsDomain.calculateExpectationRatio(selectedMonth),

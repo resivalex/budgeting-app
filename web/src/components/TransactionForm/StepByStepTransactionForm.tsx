@@ -8,6 +8,7 @@ import {
   Account,
   PayeeTransferAccount,
   Category,
+  BudgetName,
   Payee,
   Comment,
   Datetime,
@@ -19,6 +20,7 @@ import FormLayout, {
   TypeStepProps,
   AccountStepProps,
   CategoryStepProps,
+  BudgetNameStepProps,
   PayeeStepProps,
   PayeeTransferAccountStepProps,
   CommentStepProps,
@@ -43,6 +45,9 @@ function StepByStepTransactionForm({
   currency,
   category,
   onCategoryChange,
+  budgetName,
+  onBudgetNameChange,
+  budgetNameOptions,
   payee,
   onPayeeChange,
   payeeTransferAccount,
@@ -73,6 +78,7 @@ function StepByStepTransactionForm({
   amount: string
   account: string
   category: string
+  budgetName: string
   payee: string
   payeeTransferAccount: string
   comment: string
@@ -81,6 +87,7 @@ function StepByStepTransactionForm({
   // Options for dropdown/select inputs
   accounts: ColoredAccountDetailsDTO[]
   categoryOptions: SelectOption[]
+  budgetNameOptions: SelectOption[]
   currencies: string[]
   payees: string[]
   comments: string[]
@@ -91,6 +98,7 @@ function StepByStepTransactionForm({
   onAmountChange: (amount: string) => void
   onAccountChange: (account: string) => void
   onCategoryChange: (category: string) => void
+  onBudgetNameChange: (budgetName: string) => void
   onPayeeChange: (payee: string) => void
   onPayeeTransferAccountChange: (payeeTransferAccount: string) => void
   onCommentChange: (comment: string) => void
@@ -184,6 +192,19 @@ function StepByStepTransactionForm({
     )
   }
 
+  function BudgetNameStep({ isExpanded, onExpand, onComplete }: BudgetNameStepProps) {
+    return (
+      <BudgetName
+        budgetName={budgetName}
+        budgetNameOptions={budgetNameOptions}
+        onBudgetNameChange={onBudgetNameChange}
+        isExpanded={isExpanded}
+        onExpand={onExpand}
+        onComplete={onComplete}
+      />
+    )
+  }
+
   function PayeeStep({ isExpanded, onExpand, onComplete }: PayeeStepProps) {
     return (
       <Payee
@@ -258,6 +279,7 @@ function StepByStepTransactionForm({
       TypeStep={TypeStep}
       AccountStep={AccountStep}
       CategoryStep={CategoryStep}
+      BudgetNameStep={BudgetNameStep}
       PayeeStep={PayeeStep}
       PayeeTransferAccountStep={PayeeTransferAccountStep}
       CommentStep={CommentStep}

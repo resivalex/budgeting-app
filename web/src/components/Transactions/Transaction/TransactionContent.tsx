@@ -17,6 +17,7 @@ interface Props {
   amount: string
   currency: string
   localTime: string
+  budgetName: string
 }
 
 export default function TransactionContent({
@@ -28,6 +29,7 @@ export default function TransactionContent({
   amount,
   currency,
   localTime,
+  budgetName,
 }: Props) {
   const [showTime, setShowTime] = useState(false)
 
@@ -39,8 +41,10 @@ export default function TransactionContent({
     <div className="is-flex is-justify-content-space-between is-flex-grow-1">
       <div>
         <div className="has-text-weight-semibold">{category}</div>
+        {budgetName && <span className="tag is-small is-light">{budgetName}</span>}
         {type === 'transfer' ? (
-          <div className="has-text-weight-semibold">{/* @ts-ignore */}
+          <div className="has-text-weight-semibold">
+            {/* @ts-ignore */}
             {account} <FontAwesomeIcon icon={faArrowRightLong} /> {payee}
           </div>
         ) : (

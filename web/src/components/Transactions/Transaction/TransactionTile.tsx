@@ -63,6 +63,7 @@ export default function TransactionTile({
                 amount={t.amount}
                 currency={t.currency}
                 localTime={datetimeString.split(' ')[1]}
+                budgetName={t.budget_name}
               />
             </div>
           </div>
