@@ -27,9 +27,6 @@ class CsvExporting:
         else:
             df = pd.DataFrame(records)
             df = df.drop(columns=["_id", "_rev"])
-            if "budget_name" not in df.columns:
-                df["budget_name"] = ""
-            df["budget_name"] = df["budget_name"].fillna("")
             df = df.sort_values(by=["datetime"], ascending=False)
             df = df[columns]
 
