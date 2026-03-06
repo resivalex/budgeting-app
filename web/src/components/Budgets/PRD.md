@@ -19,7 +19,7 @@ A comprehensive budget management system that provides visual tracking of spendi
 - **Common Expectation Ratio**: Visual indicator showing expected spending progress based on current date within the month
 - **Automatic Budget Calculation**: Dynamic calculation of budgets based on spending limits configuration and transaction data; each transaction belongs to exactly one named budget or falls into the uncategorized pool
 - **Total Budget Aggregation**: Automatic "ОБЩИЙ" (Total) budget showing combined spending across all named budgets
-- **Uncategorized Spending**: "Другое" (Rest) budget collecting transactions where `budget_name` is empty (not assigned to any named budget)
+- **Uncategorized Spending**: "Другое" (Rest) budget collecting all transactions not assigned to any named budget category
 - **Real-time Updates**: Live recalculation of spent amounts and remaining balances as transactions are modified or deleted
 - **Currency Conversion System**: Sophisticated multi-currency conversion with configurable exchange rates for accurate cross-currency budget tracking
 - **Transfer Transaction Filtering**: Transfer transactions excluded from budget calculations to avoid double-counting

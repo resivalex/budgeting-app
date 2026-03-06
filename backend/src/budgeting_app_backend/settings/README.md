@@ -6,12 +6,6 @@ Persistent key-value configuration store backed by SQLite, exposing four typed s
 
 Each service class (`SpendingLimits`, `CategoryExpansions`, `AccountProperties`, `UploadDetails`) accepts a `SettingsProtocol` in its constructor and serializes/deserializes Pydantic models as JSON strings. This keeps the services storage-agnostic and easy to test with a mock.
 
-Getters return safe defaults when a key has never been written:
-
-- `CategoryExpansions` → empty expansions list
-- `AccountProperties` → empty accounts list
-- `UploadDetails` → epoch timestamp `1970-01-01`
-
 ## SpendingLimits
 
 The most complex service. Stores the full budget config as a single `SpendingLimitsValue` blob and exposes month-scoped read/write helpers (`get_month_budget`, `set_month_budget`, `set_month_budget_item`) that slice/merge into the top-level structure without requiring the caller to understand the full model.

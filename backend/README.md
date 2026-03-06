@@ -27,7 +27,11 @@ FastAPI backend for personal budgeting and expense tracking.
 
 1. Navigate to backend: `cd backend`
 2. Install: `poetry install`
-3. Configure: Copy `.env.example` to `.env`
+3. Configure environment variables:
+   - `TOKEN` — bearer token for API authentication
+   - `PASSWORD` — password for the `/config` endpoint
+   - `SQLITE_PATH` — path to SQLite database file
+   - `DB_URL` — CouchDB connection URL
 4. Set up Google Drive credentials (see below)
 5. Migrate DB: `poetry run alembic upgrade head`
 6. Run: `poetry run uvicorn main:app --reload`
@@ -49,8 +53,6 @@ docker-compose up
 
 ## Backup & Restore
 
-Full-database backup as a ZIP archive containing both SQLite and CouchDB data.
-
 **ZIP structure:**
 
 ```
@@ -64,6 +66,13 @@ backup.zip
 ```dotenv
 GOOGLE_DRIVE_CREDENTIALS_PATH=credentials/google-drive-credentials.json
 GOOGLE_DRIVE_FOLDER_ID=your_google_drive_folder_id
+```
+
+**Scheduler configuration:**
+
+```dotenv
+DAILY_DUMP_HOUR=3    # Hour (UTC) for daily automated backup
+DAILY_DUMP_MINUTE=0  # Minute for daily automated backup
 ```
 
 ## Development 💻

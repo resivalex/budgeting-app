@@ -4,6 +4,12 @@
 
 A comprehensive offline-first personal financial management application providing sophisticated budget tracking, multi-currency support, and intelligent transaction management with real-time synchronization, automated backups, and a modern responsive web interface designed for complete financial control and analysis.
 
+## Data Flows
+
+- **Transaction Data**: Lives in CouchDB and syncs bidirectionally with the browser's local storage for offline-first capability. The backend reads transactions from CouchDB for exports and backups.
+- **Configuration Data**: Spending limits, account properties, and category expansions are stored in a settings database, managed exclusively by the backend.
+- **Backups**: Automated daily backups (transactions + settings) to Google Drive. Manual backup and restore are also available.
+
 ## Functionality
 
 ### Personal Financial Management

@@ -17,12 +17,6 @@ Web (PouchDB) <--sync--> CouchDB <--read--> Backend (FastAPI)
                                     SQLite (settings/limits)
 ```
 
-**Transaction Data**: Lives in CouchDB and syncs bidirectionally with browser's PouchDB for offline-first capability. Backend reads transactions from CouchDB for exports and backups.
-
-**Configuration Data**: Spending limits, account properties, and category expansions are stored in SQLite, managed exclusively by the backend.
-
-**Backups**: Automated daily ZIP archive backups (SQLite + CouchDB) to Google Drive, scheduled via backend scheduler. Manual backup and restore via API endpoints.
-
 ## Components
 
 - **Backend**: FastAPI Python API ([details](backend/README.md))

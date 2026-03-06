@@ -18,4 +18,3 @@ Before replacing the transaction database with an imported CSV, the system autom
 
 - Transaction reads feed the transactions API endpoint and the CSV export pipeline
 - The backup is triggered automatically during CSV import — users do not initiate it manually
-- Backup storage depends on Google Drive access configured via service credentials

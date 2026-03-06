@@ -30,5 +30,5 @@ All computed budget data comes from `useBudgetsDomain` (see `web/src/hooks/useBu
 ## Key Design Decisions
 
 - **Long-press to open details**: keeps the tile tap-target clean for future navigation while allowing detail access on mobile
-- **Progress bar segments**: normalised against `max(totalAmount, spentAmount, totalAmount - spentAmount)` so all scenarios (profit, on-track, overdraft) render proportionally without exceeding 100%
+- **Progress bar segments**: normalised so all scenarios (profit, on-track, overdraft) render proportionally — the bar never exceeds 100% regardless of which value is dominant
 - **`isEditable` flag on DTO**: only user-defined budgets allow inline editing; auto-generated aggregates (Total / Rest) are read-only

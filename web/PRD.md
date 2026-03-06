@@ -8,7 +8,7 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 
 ### Core Application Experience
 
-- **Offline-First Architecture**: Full application functionality without internet connection, with automatic synchronization when connectivity is restored
+- **Offline-First**: Full application functionality without internet connection; changes sync automatically when connectivity is restored
 - **Progressive Web App**: PWA capabilities with responsive design and mobile-optimized interactions
 - **Multi-Currency Financial Management**: Full support for multiple currencies with configurable exchange rates and automatic conversion
 - **Real-time Data Synchronization**: Bidirectional sync between local and remote databases with conflict resolution and database reset detection
@@ -42,6 +42,19 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 
 - **Password-Based Authentication**: Login with backend URL and password; token stored in localStorage for subsequent requests
 - **Session Restoration**: Automatic login restoration on page reload from stored credentials
+
+## Domain Responsibilities
+
+Each domain service encapsulates a specific business capability:
+
+- **TransactionDomain**: Transaction CRUD operations, aggregations (balances by account, suggestions for payee/category/account)
+- **SyncDomain**: Pull/push sync lifecycle, database reset detection and recovery
+- **SettingsDomain**: Loading and caching backend configuration (category expansions, account properties)
+- **BudgetsDomain**: Budget totals by `budget_name`, multi-currency conversion, month-by-month filtering
+- **TransactionFormDomain**: Form validation, category extension lookup, auto-suggestions, budget name resolution from category
+- **TransactionFilterDomain**: Transaction filtering across account, payee, comment, category, and budget name with cross-language matching
+- **ExportDomain**: CSV export generation with timestamped filenames and blob download handling
+- **AuthDomain**: Login, logout, and credential persistence
 
 ## Component References
 

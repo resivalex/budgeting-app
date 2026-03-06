@@ -20,58 +20,17 @@ Domain Services (Business Logic)
 Infrastructure Services (DB, API)
 ```
 
-**Infrastructure Layer** (`services/`):
-
-- `DbService`: PouchDB operations (CRUD, sync, bulk updates)
-- `BackendService`: API communication for configuration and exports
-- `StorageService`: Typed localStorage abstraction
-- `TransactionAggregator`: Balance calculations and suggestions
-- `ServiceContext`: React context for dependency injection (`ServiceProvider`, `useServices`)
-
-**Domain Layer** (`domain/`):
-
-Pure TypeScript classes with no React dependencies:
-
-- `TransactionDomain`: Transaction CRUD business logic + aggregations
-- `SyncDomain`: Sync orchestration (pull/push, database reset)
-- `SettingsDomain`: Settings loading and caching
-- `BudgetsDomain`: Budget calculations by `budget_name`, currency conversion, month filtering
-- `TransactionFormDomain`: Form validation, category extensions, suggestions, budget name lookup
-- `TransactionFilterDomain`: Transaction filtering with cross-language matching
-- `ExportDomain`: CSV export with blob handling
-- `AuthDomain`: Login, logout, and session management
-
-**State Layer** (`state/`):
-
-Jotai atoms for centralized reactive state:
-
-- `transactionsAtom`: Transaction list + derived aggregations
-- `syncStatusAtom`: Sync state (offline, errors)
-- `configAtom`: Settings (categoryExpansions, accountProperties)
-- `spendingLimitsAtom`: Budget limits and currency configurations
-
-**Hooks Layer** (`hooks/`):
-
-React hooks that wire domains to atoms:
-
-- `useTransactionsDomain`: Transaction state management
-- `useSyncDomain`: Sync lifecycle management
-- `useSettingsDomain`: Settings loading
-- `useBudgetsDomain`: Budget calculations and month selection
-- `useTransactionFormDomain`: Form data with category options and budget name options
-- `useColoredAccounts`: Account coloring from atoms
-
-**Component Structure**:
-
-- Container components (`*Container.tsx`): Read atoms, call domain methods, render UI
-- Presentational components: Pure UI rendering
-- Path aliases via `@/` for clean imports
+- **Infrastructure Layer** (`services/`): PouchDB wrapper, backend API client, typed localStorage, balance aggregation, React context for dependency injection
+- **Domain Layer** (`domain/`): Pure TypeScript classes encapsulating all business logic with no React dependencies
+- **State Layer** (`state/`): Jotai atoms holding transactions, sync status, settings config, and spending limits
+- **Hooks Layer** (`hooks/`): React hooks that wire domain services to atoms, providing components with reactive state
+- **Component Layer** (`components/`): Container components read atoms and call domain methods; presentational components handle pure rendering
 
 **Key Technical Choices**:
 
 - React 19 + TypeScript for type safety
 - Jotai for centralized state management
-- Domain-driven design for business logic
+- Domain-driven design isolates all business logic from UI
 - Bulma CSS for responsive design
 - react-virtualized for large transaction lists
 - Service workers for PWA offline support

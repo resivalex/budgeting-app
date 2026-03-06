@@ -10,18 +10,17 @@ Containerized CouchDB database providing document storage and bidirectional repl
 
 - Stores financial transactions as JSON documents in the `budgeting` database
 - Schemaless design: new fields can be added without migrations; the frontend defaults missing fields on read (e.g., `budget_name` defaults to `""`)
-- Revision-based conflict detection across replicas
 
 ### Offline-First Sync
 
 - Frontend syncs directly with CouchDB without a backend intermediary
-- Handles concurrent edits from multiple devices
+- Handles concurrent edits from multiple devices with automatic conflict detection
 - Real-time change feed drives sync updates in the frontend
 
 ### Browser Access
 
-- CORS configured on startup so the web app can access the database directly from the browser
-- CORS settings controlled via environment variables
+- The web app accesses the database directly from the browser via CouchDB's HTTP API
+- CORS is enabled to allow cross-origin requests from the frontend
 
 ### Multi-Environment Support
 

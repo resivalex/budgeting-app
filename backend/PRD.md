@@ -46,4 +46,3 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 
 - Bearer token authentication for all state-mutating and data endpoints
 - Password-only authentication for `/config` endpoint to obtain the token
-- Token and password configured via environment variables

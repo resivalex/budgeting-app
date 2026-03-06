@@ -15,7 +15,7 @@ All domains are re-exported from `index.ts` as a barrel.
 | `TransactionDomain`       | CRUD on local DB; computes aggregations (accounts, categories, currencies)                                                                 |
 | `SyncDomain`              | Orchestrates local→remote sync; detects server-side DB resets via `transactionsUploadedAt` timestamp; manages offline status               |
 | `SettingsDomain`          | Fetches and caches category expansions and account properties in localStorage                                                              |
-| `BudgetsDomain`           | Loads spending limits; computes budget totals with multi-currency conversion; builds "Другое" (rest) and "ОБЩИЙ" (total) synthetic budgets |
+| `BudgetsDomain`           | Loads spending limits; computes budget totals with multi-currency conversion; generates synthetic summary and total budget entries         |
 | `TransactionFormDomain`   | Derives form options (categories, budget names, payees) from aggregations and spending limits; validates and builds `TransactionDTO`       |
 | `TransactionFilterDomain` | Filters transactions by multiple criteria; supports cross-layout (EN/RU keyboard) matching                                                 |
 | `ExportDomain`            | Fetches CSV from backend and triggers browser download                                                                                     |

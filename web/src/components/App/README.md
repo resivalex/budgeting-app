@@ -24,18 +24,8 @@ AppContainer
 
 **`App`** is a pure presentational shell: React Router `<Routes>`, layout structure, and prop-driven callbacks. No business logic.
 
-## Routes
-
-| Path                           | Component                              |
-| ------------------------------ | -------------------------------------- |
-| `/`                            | `HomeContainer`                        |
-| `/transactions`                | `TransactionsPageContainer`            |
-| `/budgets`                     | `BudgetsContainer`                     |
-| `/add`                         | `TransactionFormContainer` (add mode)  |
-| `/transactions/:transactionId` | `TransactionFormContainer` (edit mode) |
-
 ## Key Patterns
 
-- **`ColoredAccountSelect` as memoized components**: `LimitedAccountSelect` and `FullAccountSelect` are created via `useMemo` + `forwardRef` inside `AuthorizedAppContainer` so that account aggregation data is closed over rather than prop-drilled through routing boundaries.
+- **Memoized account select components**: `LimitedAccountSelect` and `FullAccountSelect` are created via `useMemo` + `forwardRef` inside `AuthorizedAppContainer` so that account aggregation data is closed over rather than prop-drilled through routing boundaries.
 - **Filter state**: Five filter fields (`account`, `payee`, `comment`, `category`, `budgetName`) live in `AuthorizedAppContainer` and are passed down to the transactions route.
 - **Notifications**: `lastNotificationText` state drives a transient `<Notification>` toast after add/edit/delete.

@@ -33,5 +33,5 @@ TransactionsPageContainer   — filtering logic, reads spendingLimitsAtom for bu
 
 ## Design Notes
 
-- Date headers are computed with a single `useMemo` pass comparing consecutive transaction dates (converted to locale time via `convertToLocaleTime`).
-- Filter inputs have a local draft state inside `TransactionsPage`; values are committed to parent only on "Apply" or reset on "Reset", keeping the list stable while the user types.
+- Date headers are memoized by comparing consecutive transaction dates after locale-time conversion, avoiding re-computation on unrelated state changes.
+- Filter inputs maintain a local draft state inside `TransactionsPage`, keeping the list stable while the user edits filter values.

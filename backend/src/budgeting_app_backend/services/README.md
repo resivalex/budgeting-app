@@ -13,9 +13,9 @@ Wraps the Google Drive API v3 for file uploads using service account authenticat
 - `GOOGLE_DRIVE_CREDENTIALS_PATH` — path to the service account JSON credentials file
 - `GOOGLE_DRIVE_FOLDER_ID` — target Google Drive folder for uploads
 
-Both values are validated at construction time; missing or invalid paths raise `ValueError` immediately rather than failing at upload time.
+**Design rationale**: Both values are validated at construction time, raising `ValueError` immediately rather than failing silently at upload time.
 
-**Upload behavior**: accepts raw binary content and an optional filename. If no filename is provided, one is auto-generated with a UTC timestamp (`budget_transactions_dump_<timestamp>.csv`). Returns a dict with `id`, `name`, and `link` (webViewLink).
+**API**: `upload_file(file_content, mime_type, filename=None)` — uploads raw binary content and returns a dict with `id`, `name`, and `link` (webViewLink). If `filename` is omitted, a UTC-timestamped name is generated automatically.
 
 ## Usage
 
@@ -27,7 +27,9 @@ result = service.upload_file(csv_bytes, mime_type="text/csv", filename="backup.c
 print(result["link"])
 ```
 
-## Consumers
+## Architecture
 
-- `GoogleDriveDump` (transactions module) — pre-import CSV backups
-- `BackupScheduler` (backup module) — scheduled ZIP archive uploads
+Consumers within the backend:
+
+- `GoogleDriveDump` (transactions module) — calls `upload_file` before each CSV import
+- `BackupScheduler` (backup module) — calls `upload_file` for scheduled ZIP archive uploads

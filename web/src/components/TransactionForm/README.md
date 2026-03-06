@@ -20,8 +20,4 @@ TransactionFormContainer         ← state management, domain logic, routing
 
 **`LimitedAccountSelect` injection** — the parent passes in an account selector component, keeping account-fetching logic outside this module.
 
-**Budget name auto-resolution** — on category change, `domain.getBudgetNamesForCategory` finds matching budgets. If exactly one matches, it is auto-selected. The dropdown orders matching budgets first, then non-matching, then "(без бюджета)".
-
-**Transfer account swap** — if the user selects the same account for both source and destination, they are automatically swapped to prevent duplicates.
-
-**Edit mode** — when `:transactionId` is present in the URL, the form loads that transaction's data. If the transaction is not found, it redirects to `/`.
+**UTC/local time conversion** — datetimes are stored in UTC; `TransactionFormContainer` converts to local time on load and back to UTC on save.

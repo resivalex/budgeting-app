@@ -18,6 +18,7 @@ Transaction list page where users browse, filter, and manage their financial rec
 ### Filtering
 
 - A collapsible search panel lets users filter by account, payee, comment, category, and budget name.
+- Filter edits are staged locally; users explicitly commit them via an "Apply" button (which also collapses the panel) or discard them via "Reset".
 - Filters support cross-language matching (English/Russian input).
 - Account filtering covers both sides of transfer transactions.
 - Active filters appear as removable tags below the search bar; all filters can be cleared at once.

@@ -7,8 +7,8 @@ CSV-based full-database import for the budgeting app backend.
 Single class `CsvImporting` (exported from `__init__.py`) encapsulates the entire import flow:
 
 1. **Database recreation** — drops and recreates the `budgeting` CouchDB database to eliminate revision conflicts
-2. **CSV parsing** — uses pandas with `dtype=str` and `fillna("")` so all fields stay as strings with no NaN values
-3. **Bulk insert** — `save_bulk(..., transaction=True)` inserts all records atomically
+2. **CSV parsing** — reads all fields as strings, preserving exact values from the source file
+3. **Bulk insert** — inserts all records atomically in a single transaction
 4. **Compaction** — compacts the database after import to reclaim storage
 
 ## Usage
@@ -20,7 +20,7 @@ importer = CsvImporting(couchdb_url)
 importer.perform(csv_bytes)
 ```
 
-Exposed via `POST /importing` (multipart file upload). Orchestrated by `State.importing()`, which runs a pre-import backup and updates the upload timestamp around this call.
+Exposed via `POST /importing` (multipart file upload).
 
 ## Design Rationale
 

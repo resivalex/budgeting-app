@@ -8,10 +8,12 @@ Containerized CouchDB instance providing document storage and sync for the budge
 
 - Document-based storage for JSON transaction data
 - Built-in bidirectional replication for offline-first sync with PouchDB
-- Native conflict resolution for concurrent edits across devices
+- Optimistic concurrency via `_rev` revision field — conflicts detected automatically across replicas
 - HTTP/REST API — frontend PouchDB syncs directly without a backend intermediary
 
-**Data model**: Each transaction is a JSON document with `_id` (UUID), `_rev` (revision), and domain fields. Schemaless — new fields are added without migrations; the frontend defaults missing fields on read.
+**Data model**: Each transaction is a JSON document with `_id` (UUID) and `_rev` (revision). New fields are added without schema migrations.
+
+**Startup**: `start-and-configure.sh` wraps the default CouchDB entrypoint, waits for the API to become available, then applies CORS configuration via the CouchDB HTTP API using environment variable values.
 
 **Environments**:
 
@@ -69,7 +71,7 @@ Containerized CouchDB instance providing document storage and sync for the budge
 
 ## CORS
 
-CORS is configured automatically by `start-and-configure.sh` on container startup using `.env` values.
+CORS is configured automatically by `start-and-configure.sh` on container startup using `.env` values. All CORS settings (origins, credentials, methods, headers) are controlled via environment variables.
 
 Verify CORS:
 

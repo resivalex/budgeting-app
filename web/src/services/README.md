@@ -15,24 +15,24 @@ ServiceProvider
 
 `TransactionAggregator` is a standalone computation class, not a service — it receives a `TransactionDTO[]` snapshot and derives derived data synchronously.
 
-## Key Classes
+## Key Design Decisions
 
 ### `BackendService`
 
-Wraps `axios` with a 5-second timeout and a `Bearer` token header. All requests target a configurable `backendUrl`. Snake_case API responses are mapped to camelCase DTOs before returning.
+Authenticated HTTP client targeting a configurable backend URL. API responses are normalized to camelCase DTOs before returning to callers.
 
 ### `DbService`
 
-Uses PouchDB locally (`budgeting` database) and connects to a remote CouchDB at `<dbUrl>/budgeting`. Sync is one-shot (not live): `pushChanges` replicates local → remote, `pullChanges` replicates remote → local. Database reset destroys and recreates the local PouchDB instance.
+PouchDB-based local store synced with a remote CouchDB instance. Sync is intentionally one-shot (not live) to give the app explicit control over when data is pushed or pulled. `pushChanges` replicates local → remote; `pullChanges` replicates remote → local. Database reset destroys and recreates the local instance to mirror a server-side data reset.
 
 ### `StorageService`
 
-Generic typed wrapper over `localStorage`. The `StorageKeys` type map constrains both keys and their value types at compile time. Values that are not plain strings are JSON-serialized on write and deserialized on read.
+Typed wrapper over `localStorage`. The `StorageKeys` type map enforces correct key–value types at compile time.
 
 ### `ServiceContext`
 
-React Context providing `{ backendService, dbService, storageService }`. `StorageService` is instantiated with `useMemo` inside the provider. `useServices()` throws if called outside the provider.
+React Context distributing `{ backendService, dbService, storageService }` to the component tree. `useServices()` throws if called outside the provider to surface misconfiguration early.
 
 ### `TransactionAggregator`
 
-Pure computation helper. Derives account balances (handles income/expense/transfer without double-counting), category frequency ranking, currency list, and payee/comment suggestions from a transaction array.
+Pure, synchronous computation over a transaction snapshot. Designed as a standalone class (not a service) because it has no side effects and requires no async operations.

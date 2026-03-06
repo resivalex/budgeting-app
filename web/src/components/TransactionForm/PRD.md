@@ -11,12 +11,13 @@ Step-by-step transaction creation and editing interface with intelligent default
 - **Smart Initialization**: Automatically populates form fields when editing existing transactions
 - **Intelligent Defaults**: Pre-fills fields based on transaction history and user patterns
 - **Real-time Validation**: Validates form completeness and enables save only when all required fields are valid
-- **Edit Mode**: Users can navigate directly to a transaction's edit URL to modify an existing transaction
+- **Edit Mode**: Users can navigate directly to a transaction's edit URL to modify an existing transaction; navigating to an invalid transaction ID redirects to the home screen
 - **Historical Data Integration**: Leverages past transaction history for smart suggestions and autocomplete
 - **Multi-currency Support**: Handles different currencies with proper conversion and display
 - **Category Extensions**: Supports expanded category names for better organization
-- **Budget Name Auto-Assignment**: When a category is selected, the form automatically resolves and assigns the corresponding `budget_name` by looking up which budget owns that category in spending limits
+- **Budget Name Auto-Assignment**: When a category is selected, the form automatically resolves and assigns the corresponding `budget_name` by looking up which budget owns that category in spending limits; if exactly one budget matches, it is auto-selected
 - **Budget Name Dropdown**: Users can manually expand and change the `budget_name`; the dropdown lists budgets matching the current category first, then unmatching budgets, then "(без бюджета)" at the end; completing the category step advances focus directly to payee, skipping budget_name
+- **Transfer Account Swap**: If the user selects the same account for both source and destination in a transfer, they are automatically swapped to prevent duplicates
 - **Date/Time Handling**: Proper timezone conversion between local and UTC times
 
 The form orchestrates all individual input components (see [FormInputs PRD](./FormInputs/PRD.md)) within a cohesive step-by-step interface that adapts based on transaction type and user progress.

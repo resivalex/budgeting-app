@@ -2,7 +2,7 @@
 
 ## Overview
 
-Hooks expose business capabilities to UI components — transaction management, background sync, settings, budgets, and form support — keeping components declarative and free of service-level concerns.
+Hooks expose the following business capabilities to UI components: transaction management, background sync, settings, budgets, and form support.
 
 ## Features
 

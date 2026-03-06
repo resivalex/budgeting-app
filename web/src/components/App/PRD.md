@@ -14,6 +14,16 @@ Main application shell providing authentication, navigation, data synchronizatio
 - **Data Export**: Export all transactions to CSV
 - **Status Feedback**: Loading indicator during data sync; app version display in menu
 
+## Navigation
+
+| Path                           | Screen                           |
+| ------------------------------ | -------------------------------- |
+| `/`                            | Home dashboard                   |
+| `/transactions`                | Transaction list                 |
+| `/budgets`                     | Budget overview                  |
+| `/add`                         | Add transaction form              |
+| `/transactions/:transactionId` | Edit transaction form             |
+
 ## User Workflows
 
 - **First visit / logged out**: User enters backend URL and password to authenticate

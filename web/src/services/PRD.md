@@ -23,4 +23,4 @@ Transactions are stored locally and remain accessible without network connectivi
 
 ### Transaction Analytics
 
-Derives account balances, category frequency rankings, active currencies, and payee/comment suggestions from the current transaction set, powering autocomplete and summary views.
+Derives account balances, category frequency rankings, active currencies, and payee/comment suggestions from the current transaction set, powering autocomplete and summary views. Transfer transactions are handled correctly — amounts are not double-counted when computing balances.

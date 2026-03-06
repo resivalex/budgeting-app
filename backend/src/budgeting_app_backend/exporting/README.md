@@ -1,10 +1,10 @@
 # Exporting Module
 
-Exports all CouchDB transaction data as a CSV string.
+Exports all CouchDB transactions as an in-memory CSV string — no temp files.
 
-## Key Class
+## Architecture
 
-**`CsvExporting`** — takes a CouchDB URL, fetches all documents from the `budgeting` database, strips system fields, sorts by `datetime` descending, and returns a CSV string via pandas + StringIO (no temp files).
+**`CsvExporting`** — accepts a CouchDB URL, fetches all documents from the `budgeting` database, drops CouchDB system fields (`_id`, `_rev`), and returns a CSV string via pandas and StringIO.
 
 ## Usage
 
@@ -14,4 +14,6 @@ from budgeting_app_backend.exporting import CsvExporting
 csv_data = CsvExporting(couchdb_url).perform()  # returns str
 ```
 
-Exposed via `State.exporting()` for the `GET /exporting` endpoint and called by the importing module to create a pre-import backup.
+## Integration
+
+Exposed via `State.exporting()`. Called by the importing module before overwriting the database.

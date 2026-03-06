@@ -1,6 +1,6 @@
 # Hooks
 
-React hooks that bridge domain classes and Jotai atoms, providing components with reactive business logic.
+React hooks that bridge domain classes and Jotai atoms, providing components with reactive business logic. Components stay declarative and free of service-level concerns — all coordination with `BackendService`, `DbService`, and state atoms is encapsulated here.
 
 ## Architecture
 
