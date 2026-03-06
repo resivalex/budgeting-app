@@ -12,12 +12,10 @@ CSV-based full-database import that replaces all transaction data with the conte
 
 ## User Workflow
 
-1. User exports current data as a backup (automatic, pre-import)
-2. User uploads a CSV file via the import endpoint
-3. All existing transactions are discarded and replaced with CSV contents
-4. Upload timestamp is updated to reflect the new state
+1. User uploads a CSV file via the import endpoint
+2. All existing transactions are discarded and replaced with CSV contents
+3. Upload timestamp is updated to reflect the new state
 
 ## Integration Points
 
-- A backup is automatically exported to Google Drive before the import runs
 - The upload timestamp is updated after a successful import, triggering sync awareness in connected clients

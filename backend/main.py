@@ -54,8 +54,6 @@ def create_state() -> State:
     return State(
         db_url=DB_URL,
         settings=app_settings,
-        google_drive_credentials_path=GOOGLE_DRIVE_CREDENTIALS_PATH,
-        google_drive_folder_id=GOOGLE_DRIVE_FOLDER_ID
     )
 
 

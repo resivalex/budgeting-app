@@ -5,7 +5,7 @@ from budgeting_app_backend.protocols import SqlConnectionProtocol, SettingsProto
 
 from .exporting import CsvExporting as TransactionsCsvExporting
 from .importing import CsvImporting as TransactionsCsvImporting
-from .transactions import DbSource as TransactionsDbSource, GoogleDriveDump as TransactionsGoogleDriveDump
+from .transactions import DbSource as TransactionsDbSource
 from .settings import (
     SpendingLimits,
     SpendingLimitsValue,
@@ -25,26 +25,14 @@ class State:
         self,
         db_url: str,
         settings: SettingsProtocol,
-        google_drive_credentials_path: str = None,
-        google_drive_folder_id: str = None,
     ):
         self._db_url = db_url
         self._spending_limits = SpendingLimits(settings=settings)
         self._category_expansions = CategoryExpansions(settings=settings)
         self._account_properties = AccountProperties(settings=settings)
         self._upload_details = UploadDetails(settings=settings)
-        self._google_drive_credentials_path = google_drive_credentials_path
-        self._google_drive_folder_id = google_drive_folder_id
 
     def importing(self, content: bytes):
-        csv_exporting = TransactionsCsvExporting(url=self._db_url)
-
-        dump = TransactionsGoogleDriveDump(
-            credentials_path=self._google_drive_credentials_path,
-            folder_id=self._google_drive_folder_id
-        )
-        dump.put(csv_exporting.perform().encode("utf-8"))
-
         self._upload_details.set(uploaded_at=datetime.utcnow().isoformat())
 
         csv_importing = TransactionsCsvImporting(url=self._db_url)

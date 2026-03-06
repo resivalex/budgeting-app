@@ -11,9 +11,10 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 - **`GET /config`** (password-authenticated): Returns bearer token and CouchDB URL for frontend initialization
 - **`GET /settings`**: Returns `transactionsUploadedAt` timestamp for frontend database reset detection
 - **`GET /transactions`**: Returns all transaction documents from CouchDB
-- **`POST /importing`**: Accepts CSV file upload; backs up current data to Google Drive before replacing the CouchDB database
+- **`POST /importing`**: Accepts CSV file upload; replaces the CouchDB database with the uploaded CSV contents
 - **`GET /exporting`**: Returns all transactions as a CSV file with standard columns
 - **`GET /spending-limits`** / **`POST /spending-limits`**: Read/write full spending limits configuration
+- **`GET /spending-limits/month-budget`**: Read a single month's budget slice
 - **`POST /spending-limits/month-budget`** and **`POST /spending-limits/month-budget-item`**: Partial budget updates by month
 - **`GET /category-expansions`** / **`POST /category-expansions`**: Read/write category display name mappings
 - **`GET /account-properties`** / **`POST /account-properties`**: Read/write per-account visual properties (colors)
@@ -32,7 +33,7 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 ### Data Import/Export
 
 - **CSV Export**: Exports all CouchDB transactions as CSV with columns: `datetime, account, category, type, amount, currency, payee, comment, budget_name`, sorted newest first
-- **CSV Import**: Replaces the entire CouchDB database with contents of uploaded CSV; pre-import snapshot saved to Google Drive
+- **CSV Import**: Replaces the entire CouchDB database with contents of uploaded CSV
 - **`budget_name` field**: Present in both import and export CSV; missing values become empty string (`""`)
 
 ### Backup & Restore

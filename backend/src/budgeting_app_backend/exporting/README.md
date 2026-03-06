@@ -16,4 +16,4 @@ csv_data = CsvExporting(couchdb_url).perform()  # returns str
 
 ## Integration
 
-Exposed via `State.exporting()`. Called by the importing module before overwriting the database.
+Exposed via `State.exporting()`. Called by the `GET /exporting` endpoint.

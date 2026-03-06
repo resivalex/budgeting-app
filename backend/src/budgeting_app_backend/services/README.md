@@ -31,5 +31,4 @@ print(result["link"])
 
 Consumers within the backend:
 
-- `GoogleDriveDump` (transactions module) — calls `upload_file` before each CSV import
 - `BackupScheduler` (backup module) — calls `upload_file` for scheduled ZIP archive uploads
