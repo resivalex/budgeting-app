@@ -10,7 +10,7 @@ export const transactionsAtom = atom(
   (_get, set, transactions: TransactionDTO[]) => {
     const sortedTransactions = _.sortBy(
       transactions,
-      (transaction: TransactionDTO) => transaction.datetime,
+      (transaction) => transaction.datetime,
     ).reverse()
     set(rawTransactionsAtom, sortedTransactions)
   },

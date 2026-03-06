@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import List
 
 from budgeting_app_backend.protocols import SettingsProtocol
 
@@ -10,7 +9,7 @@ class CategoryExpansion(BaseModel):
 
 
 class CategoryExpansionsValue(BaseModel):
-    expansions: List[CategoryExpansion]
+    expansions: list[CategoryExpansion]
 
 
 class CategoryExpansions:

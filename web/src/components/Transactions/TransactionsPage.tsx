@@ -71,27 +71,11 @@ export default function TransactionsPage({
     setIsFilterExpanded(false)
   }
 
-  const displayFilters = () => {
-    let filters = []
-
-    if (filterPayee) {
-      filters.push(`Получатель: ${filterPayee}`)
-    }
-
-    if (filterComment) {
-      filters.push(`Комментарий: ${filterComment}`)
-    }
-
-    if (filterCategory) {
-      filters.push(`Категория: ${filterCategory}`)
-    }
-
-    if (filterBudgetName) {
-      filters.push(`Бюджет: ${filterBudgetName}`)
-    }
-
-    return filters
-  }
+  const activeFilters: string[] = []
+  if (filterPayee) activeFilters.push(`Получатель: ${filterPayee}`)
+  if (filterComment) activeFilters.push(`Комментарий: ${filterComment}`)
+  if (filterCategory) activeFilters.push(`Категория: ${filterCategory}`)
+  if (filterBudgetName) activeFilters.push(`Бюджет: ${filterBudgetName}`)
 
   return (
     <div
@@ -201,7 +185,7 @@ export default function TransactionsPage({
           </div>
         </div>
       ) : (
-        displayFilters().length > 0 && (
+        activeFilters.length > 0 && (
           <div className="notification is-light is-small mt-2" style={{ padding: '0.75rem' }}>
             <div className="content is-small">
               <div
@@ -215,7 +199,7 @@ export default function TransactionsPage({
                 ></button>
               </div>
               <div className="tags mt-1">
-                {displayFilters().map((filter, index) => (
+                {activeFilters.map((filter, index) => (
                   <span key={index} className="tag is-info is-light">
                     {filter}
                   </span>

@@ -1,4 +1,3 @@
-import React from 'react'
 import Budget from './Budget'
 import BudgetInfoModal from './BudgetInfoModal'
 import Select from 'react-select'

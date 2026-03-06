@@ -21,11 +21,9 @@ import re
 import logging
 from budgeting_app_backend.backup import BackupService, BackupScheduler
 
-# Environment variables
 DB_URL = os.getenv("DB_URL")
 TOKEN = os.getenv("TOKEN")
 PASSWORD = os.getenv("PASSWORD")
-BACKEND_URL = os.getenv("BACKEND_URL")
 SQLITE_PATH = os.getenv("SQLITE_PATH")
 GOOGLE_DRIVE_CREDENTIALS_PATH = os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
 GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
@@ -54,7 +52,6 @@ def create_state() -> State:
     sqlite_connection = SqliteConnection(sqlite_path=SQLITE_PATH)
     app_settings = SqlSettings(sql_connection=sqlite_connection)
     return State(
-        sql_connection=sqlite_connection,
         db_url=DB_URL,
         settings=app_settings,
         google_drive_credentials_path=GOOGLE_DRIVE_CREDENTIALS_PATH,

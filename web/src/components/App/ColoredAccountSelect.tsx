@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, forwardRef, useRef, MutableRefObject, useState } from 'react'
+import { useImperativeHandle, forwardRef, useRef, MutableRefObject, useState } from 'react'
 import Select from 'react-select'
 import {
   convertCurrencyCodeToSymbol,
@@ -23,12 +23,12 @@ const ColoredAccountSelect = forwardRef(
       availableAccountNames: string[]
       emptyOption: string | null
     },
-    ref
+    ref,
   ) => {
     const [menuIsOpen, setMenuOpen] = useState(false)
     const coloredAccounts = useColoredAccounts(localStorage.accountProperties || '', accountDetails)
     const availableColoredAccounts = coloredAccounts.filter((a) =>
-      availableAccountNames.includes(a.account)
+      availableAccountNames.includes(a.account),
     )
     const emptyOptions = emptyOption ? [{ value: '', label: emptyOption, color: '#ffffff' }] : []
     const accountOptions = availableColoredAccounts.map((a) => ({
@@ -72,7 +72,7 @@ const ColoredAccountSelect = forwardRef(
         styles={reactSelectColorStyles}
       />
     )
-  }
+  },
 )
 
 export default ColoredAccountSelect

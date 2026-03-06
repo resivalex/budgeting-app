@@ -267,7 +267,7 @@ function StepByStepTransactionForm({
     setIsLoading(false)
   }, [onSave])
 
-  const MemoizedSaveButton = () => (
+  const SaveButtonWrapper = () => (
     <SaveButton isValid={isValid} isLoading={isLoading} onSave={handleSave} />
   )
 
@@ -284,7 +284,7 @@ function StepByStepTransactionForm({
       PayeeTransferAccountStep={PayeeTransferAccountStep}
       CommentStep={CommentStep}
       DatetimeStep={DatetimeStep}
-      SaveButton={MemoizedSaveButton}
+      SaveButton={SaveButtonWrapper}
     />
   )
 }

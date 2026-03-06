@@ -144,13 +144,12 @@ class SpendingLimits:
         limits: List[MonthSliceSpendingLimit],
     ) -> SpendingLimitsValue:
         value = copy.deepcopy(value)
-        current_limit_names = set([limit.name for limit in value.limits])
-        new_limit_names = set([limit.name for limit in limits])
+        current_limit_names = {limit.name for limit in value.limits}
+        new_limit_names = {limit.name for limit in limits}
+        unknown_names = new_limit_names - current_limit_names
 
-        if new_limit_names - current_limit_names:
-            raise Exception(
-                f"Unknown limit names: {new_limit_names - current_limit_names}"
-            )
+        if unknown_names:
+            raise Exception(f"Unknown limit names: {unknown_names}")
 
         for month_slice_limit in limits:
             for limit in value.limits:

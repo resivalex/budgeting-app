@@ -10,12 +10,6 @@ class GoogleDriveService:
     """Google Drive API service for file uploads."""
     
     def __init__(self, credentials_path=None, folder_id=None):
-        """Initialize Google Drive service.
-        
-        Args:
-            credentials_path: Path to service account credentials JSON
-            folder_id: Google Drive folder ID for uploads
-        """
         self._credentials_path = credentials_path or os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
         self._folder_id = folder_id or os.getenv("GOOGLE_DRIVE_FOLDER_ID")
         
@@ -31,11 +25,9 @@ class GoogleDriveService:
                 "Please set the GOOGLE_DRIVE_FOLDER_ID environment variable."
             )
             
-        # Initialize the service
         self._service = self._create_drive_service()
         
     def _create_drive_service(self):
-        """Create an authorized Google Drive API service."""
         credentials = service_account.Credentials.from_service_account_file(
             self._credentials_path, 
             scopes=['https://www.googleapis.com/auth/drive']

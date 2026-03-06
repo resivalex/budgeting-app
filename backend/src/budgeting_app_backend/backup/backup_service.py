@@ -8,10 +8,7 @@ import tempfile
 import zipfile
 from datetime import datetime, timezone
 from typing import Dict, Any
-import logging
 import pycouchdb
-
-logger = logging.getLogger(__name__)
 
 SQLITE_ARCHIVE_PATH = "sqlite/budgeting-app.sqlite3"
 COUCHDB_ARCHIVE_PATH = "couchdb/budgeting.json"

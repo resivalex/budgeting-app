@@ -1,5 +1,4 @@
-from typing import Protocol
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Protocol
 
 
 class SqlConnectionProtocol(Protocol):

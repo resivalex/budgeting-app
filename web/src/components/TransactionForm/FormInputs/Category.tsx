@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { reactSelectSmallStyles } from '@/utils'
 import Select from 'react-select'
 import styled from 'styled-components'

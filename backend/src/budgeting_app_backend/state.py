@@ -24,13 +24,11 @@ class State:
     def __init__(
         self,
         db_url: str,
-        sql_connection: SqlConnectionProtocol,
         settings: SettingsProtocol,
         google_drive_credentials_path: str = None,
         google_drive_folder_id: str = None,
     ):
         self._db_url = db_url
-        self._sql_connection = sql_connection
         self._spending_limits = SpendingLimits(settings=settings)
         self._category_expansions = CategoryExpansions(settings=settings)
         self._account_properties = AccountProperties(settings=settings)

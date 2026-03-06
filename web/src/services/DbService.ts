@@ -12,21 +12,18 @@ function initializeRemotePouchDB(dbUrl: string) {
 interface DbServiceProps {
   dbUrl: string
   onLoading?: (isLoading: boolean) => void
-  onDocsRead?: (docs: any[]) => void
 }
 
 export default class DbService {
-  private readonly dbUrl: string
   private readonly onLoading: (isLoading: boolean) => void
   private localDB: any
   private readonly remoteDB: any
 
   constructor(props: DbServiceProps) {
-    this.dbUrl = props.dbUrl
     this.onLoading = props.onLoading || (() => {})
 
     this.localDB = initializeLocalPouchDB()
-    this.remoteDB = initializeRemotePouchDB(this.dbUrl)
+    this.remoteDB = initializeRemotePouchDB(props.dbUrl)
   }
 
   async reset() {

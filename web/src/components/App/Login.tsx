@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AuthDomain } from '@/domain'
 import { StorageService } from '@/services'
 
@@ -13,15 +13,11 @@ export default function Login({ onSuccessfulLogin }: Props) {
 
   const authDomain = new AuthDomain(new StorageService())
 
-  const onLoginSuccess = useCallback(() => {
-    onSuccessfulLogin()
-  }, [onSuccessfulLogin])
-
   useEffect(() => {
     if (authDomain.isLoggedIn()) {
-      onLoginSuccess()
+      onSuccessfulLogin()
     }
-  }, [onLoginSuccess])
+  }, [onSuccessfulLogin])
 
   const handleInputChange = () => {
     setError('')
@@ -31,7 +27,7 @@ export default function Login({ onSuccessfulLogin }: Props) {
     e.preventDefault()
     try {
       await authDomain.login(backendUrl, password)
-      onLoginSuccess()
+      onSuccessfulLogin()
     } catch (err: any) {
       setError(err.message)
     }

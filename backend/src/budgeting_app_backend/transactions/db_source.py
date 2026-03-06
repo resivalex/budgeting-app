@@ -6,10 +6,5 @@ class DbSource:
         self.__server = pycouchdb.Server(url)
 
     def all(self):
-        s = self.__server
-        db = s.database("budgeting")
-
-        docs = db.all()
-        records = [doc["doc"] for doc in docs]
-
-        return records
+        db = self.__server.database("budgeting")
+        return [doc["doc"] for doc in db.all()]

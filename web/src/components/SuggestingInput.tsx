@@ -1,4 +1,4 @@
-import React, { useState, useRef, useImperativeHandle, forwardRef } from 'react'
+import React, { useState, useImperativeHandle, forwardRef, useRef } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
@@ -70,7 +70,6 @@ const SuggestingInput = forwardRef((props: SuggestingInputProps, ref) => {
   const { suggestions, value, onChange, onConfirm } = props
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [delayHideDropdown, setDelayHideDropdown] = useState(false)
-  const wrapperRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useImperativeHandle(ref, () => ({
@@ -85,8 +84,7 @@ const SuggestingInput = forwardRef((props: SuggestingInputProps, ref) => {
   const filteredSuggestions = filterSuggestions(suggestions, value)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    onChange(value)
+    onChange(e.target.value)
   }
 
   const handleFocus = () => {
@@ -111,7 +109,7 @@ const SuggestingInput = forwardRef((props: SuggestingInputProps, ref) => {
   }
 
   return (
-    <Wrapper ref={wrapperRef}>
+    <Wrapper>
       <InputGroup>
         <Input
           ref={inputRef}

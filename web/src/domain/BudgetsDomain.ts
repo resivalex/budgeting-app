@@ -201,23 +201,22 @@ class BudgetsDomain {
   ): MonthSpendingLimit[] {
     const monthDateObject = new Date(monthDate)
     const monthSpendingLimitsWithNulls = spendingLimits.limits.map((spendingLimit) => {
-      const spendingLimitMonthLimits = spendingLimit.monthLimits.filter((monthLimit) => {
+      const monthLimit = spendingLimit.monthLimits.find((monthLimit) => {
         const monthLimitDateObject = new Date(monthLimit.date)
         return (
           monthLimitDateObject.getMonth() === monthDateObject.getMonth() &&
           monthLimitDateObject.getFullYear() === monthDateObject.getFullYear()
         )
       })
-      if (spendingLimitMonthLimits.length === 0) {
+      if (!monthLimit) {
         return null
       }
-      const spendingLimitMonthLimit = spendingLimitMonthLimits[0]
       return {
         name: spendingLimit.name,
         color: spendingLimit.color,
         categories: spendingLimit.categories,
-        currency: spendingLimitMonthLimit.currency,
-        amount: spendingLimitMonthLimit.amount,
+        currency: monthLimit.currency,
+        amount: monthLimit.amount,
         isEditable: true,
       }
     })
@@ -274,12 +273,8 @@ class BudgetsDomain {
       isEditable: spendingLimit.isEditable,
     }
 
-    const matchesTransaction = (transaction: TransactionDTO): boolean => {
-      return transaction.budget_name === spendingLimit.name
-    }
-
     transactions.forEach((transaction) => {
-      if (matchesTransaction(transaction)) {
+      if (transaction.budget_name === spendingLimit.name) {
         budget.transactions.push(transaction)
         const sign = transaction.type === 'expense' ? 1 : -1
         budget.spentAmount +=

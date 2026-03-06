@@ -1,4 +1,3 @@
-import React from 'react'
 import BudgetProgressBar from './BudgetProgressBar'
 import { convertCurrencyCodeToSymbol, formatFinancialAmountRounded } from '@/utils'
 import { LongPressDetectEvents, useLongPress } from 'use-long-press'
@@ -13,37 +12,26 @@ interface Props {
   onLongPress: () => void
 }
 
-function outputAmountDifference(
-  totalAmount: number,
-  spentAmount: number,
-  currency: string,
-  currencySymbol: string
-) {
+function outputAmountDifference(totalAmount: number, spentAmount: number, currencySymbol: string) {
   if (spentAmount > totalAmount) {
     return (
-      <>
-        <span style={{ color: '#8f2626' }}>
-          -{formatFinancialAmountRounded(spentAmount - totalAmount)} {currencySymbol}
-        </span>
-      </>
+      <span style={{ color: '#8f2626' }}>
+        -{formatFinancialAmountRounded(spentAmount - totalAmount)} {currencySymbol}
+      </span>
     )
   }
   if (spentAmount < 0) {
     return (
-      <>
-        <span style={{ color: '#23672e' }}>
-          +{formatFinancialAmountRounded(-spentAmount)} {currencySymbol}
-        </span>
-      </>
+      <span style={{ color: '#23672e' }}>
+        +{formatFinancialAmountRounded(-spentAmount)} {currencySymbol}
+      </span>
     )
   }
   if (spentAmount <= totalAmount) {
     return (
-      <>
-        <span>
-          {formatFinancialAmountRounded(totalAmount - spentAmount)} {currencySymbol}
-        </span>
-      </>
+      <span>
+        {formatFinancialAmountRounded(totalAmount - spentAmount)} {currencySymbol}
+      </span>
     )
   }
 }
@@ -90,7 +78,7 @@ export default function Budget({
               {formatFinancialAmountRounded(spentAmount)} {currencySymbol}
             </div>
             <div className="is-flex pl-1">
-              {outputAmountDifference(totalAmount, spentAmount, currency, currencySymbol)}
+              {outputAmountDifference(totalAmount, spentAmount, currencySymbol)}
             </div>
           </div>
         </div>

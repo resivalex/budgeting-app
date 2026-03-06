@@ -26,7 +26,7 @@ export function useSettingsDomain(backendService: BackendService) {
       try {
         const categoryExpansions = await settingsDomain.loadCategoryExpansions()
         setCategoryExpansions(categoryExpansions)
-      } catch (error) {
+      } catch {
         const cached = settingsDomain.getCachedCategoryExpansions()
         if (cached) {
           setCategoryExpansions(cached)
@@ -36,7 +36,7 @@ export function useSettingsDomain(backendService: BackendService) {
       try {
         const accountProperties = await settingsDomain.loadAccountProperties()
         setAccountProperties(accountProperties)
-      } catch (error) {
+      } catch {
         const cached = settingsDomain.getCachedAccountProperties()
         if (cached) {
           setAccountProperties(cached)
@@ -46,7 +46,7 @@ export function useSettingsDomain(backendService: BackendService) {
       try {
         const spendingLimits = await budgetsDomain.loadSpendingLimits()
         setSpendingLimits(spendingLimits)
-      } catch (error) {
+      } catch {
         // spending limits unavailable; migration will wait
       }
     }

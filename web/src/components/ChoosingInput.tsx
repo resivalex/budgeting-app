@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 
-// Component Styles
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
@@ -33,7 +32,6 @@ const Suggestions = styled.div`
   border-radius: 5px;
 `
 
-// Component Props
 interface Option {
   value: string
   label: string
@@ -45,7 +43,6 @@ interface ChoosingInputProps {
   options: Option[]
 }
 
-// Custom Hook
 function useChoosingInput({ value, onChange, options }: ChoosingInputProps) {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [inputValue, setInputValue] = useState('')
@@ -100,7 +97,6 @@ function useChoosingInput({ value, onChange, options }: ChoosingInputProps) {
   }
 }
 
-// Main Component
 export default function ChoosingInput(props: ChoosingInputProps) {
   const {
     inputValue,

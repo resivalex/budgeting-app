@@ -4,7 +4,7 @@ import logging
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from .backup_service import BackupService
 
 logger = logging.getLogger(__name__)
@@ -99,7 +99,7 @@ class BackupScheduler:
             logger.error(f"Error in manual backup: {str(e)}")
             return {"status": "error", "message": f"Backup failed: {str(e)}"}
 
-    def get_next_backup_time(self) -> Optional[str]:
+    def get_next_backup_time(self) -> str | None:
         job = self.scheduler.get_job("daily_backup")
         if job and job.next_run_time:
             return job.next_run_time.isoformat()

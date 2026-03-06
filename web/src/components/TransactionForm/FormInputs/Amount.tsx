@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import { useRef, useEffect, KeyboardEvent } from 'react'
 import styled from 'styled-components'
 
 interface Props {
@@ -22,7 +22,7 @@ export default function Amount({
 }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       onComplete()
     }
