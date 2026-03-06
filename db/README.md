@@ -1,39 +1,28 @@
-# 📊 Budgeting App Database Setup
+# Database (CouchDB)
 
-This guide will help you set up the CouchDB database for the Budgeting App using Docker.
+Containerized CouchDB instance providing document storage and sync for the budgeting app.
 
 ## Architecture
 
 **Why CouchDB?**
 
-- Document-based storage perfect for JSON transaction data
+- Document-based storage for JSON transaction data
 - Built-in bidirectional replication for offline-first sync with PouchDB
-- Conflict resolution for handling concurrent edits
-- HTTP/REST API for easy integration
+- Native conflict resolution for concurrent edits across devices
+- HTTP/REST API — frontend PouchDB syncs directly without a backend intermediary
 
-**Data Storage**:
+**Data model**: Each transaction is a JSON document with `_id` (UUID), `_rev` (revision), and domain fields. Schemaless — new fields are added without migrations; the frontend defaults missing fields on read.
 
-- Transaction documents stored in `budgeting` database
-- Each transaction is a JSON document with `_id` (UUID), `_rev` (revision), and fields like `budget_name` (defaults to `""` for legacy documents)
-- Frontend PouchDB syncs directly with CouchDB (no backend intermediary needed)
-- CouchDB is schemaless — new fields (e.g., `budget_name`) are added without migrations; the frontend defaults missing fields on read
+**Environments**:
 
-**CORS Configuration**:
+- Development: port 9002 exposed for direct browser access
+- Production: no exposed ports, internal network only via reverse proxy
 
-- Automatically configured via `start-and-configure.sh` on startup
-- Allows web app to access database directly from browser
-- Settings controlled through `.env` file
-
-**Multi-Environment Setup**:
-
-- Development: Exposed on port 9002 for direct access
-- Production: No exposed ports, internal network only
-
-## 📚 Prerequisites
+## Prerequisites
 
 - [Docker](https://www.docker.com/get-started)
 
-## 🚀 Getting Started
+## Setup
 
 1. Navigate to the database directory:
 
@@ -47,13 +36,12 @@ This guide will help you set up the CouchDB database for the Budgeting App using
    cp .env.example .env
    ```
 
-   Edit with your settings:
+   Configure with your settings:
 
    ```plaintext
    COUCHDB_USER=admin
    COUCHDB_PASSWORD=your_secure_password
 
-   # CORS configuration
    COUCHDB_CORS_ORIGINS=*
    COUCHDB_CORS_CREDENTIALS=true
    COUCHDB_CORS_METHODS=GET,PUT,POST,HEAD,DELETE,OPTIONS
@@ -73,17 +61,17 @@ This guide will help you set up the CouchDB database for the Budgeting App using
 
 4. Access CouchDB at [http://localhost:9002](http://localhost:9002)
 
-## ⚙️ Configuration
+## Configuration Files
 
-- `docker-compose.base.yml` - Base configuration
-- `docker-compose.dev.yml` - Development config (port 9002 exposed)
-- `docker-compose.yml` - Production config (no exposed ports)
+- `docker-compose.base.yml` — shared base configuration
+- `docker-compose.dev.yml` — development (port 9002 exposed)
+- `docker-compose.yml` — production (no exposed ports)
 
-## 🌐 CORS Configuration
+## CORS
 
-CORS is configured automatically through the `start-and-configure.sh` script with settings from your `.env` file.
+CORS is configured automatically by `start-and-configure.sh` on container startup using `.env` values.
 
-To verify CORS configuration:
+Verify CORS:
 
 ```shell
 curl -i -X OPTIONS -H "Origin: http://localhost:3000" http://localhost:9002/

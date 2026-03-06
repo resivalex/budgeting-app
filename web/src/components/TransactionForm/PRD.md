@@ -11,8 +11,8 @@ Step-by-step transaction creation and editing interface with intelligent default
 - **Smart Initialization**: Automatically populates form fields when editing existing transactions
 - **Intelligent Defaults**: Pre-fills fields based on transaction history and user patterns
 - **Real-time Validation**: Validates form completeness and enables save only when all required fields are valid
-- **Route Integration**: Integrates with React Router for transaction editing via URL parameters
-- **Historical Data Integration**: Leverages transaction aggregations for smart suggestions and autocomplete
+- **Edit Mode**: Users can navigate directly to a transaction's edit URL to modify an existing transaction
+- **Historical Data Integration**: Leverages past transaction history for smart suggestions and autocomplete
 - **Multi-currency Support**: Handles different currencies with proper conversion and display
 - **Category Extensions**: Supports expanded category names for better organization
 - **Budget Name Auto-Assignment**: When a category is selected, the form automatically resolves and assigns the corresponding `budget_name` by looking up which budget owns that category in spending limits

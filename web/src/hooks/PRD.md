@@ -2,49 +2,30 @@
 
 ## Overview
 
-React hooks that bridge domain services and Jotai atoms, managing lifecycle, orchestrating service calls, and wiring business logic to reactive state for clean component integration.
+Hooks expose business capabilities to UI components — transaction management, background sync, settings, budgets, and form support — keeping components declarative and free of service-level concerns.
 
-## Functionality
+## Features
 
-### useTransactionsDomain
+### Transaction Management
 
-- **Atom Integration**: Provides read/write access to transactionsAtom and read-only access to aggregations
-- **TransactionDomain Instantiation**: Creates and memoizes domain instance with DbService dependency
-- **Transaction Loading**: Fetches transactions from domain and updates atom state
-- **Local State Updates**: Provides add/update/delete methods that update atoms without DB operations
-- **Optimistic Updates**: Immediately updates UI state while DB operations happen asynchronously
+Users can view, add, edit, and delete transactions with changes reflected in the UI immediately. Transactions are loaded from the local database on startup.
 
-### useSyncDomain
+### Background Sync
 
-- **Sync State Management**: Manages syncStatusAtom with offline status, push errors, and pull completion
-- **Transactions Integration**: Updates transactionsAtom when sync pulls new data from server
-- **Automated Sync Intervals**: Manages pull and retry intervals with proper cleanup on unmount
-- **First Pull Logic**: Ensures immediate first pull followed by regular interval pulls
-- **Retry Mechanism**: Automatically retries failed push operations on interval
-- **Instance Scoping**: Uses instanceId for multi-tab synchronization coordination
+The app continuously synchronizes with the remote server: pulling new transactions on a regular interval and retrying failed pushes automatically. Sync status (offline, error, in-progress) is surfaced to the UI so users can see connectivity state.
 
-### useSettingsDomain
+### Settings
 
-- **Settings Loading**: Loads categoryExpansions and accountProperties on mount
-- **Atom Updates**: Updates configAtom with fetched settings data
-- **Cache Fallback**: Uses cached values from localStorage when backend is unavailable
+User-defined category expansions and account properties are loaded at startup. When the backend is unavailable, previously cached values are used so the UI remains functional offline.
 
-### useBudgetsDomain
+### Budgets
 
-- **Spending Limits State**: Manages spendingLimitsAtom for budget data
-- **Budget Calculations**: Computes budgets from transactions, categories, and limits
-- **Month Selection**: Tracks selected month with automatic latest-month selection
-- **Expectation Ratio**: Calculates current month progress for visualization
-- **Budget Updates**: Persists budget item changes and refreshes limits
+Users can select a month, view spending against per-category limits, and see how far into the month they are. Budget limits can be updated and are persisted to the backend.
 
-### useTransactionFormDomain
+### Transaction Form
 
-- **Category Options**: Provides category options with expanded labels from atoms
-- **Transaction Access**: Exposes transactions from atom for form initialization
-- **Aggregation Data**: Provides currencies, payees, and comments from aggregations
-- **Domain Instance**: Provides TransactionFormDomain for form logic methods
+The form for creating or editing a transaction is pre-populated with available currencies, payees, categories, and comments derived from existing transaction history.
 
-### useColoredAccounts
+### Colored Accounts
 
-- **Account Coloring**: Merges account details with user-defined color properties from atoms
-- Supports React's concurrent features and strict mode
+Accounts are displayed with user-assigned colors, allowing quick visual distinction between accounts.

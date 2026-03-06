@@ -1,28 +1,25 @@
-# Feature: State Management (Jotai Atoms)
+# Feature: Global Application State
 
 ## Overview
 
-Centralized reactive state management using Jotai atoms that provide a clean, type-safe interface for application-wide state access and updates without prop drilling.
+Application-wide state that components read and update reactively, covering transactions, sync status, display configuration, and budget limits.
 
-## Functionality
+## Features
 
-### Transactions State (`transactionsAtom.ts`)
+### Transaction State
 
-- **Transaction List**: Primary atom holding all transactions, sorted by datetime (newest first) on each update
-- **Derived Aggregations**: Computed atom providing real-time aggregations (account details, categories, currencies, payees, comments) recalculated whenever transactions change
+- Transactions are always presented newest-first regardless of insertion order.
+- Real-time aggregations (accounts, categories, currencies, payees, comments) are available to any component without re-fetching.
 
-### Sync Status State (`syncStatusAtom.ts`)
+### Sync Status
 
-- **Offline Status**: Boolean flag indicating whether the application has lost connection to the backend
-- **Push Error Detection**: Tracks failed push operations for retry mechanisms and user feedback
-- **First Pull Completion**: Tracks whether the initial data load has completed
+- The UI reflects whether the app is offline, whether a push operation has failed, and whether the initial data load has completed — enabling appropriate loading and error feedback to the user.
 
-### Configuration State (`configAtom.ts`)
+### Display Configuration
 
-- **Category Expansions**: Holds category expansion mappings for enhanced category display
-- **Account Properties**: Stores per-account visual properties (colors)
+- Category expansions control how categories are grouped and displayed.
+- Per-account color properties allow visual differentiation between accounts.
 
-### Spending Limits State (`spendingLimitsAtom.ts`)
+### Spending Limits
 
-- **Budget Configuration**: Holds spending limits with per-month and per-currency configurations
-- **Month Currency Configs**: Stores currency conversion configurations for each budget month
+- Budget limits and currency conversion configurations per month are accessible globally for budget tracking and reporting.

@@ -2,24 +2,18 @@
 
 ## Overview
 
-External service integrations for the budgeting application backend.
+Cloud storage integration enabling the application to upload files to Google Drive.
 
-## Components
+## Features
 
-### GoogleDriveService
+### Google Drive File Upload
 
-- **Authentication**: Service account credentials (JSON file) with Google Drive API v3
-- **File Upload**: Uploads binary content to a configured Google Drive folder with a timestamped filename
-- **Configurable via environment**: `GOOGLE_DRIVE_CREDENTIALS_PATH` and `GOOGLE_DRIVE_FOLDER_ID`
-- **Validation on init**: Raises `ValueError` if credentials file doesn't exist or folder ID is missing
-- **Returns**: File metadata dict with `id`, `name`, and `link` (webViewLink)
+The application can upload files to a designated Google Drive folder. This supports two user-facing needs:
+
+- **Pre-import backup**: Before importing transactions from CSV, a copy is uploaded to Google Drive as a safety net.
+- **Scheduled archive backup**: The system periodically uploads ZIP archives of application data to Google Drive for disaster recovery.
 
 ## Integration Points
 
-- Used by `GoogleDriveDump` in the transactions module for pre-import CSV backups
-- Used by `BackupScheduler` in the backup module for scheduled ZIP archive uploads
-
-## Component References
-
-- **[Transactions Module](../transactions/PRD.md)**: `GoogleDriveDump` wraps this service
-- **[Backup Module](../backup/PRD.md)**: `BackupScheduler` uses this service for cloud uploads
+- **[Transactions Module](../transactions/PRD.md)**: triggers a Drive upload before each CSV import
+- **[Backup Module](../backup/PRD.md)**: uses Drive upload for scheduled cloud backups

@@ -2,28 +2,26 @@
 
 ## Overview
 
-Main application orchestrator providing authentication, navigation, data synchronization, and the primary UI shell for the offline-first budgeting application.
+Main application shell providing authentication, navigation, data synchronization, and the primary user interface for the offline-first budgeting application.
 
-## Functionality
+## Features
 
-- **Authentication System**: Login/logout workflow with secure credential management and automatic session restoration
-- **Service Initialization**: Initializes BackendService and DbService after authentication
-- **Navigation**: React Router integration with protected routes
-- **Offline Detection**: Offline mode overlay with graceful degradation when backend is unreachable
-- **Loading Indicators**: Progress bars and connection status feedback
-- **Global Notifications**: Toast notifications for transaction operations (add, edit, delete) with automatic dismissal
-- **Account Selection**: Color-coded account selectors with balance display
-- **Menu System**: Hamburger menu with navigation links, version display, and admin functions
-- **Data Export**: CSV export with timestamped filenames
-- **Filter Management**: Transaction filtering by account, payee, comment, category, and budget_name
-- **Transaction Operations**: CRUD operations with optimistic updates and background synchronization
+- **Authentication**: Login/logout with credential persistence and automatic session restoration on revisit
+- **Offline Support**: Overlay indicator when the backend is unreachable; local data remains accessible
+- **Navigation**: Routes between home dashboard, transaction list, budget view, and transaction add/edit forms
+- **Transaction Management**: Add, edit, and delete transactions with immediate user feedback via toast notifications
+- **Transaction Filtering**: Filter transaction list by account, payee, comment, category, and budget
+- **Data Export**: Export all transactions to CSV
+- **Status Feedback**: Loading indicator during data sync; app version display in menu
 
-### Application Flow
+## User Workflows
 
-- **Unauthenticated**: Login form with backend URL and password
-- **Authenticated**: Initializes services, loads data via domain hooks, renders main interface
-- **Offline**: Overlay shown when backend connectivity is lost
+- **First visit / logged out**: User enters backend URL and password to authenticate
+- **Authenticated session**: App restores session automatically; user lands on the home dashboard
+- **Adding a transaction**: User navigates to the add form, submits, receives a confirmation notification, and is returned to the transaction list
+- **Editing / deleting**: User taps a transaction to open the edit form or removes it directly; notification confirms the action
+- **Going offline**: An overlay appears informing the user of lost connectivity; previously loaded data remains visible
 
-### Data Synchronization
+## Integration
 
-Integrates with domain hooks (see [hooks PRD](../../hooks/PRD.md)) for data management via Jotai atoms.
+Depends on sync, transaction, and settings domain hooks — see [hooks PRD](../../hooks/PRD.md).

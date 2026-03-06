@@ -2,80 +2,38 @@
 
 ## Overview
 
-Pure TypeScript business logic layer providing framework-agnostic domain services for transactions, synchronization, settings, budgets, forms, filtering, export, and authentication with clear separation from UI concerns.
+Business logic layer providing domain services for transactions, synchronization, settings, budgets, forms, filtering, export, and authentication.
 
-## Functionality
+## Features
 
-### TransactionDomain
+### Transactions
 
-- **Transaction Loading**: Retrieves all transactions from local database with automatic sorting by datetime
-- **Transaction Creation**: Adds new transactions to local database with proper validation
-- **Transaction Updates**: Modifies existing transactions with atomic replace operations
-- **Transaction Deletion**: Removes transactions by ID with proper cleanup
-- **Automatic Sorting**: Ensures transactions are always sorted in descending chronological order
-- **Aggregations**: Computes account balances, categories, currencies, payees, and comments from transactions
-- **No State Coupling**: Returns data without directly updating application state for clean separation
+Users can create, view, update, and delete transactions. Transactions are always presented in descending chronological order. The app derives aggregated data from transactions — account balances, available categories, currencies, payees, and comments — to power form suggestions and filtering.
 
-### SyncDomain
+### Synchronization
 
-- **Local Database Pull**: Loads transactions from local PouchDB and notifies via callbacks
-- **Remote Synchronization**: Orchestrates pull operations from remote backend with error handling
-- **Database Reset Detection**: Compares local and remote timestamps to detect server-side data resets
-- **Automatic Database Reset**: Destroys and recreates local database when remote reset is detected
-- **Change Detection**: Identifies when remote changes exist and triggers local database updates
-- **Offline Status Management**: Tracks connection status and updates sync state via callbacks
-- **Push Operations**: Manages push to remote with error tracking for retry mechanisms
-- **Transaction Persistence**: Provides transaction CRUD operations with automatic push triggers
-- **Callback-Based Updates**: Uses callback pattern to decouple from specific state management solutions
+The app stays in sync with the remote backend while remaining fully usable offline. On reconnect, local data is reconciled with the server. If the server data has been reset (e.g. after a bulk import), the local database is automatically rebuilt from the remote source. The UI reflects online/offline status throughout.
 
-### SettingsDomain
+### Settings
 
-- **Category Expansions Loading**: Fetches category expansion mappings from backend with caching
-- **Account Properties Loading**: Retrieves account visual properties with local storage persistence
-- **Cache Management**: Stores fetched settings in localStorage for offline access
-- **Cached Value Retrieval**: Provides methods to access cached settings without network calls
-- **Error Recovery**: Gracefully handles network errors by falling back to cached values
+Category expansions (human-readable category labels) and account visual properties are loaded from the backend and available offline via a local cache.
 
-### BudgetsDomain
+### Budgets
 
-- **Spending Limits Loading**: Fetches spending limits from backend with localStorage caching
-- **Budget Calculations**: Computes budget totals with multi-currency conversion support using transaction `budget_name` matching
-- **Budget Matching**: Matches transactions to budgets exclusively by `budget_name` field rather than category
-- **Rest Budget**: Collects unassigned transactions — those with empty `budget_name` or a `budget_name` not matching any defined budget — into a "Другое" (Rest) budget
-- **Total Budget**: Computes "ОБЩИЙ" (Total) by summing spent amounts across all real budgets
-- **Currency Conversion**: Builds conversion maps from currency config for accurate totals
-- **Month Filtering**: Filters transactions and limits to selected month
-- **Available Months**: Extracts and sorts months with spending limit configurations
-- **Expectation Ratio**: Calculates current month progress for budget visualization
-- **Budget Item Updates**: Persists budget limit changes to backend
+Users can define monthly spending limits per budget and track actuals against them. Transactions are assigned to budgets via a `budget_name` field. Unassigned transactions appear in a "Другое" (Other) bucket. A "ОБЩИЙ" (Total) budget summarizes spending across all defined budgets. Multi-currency accounts are supported through currency conversion. Budget limits can be updated in-app.
 
-### TransactionFormDomain
+### Transaction Form
 
-- **Category Extensions Mapping**: Builds category name to extended label mappings
-- **Category Options**: Generates dropdown options with expanded labels
-- **Budget Name Resolution**: Resolves available budget names for a given category from spending limits
-- **Currency/Account Filtering**: Filters currencies and accounts for transfer transactions
-- **Payee/Comment Filtering**: Returns context-specific suggestions based on selected category
-- **Form Validation**: Validates transaction form fields before submission
-- **Transaction Building**: Constructs TransactionDTO from form values with proper formatting, including `budget_name`
-- **Reset Detection**: Determines when currency/account selections need clearing
+The form assists users with smart defaults: category labels are expanded for clarity, budget names are resolved from the selected category, and payee/comment suggestions are filtered by context. Transfer transactions filter available currencies and accounts appropriately. The form validates input before submission.
 
-### TransactionFilterDomain
+### Transaction Filtering
 
-- **Transaction Filtering**: Filters transactions by account, payee, comment, category, and budget_name criteria
-- **Cross-Language Matching**: Supports English-Russian keyboard layout matching for payee and comment filters
-- **Transfer Handling**: Special logic for filtering transfer transactions by either account
-- **Modular Filter Methods**: Separate methods for each filter type enabling reuse
+Users can filter the transaction list by account, payee, comment, category, and budget name. Text search supports mistyped input due to cross-layout (English/Russian keyboard) matching. Transfers can be filtered by either the source or destination account.
 
-### ExportDomain
+### Export
 
-- **CSV Export**: Fetches transaction CSV from backend and triggers browser download
-- **File Naming**: Generates timestamped filenames for exported files
-- **Blob Handling**: Creates downloadable blob URLs with proper MIME types
+Users can export all transactions as a timestamped CSV file downloaded directly in the browser.
 
-### AuthDomain
+### Authentication
 
-- **Login**: Authenticates with backend using URL and password, stores config in localStorage
-- **Session Check**: Verifies if user is logged in via stored configuration
-- **Logout Handling**: Clears stored configuration and triggers application reload
-- **Storage Cleanup**: Uses StorageService for consistent localStorage access
+Users authenticate with a backend URL and password. The session persists across page reloads. Users can log out, which clears the session and reloads the app.

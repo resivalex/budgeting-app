@@ -2,29 +2,20 @@
 
 ## Overview
 
-CouchDB access components for reading transaction data and uploading CSV dumps to Google Drive.
+Provides access to stored transaction data and the ability to back up transaction datasets to cloud storage.
 
-## Components
+## Features
 
-### DbSource
+### Transaction Data Retrieval
 
-- Connects to CouchDB and retrieves all documents from the `budgeting` database
-- Returns a flat list of document dicts (unwraps CouchDB's document envelope)
-- Used by `State.transactions()` to serve the `GET /transactions` endpoint
+The system reads all transactions from the database and exposes them via the `GET /transactions` API endpoint. This powers the frontend's transaction list and all downstream features that depend on transaction data (export, budgets, filtering).
 
-### GoogleDriveDump
+### Pre-Import Backup
 
-- Wraps `GoogleDriveService` to upload CSV byte content to Google Drive
-- Simple facade: delegates file upload to the service with default CSV MIME type
-- Used by `State.importing()` to back up transaction data before a full database replace
+Before replacing the transaction database with an imported CSV, the system automatically backs up the current dataset to Google Drive. This preserves the previous state and allows recovery if an import produces unexpected results.
 
 ## Integration Points
 
-- `DbSource` feeds transaction data to the exporting pipeline and the transactions API endpoint
-- `GoogleDriveDump` is triggered automatically during CSV import to preserve the previous dataset
-
-## Component References
-
-- **[Services Module](../services/PRD.md)**: `GoogleDriveService` used by `GoogleDriveDump`
-- **[Exporting Module](../exporting/PRD.md)**: Provides the CSV content that gets uploaded via `GoogleDriveDump`
-- **[Backend State](../state.py)**: Orchestrates both components
+- Transaction reads feed the transactions API endpoint and the CSV export pipeline
+- The backup is triggered automatically during CSV import — users do not initiate it manually
+- Backup storage depends on Google Drive access configured via service credentials

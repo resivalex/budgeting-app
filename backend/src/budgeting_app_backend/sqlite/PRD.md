@@ -1,21 +1,17 @@
-# Feature: SQLite Database Module
+# Feature: SQLite Storage Backend
 
 ## Overview
 
-Thin wrapper around SQLite providing a dict-based interface for SQL operations, used by `SqlSettings` for configuration storage.
+Provides persistent local storage for application configuration, enabling the backend to retain settings across restarts without an external database.
 
-## Functionality
+## Requirements
 
-- **Read operations**: `read()` returns a list of dicts; `read_one()` returns a single dict or `None`
-- **Write operation**: `write()` executes SQL and auto-commits
-- **Parameterized queries**: All operations use parameter binding to prevent SQL injection
+- Must support reading single and multiple records from persistent storage
+- Must support writing (insert/update) with guaranteed durability (auto-commit)
+- All queries must be safe against SQL injection
+- Storage location must be configurable per environment
 
 ## Integration Points
 
-- Instantiated as `SqliteConnection` and passed to `SqlSettings` as the storage backend
-- Backed by a single SQLite file configured via `SQLITE_PATH` environment variable
-
-## Component References
-
-- **[Protocols](../protocols/)**: Implements `SqlConnectionProtocol`
-- **[Backend State](../state.py)**: `SqliteConnection` created in `create_state()` factory
+- Serves as the storage backend for the settings subsystem (`SqlSettings`)
+- Storage path is supplied via environment configuration (`SQLITE_PATH`)

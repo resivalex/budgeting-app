@@ -2,26 +2,19 @@
 
 ## Overview
 
-Exports all CouchDB transaction data as a CSV file with a standard column set and chronological ordering.
+Allows users to download all their transaction data as a CSV file.
 
-## Functionality
+## Features
 
-- **Column Standardization**: Fixed output columns in order: `datetime`, `account`, `category`, `type`, `amount`, `currency`, `payee`, `comment`, `budget_name`
-- **Metadata Stripping**: Removes CouchDB system fields (`_id`, `_rev`) from output
-- **Chronological Sorting**: Sorts records by `datetime` descending (newest first)
-- **Empty Dataset Handling**: Returns a properly headed CSV with no rows when the database is empty
-- **In-Memory Generation**: Uses pandas + StringIO for efficient CSV generation without temporary files
+- **Transaction Export**: All transactions exported with a fixed, consistent column set: `datetime`, `account`, `category`, `type`, `amount`, `currency`, `payee`, `comment`, `budget_name`
+- **Chronological Ordering**: Exported records are sorted newest first
+- **Empty Dataset Handling**: Returns a valid CSV with headers even when there are no transactions
 
-## Output Format
+## User Workflows
 
-CSV string with columns: `datetime, account, category, type, amount, currency, payee, comment, budget_name`
+- **Manual Export**: User triggers `GET /exporting` to download a CSV backup of all transactions
+- **Pre-Import Backup**: System automatically exports current data before overwriting the database during an import
 
 ## Integration Points
 
-- Called by `State.exporting()` for the `GET /exporting` API endpoint
-- Called by `State.importing()` to create a pre-import backup before overwriting the database
-
-## Component References
-
 - **[Importing Module](../importing/PRD.md)**: Uses exporting as a pre-import backup step
-- **[Backend State](../state.py)**: Exposes exporting result as bytes

@@ -2,20 +2,22 @@
 
 ## Overview
 
-Specialized form input components providing a step-by-step transaction entry experience with intelligent suggestions, validation, and seamless data handling.
+Specialized input fields for entering a transaction, designed around a guided step-by-step flow where the user progresses through fields one at a time.
 
-## Functionality
+## User Workflow
 
-- **Type Selection**: Three-option button group (income/expense/transfer) with visual active state
-- **Amount Input**: Numeric input with decimal support
-- **Account Selection**: Dropdown with color-coded account options
-- **Category Input**: Smart category selection with autocomplete based on transaction history
-- **Payee Input**: Autocomplete payee field based on previous transactions
-- **Transfer Account**: Secondary account selector that excludes the primary account
-- **Comment Field**: Free-text input for additional transaction context
-- **Currency Selection**: Currency picker integrated with account and system currency settings
-- **Date/Time Picker**: Full datetime selection with timezone handling and locale formatting
-- **Budget Name Selection**: Dropdown for selecting the `budget_name` linking the transaction to a named budget; auto-populated when a category is chosen; lists budgets matching the current category first, then remaining budgets, then "(без бюджета)" last; does not auto-receive focus when advancing from category
-- **Save Button**: Validation-aware save control that activates when all required fields are complete
+The form walks the user through each required field in sequence. Each field can be collapsed (shows current value) or expanded (ready for input). Selecting a value automatically advances to the next field.
 
-Each component supports expand/collapse states for guided step-by-step form completion.
+## Fields
+
+- **Type**: Choose between income, expense, or transfer.
+- **Amount**: Enter the transaction amount.
+- **Currency**: Select the currency for the amount.
+- **Account**: Choose the account the transaction belongs to.
+- **Transfer Account**: For transfers, select the destination account (excludes the source account).
+- **Category**: Pick a spending category; suggestions are ordered by previous usage.
+- **Budget Name**: Link the transaction to a named budget. Defaults to no budget ("без бюджета"); auto-filled when a category with a matching budget is selected; budgets matching the current category appear first.
+- **Payee**: Enter or pick the payee; suggestions come from previous transactions.
+- **Comment**: Optional free-text note.
+- **Date/Time**: Set when the transaction occurred, with timezone and locale support.
+- **Save**: Confirms the transaction; inactive until all required fields are filled.

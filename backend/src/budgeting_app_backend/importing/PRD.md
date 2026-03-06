@@ -2,21 +2,22 @@
 
 ## Overview
 
-CSV-based full-database import that replaces all CouchDB transaction data with the contents of an uploaded CSV file.
+CSV-based full-database import that replaces all transaction data with the contents of an uploaded CSV file.
 
-## Functionality
+## Features
 
-- **CSV Upload Processing**: Accepts a CSV file upload and parses it into transaction records; all fields treated as strings, missing values become empty strings
-- **Database Reconstruction**: Replaces the entire CouchDB `budgeting` database, eliminating merge conflicts — this is a destructive operation
-- **Bulk Atomic Insert**: All records inserted in a single transactional bulk save
-- **Post-Import Compaction**: Compacts the database after import for storage efficiency
+- **CSV Upload**: User uploads a CSV file to replace all existing transactions
+- **Full Replacement**: The entire transaction database is replaced — not merged — eliminating any conflict with prior data
+- **Atomic Operation**: All records are committed together; partial imports do not occur
+
+## User Workflow
+
+1. User exports current data as a backup (automatic, pre-import)
+2. User uploads a CSV file via the import endpoint
+3. All existing transactions are discarded and replaced with CSV contents
+4. Upload timestamp is updated to reflect the new state
 
 ## Integration Points
 
-- Called by `State.importing()`, which exports a backup to Google Drive before importing and updates the upload timestamp
-- Exposed via `POST /importing` API endpoint (file upload)
-
-## Component References
-
-- **[Exporting Module](../exporting/PRD.md)**: Pre-import backup created via `CsvExporting`
-- **[Backend State](../state.py)**: Orchestrates pre-import backup and timestamp update
+- A backup is automatically exported to Google Drive before the import runs
+- The upload timestamp is updated after a successful import, triggering sync awareness in connected clients

@@ -2,22 +2,28 @@
 
 ## Overview
 
-Transaction management interface with virtualized scrolling, date-based grouping, advanced filtering, and inline transaction operations.
+Transaction list page where users browse, filter, and manage their financial records.
 
-## Functionality
+## User Workflows
 
-- **Virtualized Transaction List**: High-performance scrolling through large transaction datasets
-- **Date-Based Grouping**: Automatic grouping of transactions by date with formatted date headers in Russian locale
-- **Transaction Tiles**: Compact display showing category, account, payee, amount, currency; non-empty `budget_name` shown as a colored badge
-- **Long Press Interaction**: Touch-friendly long press to focus on a specific transaction for detail operations
-- **Transaction Details Modal**: Modal displaying all transaction fields with edit and delete capabilities in Russian interface
-- **Advanced Filtering**: Multi-field filtering by account, payee, comment, category, and budget_name with cross-language search matching (English/Russian)
-- **Expandable Filter Interface**: Collapsible search panel with text inputs and select dropdowns
-- **Active Filter Display**: Visual tag-based display of applied filters with quick reset
-- **Account-Based Filtering**: Handles both regular transactions and transfers (searches both source and destination accounts)
-- **Transaction Type Visualization**: Color-coded amounts (green for income, red for expenses)
-- **Transfer Display**: Special handling for transfer transactions with source/destination account arrows
-- **Time Display Toggle**: Click-to-reveal transaction time information
-- **Empty State Handling**: Clear messaging when no transactions match filters or dataset is empty
-- **Edit Navigation**: Integration with React Router for transaction editing
-- **Two-Step Deletion**: Confirmation step requiring a second click to prevent accidental deletion
+### Browsing Transactions
+
+- Transactions are grouped by date with formatted date headers (Russian locale).
+- Each row shows category, account, payee, amount, currency; a budget name appears as a colored badge when assigned.
+- Color-coded amounts indicate income (green) or expense (red).
+- Transfer transactions display source → destination account arrows.
+- Tapping a row's time area reveals the exact time of the transaction.
+- An empty-state message is shown when the list has no records.
+
+### Filtering
+
+- A collapsible search panel lets users filter by account, payee, comment, category, and budget name.
+- Filters support cross-language matching (English/Russian input).
+- Account filtering covers both sides of transfer transactions.
+- Active filters appear as removable tags below the search bar; all filters can be cleared at once.
+
+### Transaction Operations
+
+- Long-pressing a transaction row opens a detail modal with all transaction fields.
+- From the modal, users can navigate to the edit form or delete the transaction.
+- Deletion requires a second confirmation tap to prevent accidental removal.

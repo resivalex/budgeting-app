@@ -108,15 +108,6 @@ yarn install
 yarn start
 ```
 
-## Features
-
-- Budget management with named budgets, spending limits, and category mapping
-- Transaction tracking with explicit budget assignment per transaction
-- Data visualization
-- Offline support
-- Automated Google Drive backups
-- CSV import/export (round-trips budget_name)
-
 ## License
 
 [MIT License](LICENSE)

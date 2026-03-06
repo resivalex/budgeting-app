@@ -11,7 +11,7 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 - **Offline-First Architecture**: Full application functionality without internet connection, with automatic synchronization when connectivity is restored
 - **Progressive Web App**: PWA capabilities with responsive design and mobile-optimized interactions
 - **Multi-Currency Financial Management**: Full support for multiple currencies with configurable exchange rates and automatic conversion
-- **Real-time Data Synchronization**: Bidirectional sync between local PouchDB and remote CouchDB with conflict resolution and database reset detection
+- **Real-time Data Synchronization**: Bidirectional sync between local and remote databases with conflict resolution and database reset detection
 
 ### User Interface & Navigation
 
@@ -22,7 +22,7 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 
 ### Financial Transaction Management
 
-- **Advanced Transaction Interface**: Virtualized transaction list with filtering (account, payee, comment, category, budget_name) and cross-language search (see [Transactions PRD](./src/components/Transactions/PRD.md))
+- **Advanced Transaction Interface**: Transaction list with filtering (account, payee, comment, category, budget_name) and cross-language search (see [Transactions PRD](./src/components/Transactions/PRD.md))
 - **Step-by-Step Transaction Entry**: Guided transaction creation with automatic budget name assignment from category (see [TransactionForm PRD](./src/components/TransactionForm/PRD.md))
 - **Budget Name Assignment**: Transactions carry a `budget_name` linking them to a specific budget; auto-assigned from category on entry, visible as a badge in the transaction list, and editable via dropdown
 
@@ -45,8 +45,8 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 
 ## Component References
 
-- **[State](./src/state/PRD.md)**: Jotai atoms for centralized reactive state management
-- **[Domain](./src/domain/PRD.md)**: Pure TypeScript business logic services
+- **[State](./src/state/PRD.md)**: Centralized reactive state management
+- **[Domain](./src/domain/PRD.md)**: Business logic services
 - **[Hooks](./src/hooks/PRD.md)**: Domain adapter hooks wiring services to state
 - **[Services](./src/services/PRD.md)**: Infrastructure services (backend, database, storage)
 - **[App](./src/components/App/PRD.md)**: Main application orchestrator with authentication and navigation

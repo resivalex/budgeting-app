@@ -51,13 +51,6 @@ docker-compose up
 
 Full-database backup as a ZIP archive containing both SQLite and CouchDB data.
 
-**Endpoints:**
-
-- `GET /health` — liveness check with scheduler status and next scheduled backup time
-- `GET /backup` — download a ZIP archive with both databases
-- `POST /restore` — upload a ZIP archive to restore both databases
-- `POST /trigger-backup` — create backup and upload to Google Drive (if configured)
-
 **ZIP structure:**
 
 ```
@@ -109,6 +102,16 @@ poetry run alembic upgrade head
 ### Testing
 
 API documentation with interactive testing: `http://localhost:8000/api`
+
+## Module Documentation
+
+- **[Services](./src/budgeting_app_backend/services/PRD.md)**: GoogleDriveService for optional cloud backup uploads
+- **[Settings](./src/budgeting_app_backend/settings/PRD.md)**: Application configuration management
+- **[SQLite](./src/budgeting_app_backend/sqlite/PRD.md)**: SQLite abstraction for settings storage
+- **[Transactions](./src/budgeting_app_backend/transactions/PRD.md)**: CouchDB access and Google Drive dump
+- **[Exporting](./src/budgeting_app_backend/exporting/PRD.md)**: CSV generation from CouchDB transactions
+- **[Importing](./src/budgeting_app_backend/importing/PRD.md)**: CSV-based full database replacement
+- **[Backup](./src/budgeting_app_backend/backup/PRD.md)**: ZIP backup and restore of both databases
 
 ## License 📝
 

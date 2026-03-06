@@ -4,31 +4,31 @@
 
 Containerized CouchDB database providing document storage and bidirectional replication for the offline-first budgeting application.
 
-## Functionality
+## Features
 
-### Document Storage
+### Transaction Storage
 
-- **Transaction Documents**: Stores financial transactions as JSON documents in the `budgeting` database
-- **Schemaless Design**: New fields (e.g., `budget_name`) can be added without migrations; the frontend defaults missing fields on read (`budget_name` defaults to `""`)
-- **Revision Tracking**: CouchDB manages `_rev` for conflict detection across replicas
+- Stores financial transactions as JSON documents in the `budgeting` database
+- Schemaless design: new fields can be added without migrations; the frontend defaults missing fields on read (e.g., `budget_name` defaults to `""`)
+- Revision-based conflict detection across replicas
 
-### Bidirectional Replication
+### Offline-First Sync
 
-- **PouchDB Sync**: Frontend PouchDB syncs directly with CouchDB without backend intermediary
-- **Conflict Resolution**: CouchDB handles concurrent edits from multiple devices
-- **Change Feed**: Real-time change notifications drive sync in the frontend
+- Frontend syncs directly with CouchDB without a backend intermediary
+- Handles concurrent edits from multiple devices
+- Real-time change feed drives sync updates in the frontend
 
-### CORS Configuration
+### Browser Access
 
-- **Browser Access**: CORS configured automatically on startup to allow frontend browser access
-- **Environment-Driven**: CORS origins, methods, and headers controlled via `.env`
+- CORS configured on startup so the web app can access the database directly from the browser
+- CORS settings controlled via environment variables
 
-### Multi-Environment Deployment
+### Multi-Environment Support
 
-- **Development**: Exposed on port 9002 for direct browser access
-- **Production**: No exposed ports; internal network only via reverse proxy
+- Development: database accessible directly for inspection and debugging
+- Production: isolated to internal network, accessible only via reverse proxy
 
-## Component References
+## Integration
 
 - **[Frontend](../web/PRD.md)**: PouchDB sync target
 - **[Backend](../backend/PRD.md)**: Reads transactions for export; overwrites database during CSV import
