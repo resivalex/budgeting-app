@@ -53,6 +53,7 @@ Full-database backup as a ZIP archive containing both SQLite and CouchDB data.
 
 **Endpoints:**
 
+- `GET /health` — liveness check with scheduler status and next scheduled backup time
 - `GET /backup` — download a ZIP archive with both databases
 - `POST /restore` — upload a ZIP archive to restore both databases
 - `POST /trigger-backup` — create backup and upload to Google Drive (if configured)

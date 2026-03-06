@@ -43,7 +43,8 @@ A robust FastAPI-based backend service providing comprehensive financial data ma
 
 - FastAPI framework with automatic OpenAPI documentation
 - Dual database architecture: CouchDB for transactions, SQLite for configuration
-- Token-based authentication and authorization
+- Token-based authentication and authorization (bearer token)
+- `GET /health` endpoint reporting scheduler running status and next scheduled backup time
 - Docker containerization for deployment
 - Automated daily backups via APScheduler
 

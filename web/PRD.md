@@ -33,7 +33,6 @@ A sophisticated React TypeScript frontend that provides a complete offline-first
 - **Visual Budget Tracking**: Sophisticated budget management with color-coded progress indicators, multi-segment progress bars, and real-time spending analytics (see [Budgets PRD](./src/components/Budgets/PRD.md))
 - **Monthly Budget Planning**: Comprehensive month-by-month budget management with historical tracking and expectation ratios
 - **Budget-Name-Based Calculations**: Budget totals computed by matching transaction `budget_name` to budget name; transactions without a recognised budget name (empty or unknown) are collected under "Другое" (Rest)
-- **Data Migration**: One-time migration assigns budget names to existing transactions based on category-to-budget mapping, ensuring continuity after feature rollout
 
 ### Account & Data Management
 

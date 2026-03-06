@@ -21,7 +21,7 @@ Web (PouchDB) <--sync--> CouchDB <--read--> Backend (FastAPI)
 
 **Configuration Data**: Spending limits, account properties, and category expansions are stored in SQLite, managed exclusively by the backend.
 
-**Backups**: Automated CSV exports to Google Drive, scheduled daily via backend scheduler.
+**Backups**: Automated daily ZIP archive backups (SQLite + CouchDB) to Google Drive, scheduled via backend scheduler. Manual backup and restore via API endpoints.
 
 ## Components
 

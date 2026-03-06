@@ -37,7 +37,6 @@ Pure TypeScript classes with no React dependencies:
 - `SettingsDomain`: Settings loading and caching
 - `BudgetsDomain`: Budget calculations by `budget_name`, currency conversion, month filtering
 - `TransactionFormDomain`: Form validation, category extensions, suggestions, budget name lookup
-- `MigrationDomain`: One-time data migrations (e.g., backfilling `budget_name` on existing transactions)
 - `TransactionFilterDomain`: Transaction filtering with cross-language matching
 - `ExportDomain`: CSV export with blob handling
 - `AuthDomain`: Login, logout, and session management
