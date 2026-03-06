@@ -2,58 +2,58 @@
 
 ## Overview
 
-A robust FastAPI-based backend service providing comprehensive financial data management, user configuration storage, automated backup systems, and secure API endpoints for the offline-first budgeting application with multi-currency support and cloud integration.
+FastAPI backend providing transaction access, configuration management, CSV import/export, and automated backup for the offline-first budgeting application.
 
 ## Functionality
 
-### Core API Services
+### API Endpoints
 
-- **RESTful API Design**: Comprehensive REST API with standardized endpoints for all application data and configuration management
-- **Authentication & Authorization**: Token-based authentication system with secure credential management and request authorization
-- **Multi-Currency Financial Operations**: Complete financial transaction management with multi-currency support and real-time data processing
-- **Real-time Data Synchronization**: Bidirectional data sync capabilities supporting offline-first client architecture with conflict resolution
-- **Automated Backup Systems**: Full-database backup as ZIP archive (SQLite + CouchDB), with restore capability and optional Google Drive upload
-- **Configuration Management**: Comprehensive user preference and application settings management with persistent storage
+- **`GET /config`** (password-authenticated): Returns bearer token and CouchDB URL for frontend initialization
+- **`GET /settings`**: Returns `transactionsUploadedAt` timestamp for frontend database reset detection
+- **`GET /transactions`**: Returns all transaction documents from CouchDB
+- **`POST /importing`**: Accepts CSV file upload; backs up current data to Google Drive before replacing the CouchDB database
+- **`GET /exporting`**: Returns all transactions as a CSV file with standard columns
+- **`GET /spending-limits`** / **`POST /spending-limits`**: Read/write full spending limits configuration
+- **`POST /spending-limits/month-budget`** and **`POST /spending-limits/month-budget-item`**: Partial budget updates by month
+- **`GET /category-expansions`** / **`POST /category-expansions`**: Read/write category display name mappings
+- **`GET /account-properties`** / **`POST /account-properties`**: Read/write per-account visual properties (colors)
+- **`GET /backup`**: Download a ZIP archive containing both SQLite and CouchDB dumps
+- **`POST /restore`**: Upload a backup ZIP to restore both databases
+- **`POST /trigger-backup`**: Create a backup and upload it to Google Drive
+- **`GET /health`**: Returns scheduler running status and next scheduled backup time
 
-### Data Management Layer
+### Configuration Management
 
-- **Transaction Operations**: Complete CRUD operations for financial transactions with bulk processing, data validation, and budget name association for multi-budget support
-- **Budget Management**: Sophisticated budget configuration with spending limits, currency conversion, monthly tracking, and named budgets for transaction grouping
-- **User Preferences**: Flexible user configuration storage including account properties, category expansions, and visual customization
-- **Import/Export Operations**: CSV-based data import and export functionality for backup, migration, and external integration with backward compatibility for evolving transaction fields (e.g., budget_name defaults for older CSVs)
-- **Data Integrity**: Comprehensive data validation, error handling, and consistency checks across all operations
+- **Spending Limits**: Named budgets with per-month limits, currencies, category lists, and color; supports multi-currency conversion configuration
+- **Category Expansions**: Maps short category codes to expanded display names shown in the frontend
+- **Account Properties**: Per-account color configuration for frontend visual display
+- **Upload Timestamp**: Tracks the last CSV import time; frontend compares this to detect a server-side database reset
 
-### External Integrations
+### Data Import/Export
 
-- **Google Drive Backup**: Optional scheduled cloud backup upload of ZIP archives
-- **Full Database Restore**: Restore both SQLite and CouchDB from a single ZIP archive
-- **Database Synchronization**: CouchDB integration for real-time data replication and offline synchronization support
-- **Cross-Platform Compatibility**: API design optimized for web, mobile, and desktop client applications
-- **Third-Party Extensions**: Extensible architecture supporting future integrations with banking APIs and financial services
+- **CSV Export**: Exports all CouchDB transactions as CSV with columns: `datetime, account, category, type, amount, currency, payee, comment, budget_name`, sorted newest first
+- **CSV Import**: Replaces the entire CouchDB database with contents of uploaded CSV; pre-import snapshot saved to Google Drive
+- **`budget_name` field**: Present in both import and export CSV; missing values become empty string (`""`)
 
-### Security & Reliability
+### Backup & Restore
 
-- **Secure Authentication**: Password-based authentication with token management and session security
-- **Data Protection**: Encrypted data transmission and secure credential management across all endpoints
-- **Error Handling**: Comprehensive error management with structured error responses and detailed logging
-- **Performance Optimization**: Efficient data processing, connection pooling, and resource management for optimal response times
-- **Monitoring & Logging**: Detailed operational logging and health monitoring for production deployment
+- **Full ZIP Backup**: Creates a ZIP with `sqlite/budgeting-app.sqlite3` and `couchdb/budgeting.json` (all documents)
+- **Full ZIP Restore**: Extracts ZIP and restores both databases; updates `transactionsUploadedAt`
+- **Scheduled Backups**: Daily automated backup at configurable time (default 3:00 AM UTC), optionally uploaded to Google Drive
+- **Manual Trigger**: On-demand backup via `POST /trigger-backup`
 
-## Technical Notes
+### Authentication
 
-- FastAPI framework with automatic OpenAPI documentation
-- Dual database architecture: CouchDB for transactions, SQLite for configuration
-- Token-based authentication and authorization (bearer token)
-- `GET /health` endpoint reporting scheduler running status and next scheduled backup time
-- Docker containerization for deployment
-- Automated daily backups via APScheduler
+- Bearer token authentication for all state-mutating and data endpoints
+- Password-only authentication for `/config` endpoint to obtain the token
+- Token and password configured via environment variables
 
 ## Module References
 
-- **[Services](./src/budgeting_app_backend/services/PRD.md)**: External service integrations including Google Drive backup functionality
-- **[Settings](./src/budgeting_app_backend/settings/PRD.md)**: Comprehensive application configuration management with user preferences and budget configurations
-- **[SQLite](./src/budgeting_app_backend/sqlite/PRD.md)**: Lightweight database abstraction for persistent configuration storage
-- **[Transactions](./src/budgeting_app_backend/transactions/PRD.md)**: Core transaction data management with database access and backup integration
-- **[Exporting](./src/budgeting_app_backend/exporting/PRD.md)**: Data export functionality transforming transaction data into standardized CSV format
-- **[Importing](./src/budgeting_app_backend/importing/PRD.md)**: Data import functionality with complete database reconstruction and backup automation
-- **[Backup](./src/budgeting_app_backend/backup/PRD.md)**: Full backup/restore system with ZIP archives containing SQLite and CouchDB snapshots
+- **[Services](./src/budgeting_app_backend/services/PRD.md)**: GoogleDriveService for optional cloud backup uploads
+- **[Settings](./src/budgeting_app_backend/settings/PRD.md)**: Application configuration management
+- **[SQLite](./src/budgeting_app_backend/sqlite/PRD.md)**: SQLite abstraction for settings storage
+- **[Transactions](./src/budgeting_app_backend/transactions/PRD.md)**: CouchDB access and Google Drive dump
+- **[Exporting](./src/budgeting_app_backend/exporting/PRD.md)**: CSV generation from CouchDB transactions
+- **[Importing](./src/budgeting_app_backend/importing/PRD.md)**: CSV-based full database replacement
+- **[Backup](./src/budgeting_app_backend/backup/PRD.md)**: ZIP backup and restore of both databases

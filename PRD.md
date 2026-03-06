@@ -12,7 +12,7 @@ A comprehensive offline-first personal financial management application providin
 - **Advanced Budget Planning**: Sophisticated budget creation and tracking with named budgets, spending limits, color-coded categories, and real-time progress monitoring. Budget calculation uses the transaction's `budget_name` field as the single source of truth
 - **Multi-Account Management**: Unified management of multiple financial accounts with color-coded identification and real-time balance tracking
 - **Multi-Currency Operations**: Full support for multiple currencies with configurable exchange rates and automatic conversion across all features
-- **Intelligent Analytics**: Advanced financial analytics with spending patterns, budget variance analysis, and predictive insights
+- **Spending Analytics**: Account balance dashboards and budget spending analysis by month
 
 ### Offline-First Experience
 
@@ -38,21 +38,11 @@ A comprehensive offline-first personal financial management application providin
 - **Responsive Design**: Mobile-first interface with adaptive layouts optimized for all device sizes and orientations
 - **Touch-Friendly Interactions**: Long-press detection, swipe gestures, and optimized touch targets for enhanced mobile experience
 
-### Integration & Extensibility
+### Integration
 
-- **Cloud Storage Integration**: Google Drive integration for automated backup and data protection
-- **External Data Support**: CSV import/export for integration with banking systems and financial software
-- **Multi-Platform Compatibility**: Web-based architecture compatible with desktop, tablet, and mobile devices
-- **API-First Design**: RESTful API architecture supporting future mobile apps and third-party integrations
-- **Extensible Architecture**: Modular design supporting future enhancements and additional financial services
-
-## Technical Notes
-
-- Offline-first architecture enabling full functionality without internet connection
-- Multi-currency support with configurable exchange rates
-- Real-time bidirectional synchronization with conflict resolution
-- Automated daily backups to Google Drive
-- Web-based progressive web app for cross-platform compatibility
+- **Google Drive Backup**: Automated daily backup uploads to Google Drive; manual trigger also available
+- **CSV Import/Export**: Full-fidelity import and export including `budget_name` field, compatible with external tools
+- **Web-Based**: Accessible on desktop and mobile browsers without installation
 
 ## Component References
 

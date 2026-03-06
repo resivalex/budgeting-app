@@ -6,17 +6,10 @@ CSV-based full-database import that replaces all CouchDB transaction data with t
 
 ## Functionality
 
-- **CSV Upload Processing**: Accepts raw byte content, decodes as UTF-8, parses with pandas (all columns as strings, NaN replaced with empty strings); `budget_name` is a required column
-- **Database Reconstruction**: Deletes and recreates the CouchDB `budgeting` database, eliminating merge conflicts
+- **CSV Upload Processing**: Accepts a CSV file upload and parses it into transaction records; all fields treated as strings, missing values become empty strings
+- **Database Reconstruction**: Replaces the entire CouchDB `budgeting` database, eliminating merge conflicts — this is a destructive operation
 - **Bulk Atomic Insert**: All records inserted in a single transactional bulk save
 - **Post-Import Compaction**: Compacts the database after import for storage efficiency
-
-## Data Import Pipeline
-
-1. Decode bytes and parse CSV with pandas
-2. Delete and recreate `budgeting` database
-3. Bulk-save all records atomically
-4. Compact database
 
 ## Integration Points
 
