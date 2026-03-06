@@ -25,7 +25,7 @@ The main application orchestrator that provides a complete offline-first budgeti
 
 - **Unauthenticated State**: Login interface with backend URL and password authentication
 - **Service Setup**: Automatic initialization of backend and database services upon successful authentication
-- **Data Synchronization**: Integration with domain hooks (see [hooks PRD](../../hooks/prd.md)) for real-time data management via Jotai atoms
+- **Data Synchronization**: Integration with domain hooks (see [hooks PRD](../../hooks/PRD.md)) for real-time data management via Jotai atoms
 - **Main Interface**: Full-featured budgeting interface with navigation, filtering, and transaction management
 - **Offline Handling**: Graceful degradation with offline overlay when backend connectivity is lost
 

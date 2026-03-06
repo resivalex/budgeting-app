@@ -22,7 +22,7 @@ A comprehensive transaction creation and editing interface that provides a guide
 - **Date/Time Handling**: Proper timezone conversion between local and UTC times
 - **Save Operations**: Async save handling with loading states and error management
 
-The form orchestrates all individual input components (see [FormInputs PRD](./FormInputs/prd.md)) within a cohesive step-by-step interface that adapts based on transaction type and user progress.
+The form orchestrates all individual input components (see [FormInputs PRD](./FormInputs/PRD.md)) within a cohesive step-by-step interface that adapts based on transaction type and user progress.
 
 ## Technical Notes
 

@@ -49,10 +49,10 @@ A robust FastAPI-based backend service providing comprehensive financial data ma
 
 ## Module References
 
-- **[Services](./src/budgeting_app_backend/services/prd.md)**: External service integrations including Google Drive backup functionality
-- **[Settings](./src/budgeting_app_backend/settings/prd.md)**: Comprehensive application configuration management with user preferences and budget configurations
-- **[SQLite](./src/budgeting_app_backend/sqlite/prd.md)**: Lightweight database abstraction for persistent configuration storage
-- **[Transactions](./src/budgeting_app_backend/transactions/prd.md)**: Core transaction data management with database access and backup integration
-- **[Exporting](./src/budgeting_app_backend/exporting/prd.md)**: Data export functionality transforming transaction data into standardized CSV format
-- **[Importing](./src/budgeting_app_backend/importing/prd.md)**: Data import functionality with complete database reconstruction and backup automation
-- **[Backup](./src/budgeting_app_backend/backup/prd.md)**: Full backup/restore system with ZIP archives containing SQLite and CouchDB snapshots
+- **[Services](./src/budgeting_app_backend/services/PRD.md)**: External service integrations including Google Drive backup functionality
+- **[Settings](./src/budgeting_app_backend/settings/PRD.md)**: Comprehensive application configuration management with user preferences and budget configurations
+- **[SQLite](./src/budgeting_app_backend/sqlite/PRD.md)**: Lightweight database abstraction for persistent configuration storage
+- **[Transactions](./src/budgeting_app_backend/transactions/PRD.md)**: Core transaction data management with database access and backup integration
+- **[Exporting](./src/budgeting_app_backend/exporting/PRD.md)**: Data export functionality transforming transaction data into standardized CSV format
+- **[Importing](./src/budgeting_app_backend/importing/PRD.md)**: Data import functionality with complete database reconstruction and backup automation
+- **[Backup](./src/budgeting_app_backend/backup/PRD.md)**: Full backup/restore system with ZIP archives containing SQLite and CouchDB snapshots

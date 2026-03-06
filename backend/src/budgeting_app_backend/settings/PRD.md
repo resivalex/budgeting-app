@@ -104,7 +104,7 @@ Comprehensive application configuration management system providing persistent s
 ## Component References
 
 - **[Backend State](../state.py)**: Main state management system that orchestrates all settings components
-- **[SQLite Module](../sqlite/prd.md)**: Underlying database storage that implements SettingsProtocol
+- **[SQLite Module](../sqlite/PRD.md)**: Underlying database storage that implements SettingsProtocol
 - **[Main API](../../main.py)**: FastAPI application that exposes settings endpoints
 - **[SQL Settings](../sql_settings.py)**: SettingsProtocol implementation providing the storage backend
 - **[Protocols](../protocols/)**: SettingsProtocol interface definition for standardized storage operations

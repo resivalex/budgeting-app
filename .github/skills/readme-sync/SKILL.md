@@ -1,11 +1,11 @@
 ---
 name: readme-sync
-description: Keep README.md and prd.md files synchronized with code changes. Identifies affected directories, reads existing docs, then updates README (technical/developer focus) and PRD (requirements/feature focus) files to reflect changes.
+description: Keep README.md and PRD.md files synchronized with code changes. Identifies affected directories, reads existing docs, then updates README (technical/developer focus) and PRD (requirements/feature focus) files to reflect changes.
 ---
 
 # README & PRD Synchronization Skill
 
-This skill keeps README.md and prd.md files in sync with code changes. Always read both before updating either.
+This skill keeps README.md and PRD.md files in sync with code changes. Always read both before updating either.
 
 ## When to Use This Skill
 
@@ -25,7 +25,7 @@ Use this skill whenever:
 
 ### Step 2: Read Existing Documentation
 
-- **Critical:** Fully read both README.md and prd.md in each affected directory before making any changes
+- **Critical:** Fully read both README.md and PRD.md in each affected directory before making any changes
 - This ensures updates preserve existing structure and context
 
 ### Step 3: Update README Files (Developer-focused)
@@ -60,10 +60,10 @@ Use this skill whenever:
 
 ## Key Files in This Project
 
-- Root: `README.md`, `prd.md`
-- Backend: `backend/README.md`, `backend/prd.md`, module-level `prd.md` files
-- Frontend: `web/README.md`, `web/prd.md`, component-level `prd.md` files
-- Database: `db/README.md`, `db/prd.md`
+- Root: `README.md`, `PRD.md`
+- Backend: `backend/README.md`, `backend/PRD.md`, module-level `PRD.md` files
+- Frontend: `web/README.md`, `web/PRD.md`, component-level `PRD.md` files
+- Database: `db/README.md`, `db/PRD.md`
 
 ## Best Practices
 

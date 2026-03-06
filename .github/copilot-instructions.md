@@ -2,7 +2,7 @@
 
 ## Documentation
 
-**IMPORTANT:** When making code changes, always use the **readme-sync skill** to keep README.md and prd.md files synchronized with the codebase.
+**IMPORTANT:** When making code changes, always use the **readme-sync skill** to keep README.md and PRD.md files synchronized with the codebase.
 
 ## Architecture
 

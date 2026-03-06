@@ -56,6 +56,6 @@ A comprehensive offline-first personal financial management application providin
 
 ## Component References
 
-- **[Web Frontend](./web/prd.md)**: User interface and offline-first experience
-- **[Backend API](./backend/prd.md)**: Data management, authentication, and cloud integration
-- **[Database](./db/prd.md)**: Transaction storage and synchronization
+- **[Web Frontend](./web/PRD.md)**: User interface and offline-first experience
+- **[Backend API](./backend/PRD.md)**: Data management, authentication, and cloud integration
+- **[Database](./db/PRD.md)**: Transaction storage and synchronization

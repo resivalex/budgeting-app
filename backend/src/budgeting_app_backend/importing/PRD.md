@@ -83,6 +83,6 @@ Data import functionality that processes CSV transaction data and performs compl
 ## Component References
 
 - **[Backend State](../state.py)**: Main state management system that orchestrates importing with backup operations
-- **[Exporting Module](../exporting/prd.md)**: Related CSV exporting functionality for backup creation during import
-- **[Transactions Module](../transactions/prd.md)**: GoogleDriveDump integration for automated backup during import
+- **[Exporting Module](../exporting/PRD.md)**: Related CSV exporting functionality for backup creation during import
+- **[Transactions Module](../transactions/PRD.md)**: GoogleDriveDump integration for automated backup during import
 - **[Main API](../../main.py)**: FastAPI application that exposes import endpoints using this module

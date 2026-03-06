@@ -67,6 +67,6 @@ Data export functionality that transforms transaction data from CouchDB into sta
 ## Component References
 
 - **[Backend State](../state.py)**: Main state management system that uses CsvExporting for data export operations
-- **[Transactions Module](../transactions/prd.md)**: Related transaction data access components
-- **[Backup Service](../backup/prd.md)**: Automated backup system that uses exporting functionality
+- **[Transactions Module](../transactions/PRD.md)**: Related transaction data access components
+- **[Backup Service](../backup/PRD.md)**: Automated backup system that uses exporting functionality
 - **[Main API](../../main.py)**: FastAPI application that exposes export endpoints using this module

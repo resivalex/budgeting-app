@@ -80,7 +80,7 @@ Core transaction data management components providing database access and backup
 ## Component References
 
 - **[Backend State](../state.py)**: Main state management system that orchestrates DbSource and GoogleDriveDump operations
-- **[Services Module](../services/prd.md)**: GoogleDriveService integration for backup functionality
+- **[Services Module](../services/PRD.md)**: GoogleDriveService integration for backup functionality
 - **[Exporting Module](../exporting/)**: CSV exporting functionality that works with DbSource for data retrieval
 - **[Importing Module](../importing/)**: CSV importing functionality that triggers backup operations through GoogleDriveDump
 - **[Main API](../../main.py)**: FastAPI application that exposes transaction endpoints using these components

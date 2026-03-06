@@ -22,22 +22,22 @@ A sophisticated React TypeScript frontend that provides a complete offline-first
 
 ### Financial Transaction Management
 
-- **Advanced Transaction Interface**: Comprehensive transaction viewing with virtualized lists, advanced filtering (account, payee, comment, category, budget_name), and intelligent search capabilities (see [Transactions PRD](./src/components/Transactions/prd.md))
-- **Step-by-Step Transaction Entry**: Guided transaction creation with intelligent field suggestions, validation, and automatic budget name assignment (see [TransactionForm PRD](./src/components/TransactionForm/prd.md))
+- **Advanced Transaction Interface**: Comprehensive transaction viewing with virtualized lists, advanced filtering (account, payee, comment, category, budget_name), and intelligent search capabilities (see [Transactions PRD](./src/components/Transactions/PRD.md))
+- **Step-by-Step Transaction Entry**: Guided transaction creation with intelligent field suggestions, validation, and automatic budget name assignment (see [TransactionForm PRD](./src/components/TransactionForm/PRD.md))
 - **Smart Data Input**: Intelligent autocomplete for categories, payees, and comments based on historical transaction patterns
 - **Budget Name Assignment**: Transactions carry a `budget_name` linking them to a specific budget; auto-assigned from category on entry, visible as a badge in the transaction list, and editable via dropdown
 - **Cross-Language Search**: Advanced search functionality supporting English/Russian text matching for international users
 
 ### Budget Management & Analytics
 
-- **Visual Budget Tracking**: Sophisticated budget management with color-coded progress indicators, multi-segment progress bars, and real-time spending analytics (see [Budgets PRD](./src/components/Budgets/prd.md))
+- **Visual Budget Tracking**: Sophisticated budget management with color-coded progress indicators, multi-segment progress bars, and real-time spending analytics (see [Budgets PRD](./src/components/Budgets/PRD.md))
 - **Monthly Budget Planning**: Comprehensive month-by-month budget management with historical tracking and expectation ratios
 - **Budget-Name-Based Calculations**: Budget totals computed by matching transaction `budget_name` to budget name; transactions without a recognised budget name (empty or unknown) are collected under "Другое" (Rest)
 - **Data Migration**: One-time migration assigns budget names to existing transactions based on category-to-budget mapping, ensuring continuity after feature rollout
 
 ### Account & Data Management
 
-- **Multi-Account Dashboard**: Clean overview of all financial accounts with color-coded identification and real-time balance tracking (see [Home PRD](./src/components/Home/prd.md))
+- **Multi-Account Dashboard**: Clean overview of all financial accounts with color-coded identification and real-time balance tracking (see [Home PRD](./src/components/Home/PRD.md))
 - **Data Export & Backup**: CSV export functionality with timestamped filenames for backup and external analysis
 - **Configuration Management**: Flexible user preferences with persistent storage and automatic synchronization
 
@@ -60,12 +60,12 @@ A sophisticated React TypeScript frontend that provides a complete offline-first
 
 ## Component References
 
-- **[State](./src/state/prd.md)**: Jotai atoms for centralized reactive state management
-- **[Domain](./src/domain/prd.md)**: Pure TypeScript business logic services
-- **[Hooks](./src/hooks/prd.md)**: Domain adapter hooks wiring services to state
-- **[Services](./src/services/prd.md)**: Infrastructure services (backend, database, storage)
-- **[App](./src/components/App/prd.md)**: Main application orchestrator with authentication and navigation
-- **[Home](./src/components/Home/prd.md)**: Account dashboard providing clean overview of financial position
-- **[Transactions](./src/components/Transactions/prd.md)**: Advanced transaction management with filtering and search
-- **[TransactionForm](./src/components/TransactionForm/prd.md)**: Step-by-step transaction creation and editing
-- **[Budgets](./src/components/Budgets/prd.md)**: Comprehensive budget management and tracking
+- **[State](./src/state/PRD.md)**: Jotai atoms for centralized reactive state management
+- **[Domain](./src/domain/PRD.md)**: Pure TypeScript business logic services
+- **[Hooks](./src/hooks/PRD.md)**: Domain adapter hooks wiring services to state
+- **[Services](./src/services/PRD.md)**: Infrastructure services (backend, database, storage)
+- **[App](./src/components/App/PRD.md)**: Main application orchestrator with authentication and navigation
+- **[Home](./src/components/Home/PRD.md)**: Account dashboard providing clean overview of financial position
+- **[Transactions](./src/components/Transactions/PRD.md)**: Advanced transaction management with filtering and search
+- **[TransactionForm](./src/components/TransactionForm/PRD.md)**: Step-by-step transaction creation and editing
+- **[Budgets](./src/components/Budgets/PRD.md)**: Comprehensive budget management and tracking

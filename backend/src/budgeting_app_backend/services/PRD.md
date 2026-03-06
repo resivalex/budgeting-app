@@ -60,5 +60,5 @@ External service integrations for the budgeting application backend, providing s
 
 - **[Backend State](../state.py)**: Main state management system that utilizes GoogleDriveService for backup operations
 - **[Backup Service](../backup/)**: Automated backup system that orchestrates data export and Google Drive uploads
-- **[SQLite Module](../sqlite/prd.md)**: Database persistence layer that provides data for backup operations
+- **[SQLite Module](../sqlite/PRD.md)**: Database persistence layer that provides data for backup operations
 - **[Main API](../../main.py)**: FastAPI application that exposes manual backup trigger endpoints

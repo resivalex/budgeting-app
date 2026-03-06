@@ -47,5 +47,5 @@ backup.zip
 
 ## Component References
 
-- **[Services Module](../services/prd.md)**: GoogleDriveService for optional cloud backup uploads
+- **[Services Module](../services/PRD.md)**: GoogleDriveService for optional cloud backup uploads
 - **[Main API](../../main.py)**: FastAPI application exposing backup/restore endpoints
