@@ -8,7 +8,7 @@ x-web-base: &web-base
 # Production configuration
 x-web-prod: &web-prod
   <<: *web-base
-  command: yarn run serve --single build --listen tcp://0.0.0.0:3000
+  command: yarn run serve
   networks:
     - traefik
 
@@ -17,13 +17,11 @@ x-web-dev: &web-dev
   image: node:20
   container_name: budgeting_app__web__dev
   working_dir: /app
-  command: bash -c "yarn install && yarn start"
+  command: bash -c "yarn install && yarn dev --host"
   volumes:
     - ".:/app"
   env_file:
     - .env
-  environment:
-    - WDS_SOCKET_PORT=3000
   ports:
     - "3000:3000"
 

@@ -6,7 +6,7 @@ Personal finance manager with automated backups.
 
 Three-tier offline-first application:
 
-- **Frontend**: React 19 PWA with PouchDB for local offline storage
+- **Frontend**: React 19 PWA with Vite and PouchDB for local offline storage
 - **Database**: CouchDB for transaction document storage and bidirectional sync
 - **Backend**: FastAPI Python API with SQLite for configuration settings
 

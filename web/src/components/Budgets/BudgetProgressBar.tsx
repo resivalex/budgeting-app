@@ -37,12 +37,12 @@ const OverdraftBar = styled.div<{ width: number }>`
   background-color: #ff6741;
 `
 
-const ExternalRatioBar = styled.div<{ left: number }>`
+const ExternalRatioBar = styled.div<{ $left: number }>`
   position: absolute;
   top: -4px;
   bottom: -4px;
   width: 1px;
-  left: ${({ left }) => left * 100}%;
+  left: ${({ $left }) => $left * 100}%;
   background-color: #000000;
   opacity: 0.3;
 `
@@ -77,7 +77,7 @@ export default function BudgetProgressBar({ totalAmount, spentAmount, externalRa
         {remainingRatio > 0 && <RemainingBar width={remainingRatio} />}
         {overdraftRatio > 0 && <OverdraftBar width={overdraftRatio} />}
       </ProgressBarContainer>
-      {externalRatio !== null && <ExternalRatioBar left={externalRatio} />}
+      {externalRatio !== null && <ExternalRatioBar $left={externalRatio} />}
     </ProgressBarWrapper>
   )
 }

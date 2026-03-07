@@ -1,1 +1,1 @@
-export const appVersion: string = process.env.REACT_APP_VERSION || 'unset'
+export const appVersion: string = import.meta.env.VITE_VERSION || 'unset'

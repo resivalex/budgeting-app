@@ -43,7 +43,7 @@ Infrastructure Services (DB, API)
 cd web
 yarn install
 cp .env.example .env
-yarn start
+yarn dev
 ```
 
 ### Docker Development
@@ -69,8 +69,8 @@ docker-compose up
 - **Storage**: PouchDB (local) → CouchDB (remote sync)
 - **State**: Jotai for global state, React hooks for local
 - **Routing**: React Router v7
-- **Build**: Create React App with custom webpack config
-- **PWA**: Service workers via `serviceWorkerRegistration.ts`
+- **Build**: Vite with vite-plugin-pwa for service worker support
+- **PWA**: Service workers via vite-plugin-pwa with Workbox
 
 ### Project Structure
 
@@ -93,9 +93,9 @@ src/
 ### Development Workflow
 
 ```bash
-yarn start          # Dev server at :3000
-yarn build          # Production build
-yarn test           # Run tests
+yarn dev             # Dev server at :3000
+yarn build           # Production build
+yarn preview         # Preview production build
 ```
 
 ### Environment Variables

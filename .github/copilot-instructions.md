@@ -16,7 +16,7 @@ docker-compose -f docker-compose.dev.yml up
 
 # Individual components
 cd backend && poetry run uvicorn main:app --reload  # API at :8000
-cd web && yarn start                                 # Frontend at :3000
+cd web && yarn dev                                 # Frontend at :3000
 cd db && docker-compose -f docker-compose.dev.yml up # CouchDB at :9002
 
 # Backend migrations
@@ -25,6 +25,7 @@ cd backend && poetry run alembic revision --autogenerate -m "description"
 
 # Frontend
 cd web && yarn build
+cd web && yarn preview  # Preview production build
 ```
 
 ## Key Patterns
