@@ -9,11 +9,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 const instanceId = uuidv4()
 
-interface Props {
-  isLoading: boolean
-}
-
-export default function AuthorizedAppContainer({ isLoading }: Props) {
+export default function AuthorizedAppContainer() {
   const { backendService, dbService, storageService } = useServices()
 
   const [filterAccountName, setFilterAccountName] = useState('')
@@ -35,9 +31,9 @@ export default function AuthorizedAppContainer({ isLoading }: Props) {
     addTransaction: addLocalTransaction,
     updateTransaction: updateLocalTransaction,
     deleteTransaction: deleteLocalTransaction,
-  } = useTransactionsDomain(dbService)
+  } = useTransactionsDomain()
 
-  const { offlineMode, addDbTransaction, replaceDbTransaction, removeDbTransaction } =
+  const { isLoading, offlineMode, addDbTransaction, replaceDbTransaction, removeDbTransaction } =
     useSyncDomain(backendService, dbService, instanceId)
 
   const [lastNotificationText, setLastNotificationText] = useState('')

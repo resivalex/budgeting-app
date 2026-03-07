@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import Login from './Login'
-import { DbService, BackendService, ServiceProvider } from '@/services'
+import { DbService, BackendService, ServiceProvider, StorageService } from '@/services'
 import AuthorizedAppContainer from './AuthorizedAppContainer'
 
 type ConfigType = {
@@ -10,17 +10,14 @@ type ConfigType = {
 }
 
 export default function AppContainer() {
-  const [isLoading, setIsLoading] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [config, setConfig] = useState<ConfigType | null>(null)
   const [backendService, setBackendService] = useState<BackendService | null>(null)
   const [dbService, setDbService] = useState<DbService | null>(null)
 
   useEffect(() => {
-    const localStorageConfig: ConfigType | null = localStorage.config
-      ? JSON.parse(localStorage.config)
-      : null
-    setConfig(localStorageConfig)
+    const storageService = new StorageService()
+    setConfig(storageService.get('config'))
   }, [isAuthenticated])
 
   useEffect(() => {
@@ -43,7 +40,6 @@ export default function AppContainer() {
     }
     const service = new DbService({
       dbUrl: config.dbUrl,
-      onLoading: setIsLoading,
     })
     setDbService(service)
   }, [config])
@@ -64,7 +60,7 @@ export default function AppContainer() {
   }
   return (
     <ServiceProvider backendService={backendService} dbService={dbService}>
-      <AuthorizedAppContainer isLoading={isLoading} />
+      <AuthorizedAppContainer />
     </ServiceProvider>
   )
 }

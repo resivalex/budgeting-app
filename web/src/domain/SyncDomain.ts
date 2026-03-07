@@ -5,6 +5,7 @@ import { SyncStatus } from '@/state'
 export interface SyncCallbacks {
   onStatusChange: (status: Partial<SyncStatus>) => void
   onTransactionsLoaded: (transactions: TransactionDTO[]) => void
+  onLoadingChange: (isLoading: boolean) => void
 }
 
 class SyncDomain {
@@ -27,7 +28,11 @@ class SyncDomain {
   }
 
   async pullFromLocalDb(): Promise<void> {
-    const transactions = await this.dbService.readAllDocs()
+    const rawTransactions = await this.dbService.readAllDocs()
+    const transactions = rawTransactions.map((t) => ({
+      ...t,
+      budget_name: t.budget_name ?? '',
+    }))
     this.callbacks.onTransactionsLoaded(transactions)
   }
 
@@ -49,9 +54,14 @@ class SyncDomain {
         this.storageService.set('transactionsUploadedAt', remoteSettings.transactionsUploadedAt)
       }
 
-      const hasChangesFromRemote = await this.dbService.pullChanges()
-      if (hasChangesFromRemote) {
-        await this.pullFromLocalDb()
+      this.callbacks.onLoadingChange(true)
+      try {
+        const hasChangesFromRemote = await this.dbService.pullChanges()
+        if (hasChangesFromRemote) {
+          await this.pullFromLocalDb()
+        }
+      } finally {
+        this.callbacks.onLoadingChange(false)
       }
 
       this.callbacks.onStatusChange({ isOffline: false })
@@ -61,6 +71,7 @@ class SyncDomain {
   }
 
   async pushToRemote(): Promise<boolean> {
+    this.callbacks.onLoadingChange(true)
     try {
       await this.dbService.pushChanges()
       this.callbacks.onStatusChange({ hasPushError: false })
@@ -68,6 +79,8 @@ class SyncDomain {
     } catch (error) {
       this.callbacks.onStatusChange({ hasPushError: true })
       return false
+    } finally {
+      this.callbacks.onLoadingChange(false)
     }
   }
 

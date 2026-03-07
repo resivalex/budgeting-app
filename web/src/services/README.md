@@ -23,7 +23,7 @@ Authenticated HTTP client targeting a configurable backend URL. API responses ar
 
 ### `DbService`
 
-PouchDB-based local store synced with a remote CouchDB instance. Sync is intentionally one-shot (not live) to give the app explicit control over when data is pushed or pulled. `pushChanges` replicates local → remote; `pullChanges` replicates remote → local. Database reset destroys and recreates the local instance to mirror a server-side data reset.
+PouchDB-based local store synced with a remote CouchDB instance. Sync is intentionally one-shot (not live) to give the app explicit control over when data is pushed or pulled. `pushChanges` replicates local → remote; `pullChanges` replicates remote → local. Database reset destroys and recreates the local instance to mirror a server-side data reset. `DbService` has no UI dependencies — it is a pure data service with no knowledge of React state or loading indicators.
 
 ### `StorageService`
 

@@ -1,20 +1,11 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { transactionsAtom, transactionsAggregationsAtom } from '@/state'
-import { TransactionDomain } from '@/domain'
 import { TransactionDTO } from '@/types'
-import { DbService } from '@/services'
 
-export function useTransactionsDomain(dbService: DbService) {
+export function useTransactionsDomain() {
   const [transactions, setTransactions] = useAtom(transactionsAtom)
   const transactionsAggregations = useAtomValue(transactionsAggregationsAtom)
-
-  const transactionDomain = useMemo(() => new TransactionDomain(dbService), [dbService])
-
-  const loadTransactions = useCallback(async () => {
-    const loadedTransactions = await transactionDomain.loadTransactions()
-    setTransactions(loadedTransactions)
-  }, [transactionDomain, setTransactions])
 
   const addTransaction = useCallback(
     async (transaction: TransactionDTO) => {
@@ -44,7 +35,6 @@ export function useTransactionsDomain(dbService: DbService) {
   return {
     transactions,
     transactionsAggregations,
-    loadTransactions,
     addTransaction,
     updateTransaction,
     deleteTransaction,

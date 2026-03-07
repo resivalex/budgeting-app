@@ -1,6 +1,5 @@
 import { TransactionDTO, TransactionsAggregations } from '@/types'
-import { DbService, TransactionAggregator } from '@/services'
-import _ from 'lodash'
+import { TransactionAggregator } from '@/services'
 
 const emptyAggregations: TransactionsAggregations = {
   accountDetails: [],
@@ -11,29 +10,6 @@ const emptyAggregations: TransactionsAggregations = {
 }
 
 class TransactionDomain {
-  private dbService: DbService
-
-  constructor(dbService: DbService) {
-    this.dbService = dbService
-  }
-
-  async loadTransactions(): Promise<TransactionDTO[]> {
-    const transactions = await this.dbService.readAllDocs()
-    return this.sortTransactions(transactions)
-  }
-
-  async createTransaction(transaction: TransactionDTO): Promise<void> {
-    await this.dbService.addTransaction(transaction)
-  }
-
-  async updateTransaction(transaction: TransactionDTO): Promise<void> {
-    await this.dbService.replaceTransaction(transaction)
-  }
-
-  async deleteTransaction(transactionId: string): Promise<void> {
-    await this.dbService.removeTransaction(transactionId)
-  }
-
   static getAggregations(transactions: TransactionDTO[]): TransactionsAggregations {
     if (transactions.length === 0) {
       return emptyAggregations
@@ -46,10 +22,6 @@ class TransactionDomain {
       payees: aggregator.getRecentPayees(),
       comments: aggregator.getRecentComments(),
     }
-  }
-
-  private sortTransactions(transactions: TransactionDTO[]): TransactionDTO[] {
-    return _.sortBy(transactions, (transaction: TransactionDTO) => transaction.datetime).reverse()
   }
 }
 

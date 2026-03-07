@@ -11,17 +11,13 @@ function initializeRemotePouchDB(dbUrl: string) {
 
 interface DbServiceProps {
   dbUrl: string
-  onLoading?: (isLoading: boolean) => void
 }
 
 export default class DbService {
-  private readonly onLoading: (isLoading: boolean) => void
   private localDB: any
   private readonly remoteDB: any
 
   constructor(props: DbServiceProps) {
-    this.onLoading = props.onLoading || (() => {})
-
     this.localDB = initializeLocalPouchDB()
     this.remoteDB = initializeRemotePouchDB(props.dbUrl)
   }
@@ -47,18 +43,14 @@ export default class DbService {
     await this.localDB.remove(doc)
   }
 
-  async readAllDocs(): Promise<any[]> {
+  async readAllDocs(): Promise<TransactionDTO[]> {
     console.log('readAllDocs')
     const result = await this.localDB.allDocs({ include_docs: true })
-    return result.rows.map((row: any) => ({
-      ...row.doc,
-      budget_name: row.doc.budget_name ?? '',
-    }))
+    return result.rows.map((row: any) => row.doc as TransactionDTO)
   }
 
   async pushChanges(): Promise<boolean> {
     console.log('pushChanges')
-    this.onLoading(true)
     return new Promise<boolean>((resolve, reject) => {
       this.localDB.replicate
         .to(this.remoteDB, {
@@ -68,20 +60,16 @@ export default class DbService {
         })
         .on('complete', () => {
           console.log('pushChanges complete')
-          this.onLoading(false)
           resolve(true)
         })
         .on('error', (err: any) => {
           console.log('pushChanges error')
-          this.onLoading(false)
           reject(err)
         })
     })
   }
 
   async pullChanges(): Promise<boolean> {
-    this.onLoading(true)
-
     let hasChanges = false
 
     return new Promise<boolean>((resolve, reject) => {
@@ -97,12 +85,10 @@ export default class DbService {
           }
         })
         .on('complete', () => {
-          this.onLoading(false)
           resolve(hasChanges)
         })
         .on('error', (err: any) => {
           console.error('pullChanges error')
-          this.onLoading(false)
           reject(err)
         })
     })

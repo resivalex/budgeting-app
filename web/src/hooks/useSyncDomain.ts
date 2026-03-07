@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo, useRef } from 'react'
+import { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useAtom } from 'jotai'
 import { syncStatusAtom, transactionsAtom, SyncStatus } from '@/state'
 import { SyncDomain } from '@/domain'
@@ -16,6 +16,8 @@ export function useSyncDomain(
 ) {
   const [syncStatus, setSyncStatus] = useAtom(syncStatusAtom)
   const [, setTransactions] = useAtom(transactionsAtom)
+  const [loadingCount, setLoadingCount] = useState(0)
+  const isLoading = loadingCount > 0
 
   const storageService = useMemo(() => new StorageService(), [])
 
@@ -33,13 +35,25 @@ export function useSyncDomain(
     [setTransactions],
   )
 
+  const onLoadingChange = useCallback((loading: boolean) => {
+    setLoadingCount((c) => (loading ? c + 1 : Math.max(0, c - 1)))
+  }, [])
+
   const syncDomain = useMemo(
     () =>
       new SyncDomain(backendService, dbService, storageService, {
         onStatusChange,
         onTransactionsLoaded,
+        onLoadingChange,
       }),
-    [backendService, dbService, storageService, onStatusChange, onTransactionsLoaded],
+    [
+      backendService,
+      dbService,
+      storageService,
+      onStatusChange,
+      onTransactionsLoaded,
+      onLoadingChange,
+    ],
   )
 
   const syncDomainRef = useRef(syncDomain)
@@ -106,6 +120,7 @@ export function useSyncDomain(
   )
 
   return {
+    isLoading,
     offlineMode: syncStatus.isOffline,
     addDbTransaction,
     replaceDbTransaction,
