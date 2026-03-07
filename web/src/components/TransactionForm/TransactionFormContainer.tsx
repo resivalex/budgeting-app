@@ -71,7 +71,7 @@ export default function TransactionFormContainer({
       setPayee(t.payee)
     }
     setComment(t.comment)
-    setBudgetName(t.budget_name || '')
+    setBudgetName(t.budget_name)
     setDatetime(convertToLocaleTime(t.datetime))
   }
 

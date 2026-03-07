@@ -135,7 +135,7 @@ class TransactionFormDomain {
       currency: params.currency,
       payee: params.type === 'transfer' ? params.payeeTransferAccount : params.payee,
       comment: params.comment,
-      budget_name: params.budget_name,
+      budget_name: params.type === 'transfer' ? '' : params.budget_name,
     }
   }
 

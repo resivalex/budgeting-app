@@ -28,11 +28,7 @@ class SyncDomain {
   }
 
   async pullFromLocalDb(): Promise<void> {
-    const rawTransactions = await this.dbService.readAllDocs()
-    const transactions = rawTransactions.map((t) => ({
-      ...t,
-      budget_name: t.budget_name ?? '',
-    }))
+    const transactions = await this.dbService.readAllDocs()
     this.callbacks.onTransactionsLoaded(transactions)
   }
 
