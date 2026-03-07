@@ -1,6 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import SuggestingInput from '@/components/SuggestingInput'
+import { useIsMobile } from '@/hooks'
+import { filterSuggestions } from '@/utils/en-ru-matching'
+import { OverlayOption, OverlayWithSearch } from '@/components/FullscreenOverlay'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
 interface Props {
   payee: string
@@ -8,6 +13,7 @@ interface Props {
   onPayeeChange: (payee: string) => void
   onExpand: () => void
   onComplete: () => void
+  onCollapse: () => void
   payees: string[]
   type: 'expense' | 'income' | 'transfer' | ''
 }
@@ -21,22 +27,41 @@ const SelectedPayee = styled.div`
   font-size: 0.8rem;
 `
 
+const ConfirmButton = styled.button`
+  font-size: 1.5rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+`
+
 export default function Payee({
   payee,
   isExpanded,
   onPayeeChange,
   onExpand,
   onComplete,
+  onCollapse,
   payees,
   type,
 }: Props) {
   const inputRef = useRef<any>(null)
+  const mobileInputRef = useRef<HTMLInputElement>(null)
+  const isMobile = useIsMobile()
+  const [localValue, setLocalValue] = useState(payee)
 
   useEffect(() => {
-    if (isExpanded && inputRef.current) {
+    if (isExpanded && !isMobile && inputRef.current) {
       inputRef.current.focus()
     }
-  }, [isExpanded])
+  }, [isExpanded, isMobile])
+
+  useEffect(() => {
+    if (isExpanded && isMobile) {
+      setLocalValue(payee)
+      setTimeout(() => mobileInputRef.current?.focus(), 100)
+    }
+  }, [isExpanded, isMobile, payee])
 
   function labelText() {
     return type === 'income' ? 'Плательщик' : 'Получатель'
@@ -50,6 +75,43 @@ export default function Payee({
         </PayeeLabel>
         <SelectedPayee>{payee || '(пусто)'}</SelectedPayee>
       </div>
+    )
+  }
+
+  if (isMobile) {
+    const filtered = filterSuggestions(payees, localValue)
+
+    const handleConfirm = () => {
+      onPayeeChange(localValue)
+      onComplete()
+    }
+
+    const handleSuggestionClick = (suggestion: string) => {
+      onPayeeChange(suggestion)
+      onComplete()
+    }
+
+    return (
+      <OverlayWithSearch
+        title={labelText()}
+        onClose={onCollapse}
+        searchRef={mobileInputRef}
+        searchValue={localValue}
+        onSearchChange={setLocalValue}
+        searchPlaceholder="Введите или выберите..."
+        headerRight={
+          <ConfirmButton onClick={handleConfirm}>
+            {/* @ts-ignore */}
+            <FontAwesomeIcon icon={faCheckCircle} color="rgb(50, 115, 220)" />
+          </ConfirmButton>
+        }
+      >
+        {filtered.map((suggestion, index) => (
+          <OverlayOption key={index} onClick={() => handleSuggestionClick(suggestion)}>
+            {suggestion}
+          </OverlayOption>
+        ))}
+      </OverlayWithSearch>
     )
   }
 

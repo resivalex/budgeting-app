@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, ReactNode } from 'react'
 import styled from 'styled-components'
 
 interface Props {
@@ -10,6 +10,17 @@ interface Props {
   onComplete: () => void
 }
 
+const TypeDot = styled.span<{ $dotColor: string }>`
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: ${(props) => props.$dotColor};
+  border: 1px solid white;
+  margin-right: 6px;
+  flex-shrink: 0;
+`
+
 const Option = styled.div<{ $isActive: boolean }>`
   background-color: ${(props) => (props.$isActive ? '#3273dc' : '#fff')};
   color: ${(props) => (props.$isActive ? '#fff' : '#3273dc')};
@@ -18,6 +29,8 @@ const Option = styled.div<{ $isActive: boolean }>`
   padding: 0.4rem 0.8rem;
   font-size: 1rem;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 
   &:not(:first-child) {
     border-top-left-radius: 0;
@@ -52,14 +65,29 @@ export default function Type({
 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null)
 
-  function renderSelectedOption() {
+  function renderSelectedOption(): ReactNode {
     switch (value) {
       case 'expense':
-        return 'Расход'
+        return (
+          <>
+            <TypeDot $dotColor="red" />
+            Расход
+          </>
+        )
       case 'income':
-        return 'Доход'
+        return (
+          <>
+            <TypeDot $dotColor="green" />
+            Доход
+          </>
+        )
       case 'transfer':
-        return 'Перевод'
+        return (
+          <>
+            <TypeDot $dotColor="orange" />
+            Перевод
+          </>
+        )
       default:
         return 'Тип?'
     }
@@ -88,12 +116,15 @@ export default function Type({
   const renderOptions = () => (
     <>
       <Option $isActive={value === 'expense'} onClick={() => handleOptionClick('expense')}>
+        <TypeDot $dotColor="red" />
         Расход
       </Option>
       <Option $isActive={value === 'income'} onClick={() => handleOptionClick('income')}>
+        <TypeDot $dotColor="green" />
         Доход
       </Option>
       <Option $isActive={value === 'transfer'} onClick={() => handleOptionClick('transfer')}>
+        <TypeDot $dotColor="orange" />
         Перевод
       </Option>
     </>

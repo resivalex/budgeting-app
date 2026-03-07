@@ -24,36 +24,42 @@ export interface AccountStepProps {
   isExpanded: boolean
   onExpand: () => void
   onComplete: () => void
+  onCollapse: () => void
 }
 
 export interface CategoryStepProps {
   isExpanded: boolean
   onExpand: () => void
   onComplete: () => void
+  onCollapse: () => void
 }
 
 export interface BudgetNameStepProps {
   isExpanded: boolean
   onExpand: () => void
   onComplete: () => void
+  onCollapse: () => void
 }
 
 export interface PayeeStepProps {
   isExpanded: boolean
   onExpand: () => void
   onComplete: () => void
+  onCollapse: () => void
 }
 
 export interface PayeeTransferAccountStepProps {
   isExpanded: boolean
   onExpand: () => void
   onComplete: () => void
+  onCollapse: () => void
 }
 
 export interface CommentStepProps {
   isExpanded: boolean
   onExpand: () => void
   onComplete: () => void
+  onCollapse: () => void
 }
 
 export interface DatetimeStepProps {
@@ -102,6 +108,7 @@ function FormLayout({
   SaveButton: FC<SaveButtonProps>
 }) {
   const [currentStep, setCurrentStep] = useState(amountStep)
+  const collapseStep = () => setCurrentStep('')
   const combineAmountAndCurrency = currentStep !== amountStep && currentStep !== currencyStep
 
   return (
@@ -150,6 +157,7 @@ function FormLayout({
         onExpand: () => setCurrentStep(accountStep),
         onComplete: () =>
           setCurrentStep(type === 'transfer' ? payeeTransferAccountStep : categoryStep),
+        onCollapse: collapseStep,
       })}
       {type === 'transfer' ? (
         PayeeTransferAccountStep({
@@ -159,6 +167,7 @@ function FormLayout({
             const nextStep = type === 'transfer' ? '' : commentStep
             setCurrentStep(nextStep)
           },
+          onCollapse: collapseStep,
         })
       ) : (
         <>
@@ -166,16 +175,19 @@ function FormLayout({
             isExpanded: currentStep === categoryStep,
             onExpand: () => setCurrentStep(categoryStep),
             onComplete: () => setCurrentStep(payeeStep),
+            onCollapse: collapseStep,
           })}
           {BudgetNameStep({
             isExpanded: currentStep === budgetNameStep,
             onExpand: () => setCurrentStep(budgetNameStep),
             onComplete: () => setCurrentStep(payeeStep),
+            onCollapse: collapseStep,
           })}
           {PayeeStep({
             isExpanded: currentStep === payeeStep,
             onExpand: () => setCurrentStep(payeeStep),
             onComplete: () => setCurrentStep(commentStep),
+            onCollapse: collapseStep,
           })}
         </>
       )}
@@ -183,6 +195,7 @@ function FormLayout({
         isExpanded: currentStep === commentStep,
         onExpand: () => setCurrentStep(commentStep),
         onComplete: () => setCurrentStep(datetimeStep),
+        onCollapse: collapseStep,
       })}
       {DatetimeStep({
         isExpanded: currentStep === datetimeStep,

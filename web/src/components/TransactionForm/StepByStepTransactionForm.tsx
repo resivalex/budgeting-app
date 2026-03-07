@@ -1,5 +1,5 @@
 import { FC, useState, Ref, useCallback, useEffect } from 'react'
-import { convertCurrencyCodeToSymbol } from '@/utils'
+import { convertCurrencyCodeToSymbol, formatFinancialAmount } from '@/utils'
 import { ColoredAccountDetailsDTO } from '@/types'
 import {
   Type,
@@ -117,7 +117,7 @@ function StepByStepTransactionForm({
 
   const accountOptions = accounts.map((a) => ({
     value: a.account,
-    label: `[ ${convertCurrencyCodeToSymbol(a.currency)} ] ${a.account}`,
+    label: `${formatFinancialAmount(a.balance)} ${convertCurrencyCodeToSymbol(a.currency)} | ${a.account}`,
     color: a.color,
   }))
 
@@ -165,7 +165,7 @@ function StepByStepTransactionForm({
     )
   }
 
-  function AccountStep({ isExpanded, onExpand, onComplete }: AccountStepProps) {
+  function AccountStep({ isExpanded, onExpand, onComplete, onCollapse }: AccountStepProps) {
     return (
       <Account
         AccountSelect={AccountSelect}
@@ -175,11 +175,12 @@ function StepByStepTransactionForm({
         isExpanded={isExpanded}
         onExpand={onExpand}
         onComplete={onComplete}
+        onCollapse={onCollapse}
       />
     )
   }
 
-  function CategoryStep({ isExpanded, onExpand, onComplete }: CategoryStepProps) {
+  function CategoryStep({ isExpanded, onExpand, onComplete, onCollapse }: CategoryStepProps) {
     return (
       <Category
         category={category}
@@ -188,11 +189,12 @@ function StepByStepTransactionForm({
         isExpanded={isExpanded}
         onExpand={onExpand}
         onComplete={onComplete}
+        onCollapse={onCollapse}
       />
     )
   }
 
-  function BudgetNameStep({ isExpanded, onExpand, onComplete }: BudgetNameStepProps) {
+  function BudgetNameStep({ isExpanded, onExpand, onComplete, onCollapse }: BudgetNameStepProps) {
     return (
       <BudgetName
         budgetName={budgetName}
@@ -201,11 +203,12 @@ function StepByStepTransactionForm({
         isExpanded={isExpanded}
         onExpand={onExpand}
         onComplete={onComplete}
+        onCollapse={onCollapse}
       />
     )
   }
 
-  function PayeeStep({ isExpanded, onExpand, onComplete }: PayeeStepProps) {
+  function PayeeStep({ isExpanded, onExpand, onComplete, onCollapse }: PayeeStepProps) {
     return (
       <Payee
         type={type}
@@ -215,6 +218,7 @@ function StepByStepTransactionForm({
         isExpanded={isExpanded}
         onExpand={onExpand}
         onComplete={onComplete}
+        onCollapse={onCollapse}
       />
     )
   }
@@ -223,6 +227,7 @@ function StepByStepTransactionForm({
     isExpanded,
     onExpand,
     onComplete,
+    onCollapse,
   }: PayeeTransferAccountStepProps) {
     return (
       <PayeeTransferAccount
@@ -233,11 +238,12 @@ function StepByStepTransactionForm({
         isExpanded={isExpanded}
         onExpand={onExpand}
         onComplete={onComplete}
+        onCollapse={onCollapse}
       />
     )
   }
 
-  function CommentStep({ isExpanded, onExpand, onComplete }: CommentStepProps) {
+  function CommentStep({ isExpanded, onExpand, onComplete, onCollapse }: CommentStepProps) {
     return (
       <Comment
         comment={comment}
@@ -246,6 +252,7 @@ function StepByStepTransactionForm({
         onCommentChange={onCommentChange}
         onExpand={onExpand}
         onComplete={onComplete}
+        onCollapse={onCollapse}
       />
     )
   }

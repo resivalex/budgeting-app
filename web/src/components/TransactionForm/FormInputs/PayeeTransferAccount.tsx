@@ -1,5 +1,7 @@
 import { useEffect, FC, Ref, useRef } from 'react'
 import styled from 'styled-components'
+import { useIsMobile } from '@/hooks'
+import FullscreenOverlay, { OverlayOption } from '@/components/FullscreenOverlay'
 
 const SelectContainer = styled.div<{ $isExpanded: boolean }>`
   font-size: ${(props) => (props.$isExpanded ? '1rem' : '0.8rem')};
@@ -23,6 +25,7 @@ export default function PayeeTransferAccount({
   onPayeeTransferAccountChange,
   onExpand,
   onComplete,
+  onCollapse,
   accountOptions,
 }: {
   AccountSelect: FC<{
@@ -35,9 +38,11 @@ export default function PayeeTransferAccount({
   onPayeeTransferAccountChange: (payeeTransferAccount: string) => void
   onComplete: () => void
   onExpand: () => void
+  onCollapse: () => void
   accountOptions: { value: string; label: string; color: string }[]
 }) {
   const accountSelectRef = useRef<{ focus: () => void }>(null)
+  const isMobile = useIsMobile()
 
   const selectedOption = accountOptions.find((option) => option.value === payeeTransferAccount)
 
@@ -47,10 +52,10 @@ export default function PayeeTransferAccount({
   }
 
   useEffect(() => {
-    if (isExpanded && accountSelectRef.current) {
+    if (isExpanded && !isMobile && accountSelectRef.current) {
       accountSelectRef.current.focus()
     }
-  }, [isExpanded])
+  }, [isExpanded, isMobile])
 
   if (!isExpanded) {
     return (
@@ -64,6 +69,23 @@ export default function PayeeTransferAccount({
           {selectedOption ? selectedOption.label : '(пусто)'}
         </SelectedOption>
       </div>
+    )
+  }
+
+  if (isMobile) {
+    return (
+      <FullscreenOverlay title="Перевод на счёт" onClose={onCollapse}>
+        {accountOptions.map((option) => (
+          <OverlayOption
+            key={option.value}
+            $color={option.color}
+            $isSelected={option.value === payeeTransferAccount}
+            onClick={() => handlePayeeTransferAccountChange(option.value)}
+          >
+            {option.label}
+          </OverlayOption>
+        ))}
+      </FullscreenOverlay>
     )
   }
 

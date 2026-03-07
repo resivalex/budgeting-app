@@ -29,3 +29,7 @@ The form for creating or editing a transaction is pre-populated with available c
 ### Colored Accounts
 
 Accounts are displayed with user-assigned colors, allowing quick visual distinction between accounts.
+
+### Mobile Detection
+
+The `useIsMobile` hook provides responsive breakpoint detection, enabling components to render mobile-optimized UIs (such as fullscreen overlays for form field selection) on narrow viewports.

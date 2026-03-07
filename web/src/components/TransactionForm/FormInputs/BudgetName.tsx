@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from 'react'
 import { reactSelectSmallStyles } from '@/utils'
 import Select from 'react-select'
 import styled from 'styled-components'
+import { useIsMobile } from '@/hooks'
+import { OverlayOption, OverlayWithSearch } from '@/components/FullscreenOverlay'
 
 interface Props {
   budgetName: string
@@ -9,6 +11,7 @@ interface Props {
   onBudgetNameChange: (budgetName: string) => void
   onExpand: () => void
   onComplete: () => void
+  onCollapse: () => void
   budgetNameOptions: { value: string; label: string }[]
 }
 
@@ -27,17 +30,28 @@ export default function BudgetName({
   onBudgetNameChange,
   onExpand,
   onComplete,
+  onCollapse,
   budgetNameOptions,
 }: Props) {
   const [menuIsOpen, setMenuOpen] = useState(false)
   const selectRef = useRef<any>(null)
+  const isMobile = useIsMobile()
+  const [search, setSearch] = useState('')
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    if (isExpanded && selectRef.current) {
+    if (isExpanded && !isMobile && selectRef.current) {
       selectRef.current.focus()
       setMenuOpen(true)
     }
-  }, [isExpanded])
+  }, [isExpanded, isMobile])
+
+  useEffect(() => {
+    if (isExpanded && isMobile) {
+      setSearch('')
+      setTimeout(() => searchInputRef.current?.focus(), 100)
+    }
+  }, [isExpanded, isMobile])
 
   const allOptions = [...budgetNameOptions, { value: '', label: '(без бюджета)' }]
   const selectedOption = allOptions.find((option) => option.value === budgetName)
@@ -57,6 +71,32 @@ export default function BudgetName({
           {selectedOption ? selectedOption.label : '(без бюджета)'}
         </SelectedBudgetName>
       </div>
+    )
+  }
+
+  if (isMobile) {
+    const filteredOptions = search
+      ? allOptions.filter((o) => o.label.toLowerCase().includes(search.toLowerCase()))
+      : allOptions
+
+    return (
+      <OverlayWithSearch
+        title="Бюджет"
+        onClose={onCollapse}
+        searchRef={searchInputRef}
+        searchValue={search}
+        onSearchChange={setSearch}
+      >
+        {filteredOptions.map((option) => (
+          <OverlayOption
+            key={option.value || '__empty__'}
+            $isSelected={option.value === budgetName}
+            onClick={() => handleBudgetNameChange(option.value)}
+          >
+            {option.label}
+          </OverlayOption>
+        ))}
+      </OverlayWithSearch>
     )
   }
 
