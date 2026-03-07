@@ -1,9 +1,8 @@
 import { TransactionDTO } from '@/types'
 import { BackendService, DbService, StorageService } from '@/services'
-import { SyncStatus } from '@/state'
 
 export interface SyncCallbacks {
-  onStatusChange: (status: Partial<SyncStatus>) => void
+  onOfflineChange: (isOffline: boolean) => void
   onTransactionsLoaded: (transactions: TransactionDTO[]) => void
   onLoadingChange: (isLoading: boolean) => void
 }
@@ -13,7 +12,9 @@ class SyncDomain {
   private dbService: DbService
   private storageService: StorageService
   private callbacks: SyncCallbacks
-  private isFirstPullComplete: boolean = false
+  private initialized: boolean = false
+  private isPushing: boolean = false
+  hasPushError: boolean = false
 
   constructor(
     backendService: BackendService,
@@ -33,10 +34,9 @@ class SyncDomain {
   }
 
   async pullFromRemote(): Promise<void> {
-    if (!this.isFirstPullComplete) {
+    if (!this.initialized) {
       await this.pullFromLocalDb()
-      this.isFirstPullComplete = true
-      this.callbacks.onStatusChange({ isFirstPullComplete: true })
+      this.initialized = true
     }
 
     try {
@@ -60,23 +60,24 @@ class SyncDomain {
         this.callbacks.onLoadingChange(false)
       }
 
-      this.callbacks.onStatusChange({ isOffline: false })
+      this.callbacks.onOfflineChange(false)
     } catch (error: unknown) {
-      this.callbacks.onStatusChange({ isOffline: true })
+      this.callbacks.onOfflineChange(true)
     }
   }
 
-  async pushToRemote(): Promise<boolean> {
+  async pushToRemote(): Promise<void> {
+    if (this.isPushing) return
+    this.isPushing = true
     this.callbacks.onLoadingChange(true)
     try {
       await this.dbService.pushChanges()
-      this.callbacks.onStatusChange({ hasPushError: false })
-      return true
+      this.hasPushError = false
     } catch (error) {
-      this.callbacks.onStatusChange({ hasPushError: true })
-      return false
+      this.hasPushError = true
     } finally {
       this.callbacks.onLoadingChange(false)
+      this.isPushing = false
     }
   }
 

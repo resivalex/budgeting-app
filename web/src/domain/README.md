@@ -24,6 +24,6 @@ All domains are re-exported from `index.ts` as a barrel.
 ## Key Patterns
 
 - **Dependency injection**: services passed to constructors, not imported as singletons
-- **Callback-based output**: `SyncDomain` uses `SyncCallbacks` (`onStatusChange`, `onTransactionsLoaded`, `onLoadingChange`) to push updates without coupling to Jotai or any state library
+- **Callback-based output**: `SyncDomain` uses `SyncCallbacks` (`onOfflineChange`, `onTransactionsLoaded`, `onLoadingChange`) to push updates without coupling to Jotai or any state library
 - **Static helpers**: `TransactionDomain.getAggregations()` is a pure static method usable without an instance
 - **localStorage caching**: settings and auth config are cached locally for offline resilience

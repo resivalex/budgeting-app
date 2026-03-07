@@ -10,7 +10,7 @@ Jotai atoms for application-wide reactive state. All atoms are exported from `in
 
 ### `syncStatusAtom` / `isOfflineAtom`
 
-`syncStatusAtom` holds `{ isOffline, hasPushError, isFirstPullComplete }`. `isOfflineAtom` is a derived read-only shortcut.
+`syncStatusAtom` holds `{ isOffline }`. `isOfflineAtom` is a derived read-only shortcut.
 
 ### `configAtom` / `categoryExpansionsAtom` / `accountPropertiesAtom`
 

@@ -12,7 +12,7 @@ Users can view, add, edit, and delete transactions with changes reflected in the
 
 ### Background Sync
 
-The app continuously synchronizes with the remote server: pulling new transactions on a regular interval and retrying failed pushes automatically. Sync status (offline, error, in-progress) is surfaced to the UI so users can see connectivity state.
+The app continuously synchronizes with the remote server: pulling new transactions on a regular cadence (next pull starts 10 seconds after the previous one completes) and retrying failed pushes automatically. Only one push runs at a time — if a push is already in progress when a new one is triggered, the new one is skipped and the next retry will pick up any pending changes. Sync status (offline, error, in-progress) is surfaced to the UI so users can see connectivity state.
 
 ### Settings
 

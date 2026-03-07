@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useAtom } from 'jotai'
-import { syncStatusAtom, transactionsAtom, SyncStatus } from '@/state'
+import { syncStatusAtom, transactionsAtom } from '@/state'
 import { SyncDomain } from '@/domain'
 import { BackendService, DbService, StorageService } from '@/services'
 import { TransactionDTO } from '@/types'
@@ -21,9 +21,9 @@ export function useSyncDomain(
 
   const storageService = useMemo(() => new StorageService(), [])
 
-  const onStatusChange = useCallback(
-    (status: Partial<SyncStatus>) => {
-      setSyncStatus((prev) => ({ ...prev, ...status }))
+  const onOfflineChange = useCallback(
+    (isOffline: boolean) => {
+      setSyncStatus((prev) => ({ ...prev, isOffline }))
     },
     [setSyncStatus],
   )
@@ -42,7 +42,7 @@ export function useSyncDomain(
   const syncDomain = useMemo(
     () =>
       new SyncDomain(backendService, dbService, storageService, {
-        onStatusChange,
+        onOfflineChange,
         onTransactionsLoaded,
         onLoadingChange,
       }),
@@ -50,7 +50,7 @@ export function useSyncDomain(
       backendService,
       dbService,
       storageService,
-      onStatusChange,
+      onOfflineChange,
       onTransactionsLoaded,
       onLoadingChange,
     ],
@@ -59,27 +59,26 @@ export function useSyncDomain(
   const syncDomainRef = useRef(syncDomain)
   syncDomainRef.current = syncDomain
 
-  const hasPushErrorRef = useRef(syncStatus.hasPushError)
-  hasPushErrorRef.current = syncStatus.hasPushError
-
   useEffect(() => {
-    let pullIntervalId: ReturnType<typeof setInterval> | null = null
+    let cancelled = false
+    let pullIntervalId: ReturnType<typeof setTimeout> | null = null
     let retryIntervalId: ReturnType<typeof setInterval> | null = null
 
-    const pullFromRemote = () => {
-      void syncDomainRef.current.pullFromRemote()
-    }
-
     const retryFailedPush = () => {
-      if (hasPushErrorRef.current) {
+      if (syncDomainRef.current.hasPushError) {
         void syncDomainRef.current.pushToRemote()
       }
     }
 
-    const initialPullTimeout = setTimeout(() => {
-      pullFromRemote()
-      pullIntervalId = setInterval(pullFromRemote, SYNC_INTERVAL_MS)
-    }, IMMEDIATE_FIRST_PULL)
+    const schedulePull = () => {
+      void syncDomainRef.current.pullFromRemote().finally(() => {
+        if (!cancelled) {
+          pullIntervalId = setTimeout(schedulePull, SYNC_INTERVAL_MS)
+        }
+      })
+    }
+
+    const initialPullTimeout = setTimeout(schedulePull, IMMEDIATE_FIRST_PULL)
 
     const retryTimeout = setTimeout(() => {
       retryFailedPush()
@@ -87,10 +86,11 @@ export function useSyncDomain(
     }, RETRY_PUSH_DELAY)
 
     return () => {
+      cancelled = true
       clearTimeout(initialPullTimeout)
       clearTimeout(retryTimeout)
       if (pullIntervalId) {
-        clearInterval(pullIntervalId)
+        clearTimeout(pullIntervalId)
       }
       if (retryIntervalId) {
         clearInterval(retryIntervalId)
