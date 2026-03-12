@@ -3,7 +3,7 @@
 # Production targets
 up:
 	docker network create traefik || true
-	docker-compose up -d
+	docker-compose up -d --build
 
 down:
 	docker-compose down
