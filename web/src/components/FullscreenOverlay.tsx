@@ -1,4 +1,4 @@
-import { useEffect, ReactNode, RefObject } from 'react'
+import { useEffect, useState, ReactNode, RefObject } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
 
@@ -7,7 +7,7 @@ const Backdrop = styled.div`
   top: 0;
   left: 0;
   right: 0;
-  height: 100dvh;
+  height: 100%;
   z-index: 1000;
   background-color: white;
   display: flex;
@@ -91,6 +91,32 @@ interface FullscreenOverlayProps {
   floatingAction?: ReactNode
 }
 
+function useVisualViewport() {
+  const [style, setStyle] = useState<React.CSSProperties>({})
+
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return
+
+    const update = () => {
+      setStyle({
+        top: `${vv.offsetTop}px`,
+        height: `${vv.height}px`,
+      })
+    }
+
+    update()
+    vv.addEventListener('resize', update)
+    vv.addEventListener('scroll', update)
+    return () => {
+      vv.removeEventListener('resize', update)
+      vv.removeEventListener('scroll', update)
+    }
+  }, [])
+
+  return style
+}
+
 export default function FullscreenOverlay({
   title,
   onClose,
@@ -99,6 +125,8 @@ export default function FullscreenOverlay({
   subHeader,
   floatingAction,
 }: FullscreenOverlayProps) {
+  const viewportStyle = useVisualViewport()
+
   useEffect(() => {
     const originalOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -108,7 +136,7 @@ export default function FullscreenOverlay({
   }, [])
 
   return ReactDOM.createPortal(
-    <Backdrop>
+    <Backdrop style={viewportStyle}>
       <Header>
         <BackButton onClick={onClose}>←</BackButton>
         <Title>{title}</Title>
