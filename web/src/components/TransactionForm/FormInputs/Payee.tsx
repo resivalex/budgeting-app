@@ -28,11 +28,17 @@ const SelectedPayee = styled.div`
 `
 
 const ConfirmButton = styled.button`
-  font-size: 1.5rem;
-  background-color: transparent;
+  font-size: 1.8rem;
+  background-color: white;
   border: none;
+  border-radius: 50%;
   cursor: pointer;
-  padding: 4px 8px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 `
 
 export default function Payee({
@@ -99,7 +105,7 @@ export default function Payee({
         searchValue={localValue}
         onSearchChange={setLocalValue}
         searchPlaceholder="Введите или выберите..."
-        headerRight={
+        floatingAction={
           <ConfirmButton onClick={handleConfirm}>
             {/* @ts-ignore */}
             <FontAwesomeIcon icon={faCheckCircle} color="rgb(50, 115, 220)" />

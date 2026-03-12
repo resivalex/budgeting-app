@@ -4,11 +4,21 @@ import styled from 'styled-components'
 
 const Backdrop = styled.div`
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100dvh;
   z-index: 1000;
   background-color: white;
   display: flex;
   flex-direction: column;
+`
+
+const FloatingAction = styled.div`
+  position: absolute;
+  bottom: 24px;
+  right: 16px;
+  z-index: 10;
 `
 
 const Header = styled.div`
@@ -78,6 +88,7 @@ interface FullscreenOverlayProps {
   children: ReactNode
   headerRight?: ReactNode
   subHeader?: ReactNode
+  floatingAction?: ReactNode
 }
 
 export default function FullscreenOverlay({
@@ -86,6 +97,7 @@ export default function FullscreenOverlay({
   children,
   headerRight,
   subHeader,
+  floatingAction,
 }: FullscreenOverlayProps) {
   useEffect(() => {
     const originalOverflow = document.body.style.overflow
@@ -104,6 +116,7 @@ export default function FullscreenOverlay({
       </Header>
       {subHeader && <SubHeader>{subHeader}</SubHeader>}
       <Content>{children}</Content>
+      {floatingAction && <FloatingAction>{floatingAction}</FloatingAction>}
     </Backdrop>,
     document.body,
   )
@@ -117,6 +130,7 @@ interface OverlayWithSearchProps {
   onSearchChange: (value: string) => void
   searchPlaceholder?: string
   headerRight?: ReactNode
+  floatingAction?: ReactNode
   children: ReactNode
 }
 
@@ -128,6 +142,7 @@ export function OverlayWithSearch({
   onSearchChange,
   searchPlaceholder = 'Поиск...',
   headerRight,
+  floatingAction,
   children,
 }: OverlayWithSearchProps) {
   return (
@@ -135,6 +150,7 @@ export function OverlayWithSearch({
       title={title}
       onClose={onClose}
       headerRight={headerRight}
+      floatingAction={floatingAction}
       subHeader={
         <OverlaySearchInput
           ref={searchRef}
