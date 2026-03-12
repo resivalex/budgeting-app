@@ -98,6 +98,13 @@ yarn build           # Production build
 yarn preview         # Preview production build
 ```
 
+### Cache Strategy
+
+`public/serve.json` configures HTTP cache headers when running in production with `serve`:
+
+- **Hashed assets** (`assets/**`): `Cache-Control: public, max-age=31536000, immutable` — browsers cache indefinitely; Vite content-hashes filenames so they change on every build
+- **HTML & service worker files** (`*.html`, `service-worker.js`, `registerSW.js`): `Cache-Control: no-cache` — browsers always revalidate, ensuring they pick up the latest asset hashes after each deployment
+
 ### Environment Variables
 
 Create `.env` from `.env.example`:
