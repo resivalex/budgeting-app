@@ -4,8 +4,6 @@ import SuggestingInput from '@/components/SuggestingInput'
 import { useIsMobile } from '@/hooks'
 import { filterSuggestions } from '@/utils/en-ru-matching'
 import { OverlayOption, OverlayWithSearch } from '@/components/FullscreenOverlay'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
 interface Props {
   payee: string
@@ -25,20 +23,6 @@ const PayeeLabel = styled.div<{ $isExpanded: boolean }>`
 
 const SelectedPayee = styled.div`
   font-size: 0.8rem;
-`
-
-const ConfirmButton = styled.button`
-  font-size: 1.8rem;
-  background-color: white;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 `
 
 export default function Payee({
@@ -105,12 +89,7 @@ export default function Payee({
         searchValue={localValue}
         onSearchChange={setLocalValue}
         searchPlaceholder="Введите или выберите..."
-        floatingAction={
-          <ConfirmButton onClick={handleConfirm}>
-            {/* @ts-ignore */}
-            <FontAwesomeIcon icon={faCheckCircle} color="rgb(50, 115, 220)" />
-          </ConfirmButton>
-        }
+        onConfirm={handleConfirm}
       >
         {filtered.map((suggestion, index) => (
           <OverlayOption key={index} onClick={() => handleSuggestionClick(suggestion)}>

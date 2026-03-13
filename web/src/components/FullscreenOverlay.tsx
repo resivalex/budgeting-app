@@ -1,6 +1,8 @@
 import { useEffect, useState, ReactNode, RefObject } from 'react'
 import ReactDOM from 'react-dom'
 import styled from 'styled-components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
 const Backdrop = styled.div`
   position: fixed;
@@ -19,6 +21,20 @@ const FloatingAction = styled.div`
   bottom: 24px;
   right: 16px;
   z-index: 10;
+`
+
+const ConfirmButton = styled.button`
+  font-size: 1.8rem;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 `
 
 const Header = styled.div`
@@ -88,7 +104,7 @@ interface FullscreenOverlayProps {
   children: ReactNode
   headerRight?: ReactNode
   subHeader?: ReactNode
-  floatingAction?: ReactNode
+  onConfirm?: () => void
 }
 
 function useVisualViewport() {
@@ -123,7 +139,7 @@ export default function FullscreenOverlay({
   children,
   headerRight,
   subHeader,
-  floatingAction,
+  onConfirm,
 }: FullscreenOverlayProps) {
   const viewportStyle = useVisualViewport()
 
@@ -144,7 +160,14 @@ export default function FullscreenOverlay({
       </Header>
       {subHeader && <SubHeader>{subHeader}</SubHeader>}
       <Content>{children}</Content>
-      {floatingAction && <FloatingAction>{floatingAction}</FloatingAction>}
+      {onConfirm && (
+        <FloatingAction>
+          <ConfirmButton onClick={onConfirm}>
+            {/* @ts-ignore */}
+            <FontAwesomeIcon icon={faCheckCircle} color="rgb(50, 115, 220)" />
+          </ConfirmButton>
+        </FloatingAction>
+      )}
     </Backdrop>,
     document.body,
   )
@@ -158,7 +181,7 @@ interface OverlayWithSearchProps {
   onSearchChange: (value: string) => void
   searchPlaceholder?: string
   headerRight?: ReactNode
-  floatingAction?: ReactNode
+  onConfirm?: () => void
   children: ReactNode
 }
 
@@ -170,7 +193,7 @@ export function OverlayWithSearch({
   onSearchChange,
   searchPlaceholder = 'Поиск...',
   headerRight,
-  floatingAction,
+  onConfirm,
   children,
 }: OverlayWithSearchProps) {
   return (
@@ -178,7 +201,7 @@ export function OverlayWithSearch({
       title={title}
       onClose={onClose}
       headerRight={headerRight}
-      floatingAction={floatingAction}
+      onConfirm={onConfirm}
       subHeader={
         <OverlaySearchInput
           ref={searchRef}
