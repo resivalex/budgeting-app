@@ -75,6 +75,11 @@ export default function Category({
     const filteredOptions = search
       ? categoryOptions.filter((o) => o.label.toLowerCase().includes(search.toLowerCase()))
       : categoryOptions
+    const selectedOption = categoryOptions.find((o) => o.value === category)
+    const optionsWithSelectedOnTop =
+      !search && selectedOption
+        ? [selectedOption, ...filteredOptions.filter((o) => o.value !== category)]
+        : filteredOptions
 
     return (
       <OverlayWithSearch
@@ -83,8 +88,9 @@ export default function Category({
         searchRef={searchInputRef}
         searchValue={search}
         onSearchChange={setSearch}
+        onConfirm={onComplete}
       >
-        {filteredOptions.map((option) => (
+        {optionsWithSelectedOnTop.map((option) => (
           <OverlayOption
             key={option.value}
             $isSelected={option.value === category}
