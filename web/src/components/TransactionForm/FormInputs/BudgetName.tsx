@@ -4,6 +4,8 @@ import Select from 'react-select'
 import styled from 'styled-components'
 import { useIsMobile } from '@/hooks'
 import { OverlayOption, OverlayWithSearch } from '@/components/FullscreenOverlay'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
 interface Props {
   budgetName: string
@@ -22,6 +24,20 @@ const BudgetNameLabel = styled.div<{ $isExpanded: boolean }>`
 
 const SelectedBudgetName = styled.div`
   font-size: 0.8rem;
+`
+
+const ConfirmButton = styled.button`
+  font-size: 1.8rem;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 `
 
 export default function BudgetName({
@@ -86,6 +102,12 @@ export default function BudgetName({
         searchRef={searchInputRef}
         searchValue={search}
         onSearchChange={setSearch}
+        floatingAction={
+          <ConfirmButton onClick={onComplete}>
+            {/* @ts-ignore */}
+            <FontAwesomeIcon icon={faCheckCircle} color="rgb(50, 115, 220)" />
+          </ConfirmButton>
+        }
       >
         {filteredOptions.map((option) => (
           <OverlayOption
