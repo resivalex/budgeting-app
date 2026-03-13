@@ -22,4 +22,4 @@ TransactionFormContainer         ← state management, domain logic, routing
 
 **UTC/local time conversion** — datetimes are stored in UTC; `TransactionFormContainer` converts to local time on load and back to UTC on save.
 
-**Mobile fullscreen overlays** — dropdown and suggestion fields use `FullscreenOverlay` on mobile (≤768px) to render options in a portal-based fullscreen panel, avoiding viewport overflow issues. Desktop retains inline `react-select` and `SuggestingInput` components.
+**Mobile fullscreen overlays** — dropdown and suggestion fields use `FullscreenOverlay` on mobile (≤768px) to render options in a portal-based fullscreen panel, avoiding viewport overflow issues. The overlay uses the Visual Viewport API (`window.visualViewport`) to resize when the software keyboard opens, keeping content fully visible. Fields requiring explicit confirmation show a floating circular confirm button (FAB) at the bottom-right. Desktop retains inline `react-select` and `SuggestingInput` components.

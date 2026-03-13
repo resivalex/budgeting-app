@@ -14,6 +14,10 @@ Every component receives `isExpanded` / `onExpand` / `onComplete` / `onCollapse`
 
 Dropdown and suggestion fields (Account, PayeeTransferAccount, Category, BudgetName, Payee, Comment) render a fullscreen overlay on mobile (`≤768px` viewport) via `FullscreenOverlay` + `useIsMobile` hook. The overlay replaces the inline dropdown with a full-screen option list, keeping all options visible above the virtual keyboard. On desktop, the existing `react-select` and `SuggestingInput` components are preserved.
 
+The overlay tracks `window.visualViewport` to resize and reposition when the software keyboard opens, so content is never hidden beneath it.
+
+Fields that allow free-text input (Payee, Comment) and fields without auto-close on selection (Category, BudgetName) show a floating circular confirm button (FAB) at the bottom-right corner of the overlay. Tapping it confirms the current value and closes the overlay.
+
 ## Components
 
 | Component              | Input type              | Mobile overlay |
@@ -35,3 +39,4 @@ Dropdown and suggestion fields (Account, PayeeTransferAccount, Category, BudgetN
 - `styled-components` for scoped styles including the expand/collapse color transition.
 - `react-select` (with `reactSelectSmallStyles` util) for dropdown inputs on desktop.
 - `FullscreenOverlay` component with `useIsMobile` hook for mobile-optimized field selection.
+- Visual Viewport API (`window.visualViewport`) inside `FullscreenOverlay` for keyboard-safe positioning.
