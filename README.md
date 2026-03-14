@@ -8,13 +8,13 @@ Three-tier offline-first application:
 
 - **Frontend**: React 19 PWA with Vite and PouchDB for local offline storage
 - **Database**: CouchDB for transaction document storage and bidirectional sync
-- **Backend**: FastAPI Python API with SQLite for configuration settings
+- **Backend**: FastAPI Python API with CouchDB for configuration settings
 
 ### Data Flow
 
 ```
 Web (PouchDB) <--sync--> CouchDB <--read--> Backend (FastAPI)
-                                    SQLite (settings/limits)
+                          CouchDB (settings/limits)
 ```
 
 ## Components

@@ -2,12 +2,12 @@
 
 ## Overview
 
-Full-database backup and restore system. Captures consistent snapshots of both the settings database (SQLite) and the transactions database (CouchDB) in a single ZIP archive. Supports manual download, API-driven restore, and optional automated uploads to Google Drive.
+Full-database backup and restore system. Captures consistent snapshots of the settings database (CouchDB `budgeting-settings`) and the transactions database (CouchDB `budgeting`) in a single ZIP archive. Supports manual download, API-driven restore, and optional automated uploads to Google Drive.
 
 ## Features
 
-- **Full backup**: Captures both databases in one archive so they are always in sync with each other.
-- **Full restore**: Uploading a backup archive replaces both databases, rolling the system back to the archived state.
+- **Full backup**: Captures both CouchDB databases in one archive so they are always in sync with each other.
+- **Full restore**: Uploading a backup archive replaces both CouchDB databases, rolling the system back to the archived state.
 - **Automated daily backups**: Scheduler runs a backup once per day (configurable time, default 3:00 AM UTC) and uploads to Google Drive when credentials are present.
 - **Manual trigger**: On-demand backup and upload via API without waiting for the schedule.
 - **Optional cloud storage**: Google Drive upload is activated only when credentials and a target folder ID are configured; backups still succeed without it.

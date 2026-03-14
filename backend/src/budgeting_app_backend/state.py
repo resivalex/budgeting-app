@@ -1,7 +1,7 @@
 from typing import List
 from datetime import datetime
 
-from budgeting_app_backend.protocols import SqlConnectionProtocol, SettingsProtocol
+from budgeting_app_backend.protocols import SettingsProtocol
 
 from .exporting import CsvExporting as TransactionsCsvExporting
 from .importing import CsvImporting as TransactionsCsvImporting

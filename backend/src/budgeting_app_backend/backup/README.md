@@ -11,15 +11,13 @@ Two classes with clear separation of concerns:
 
 ```
 backup.zip
-├── sqlite/budgeting-app.sqlite3   # Full SQLite database copy
-└── couchdb/budgeting.json          # JSON dump of all CouchDB documents
+├── couchdb/budgeting.json                # JSON dump of all transaction documents
+└── couchdb/budgeting-settings.json       # JSON dump of all settings documents
 ```
 
 ## Key Design Decisions
 
-- **Atomic SQLite snapshots**: uses `sqlite3.Connection.backup()` via a temp file — safe under concurrent reads/writes
 - **Clean CouchDB restore**: `_rev` fields are stripped on export so documents can be bulk-inserted without conflicts
-- **Atomic file replacement**: SQLite restore writes to `.tmp` then `os.replace()` to avoid partial writes
 - **Optional Google Drive**: scheduler skips upload gracefully when credentials are not configured
 
 ## Dependencies

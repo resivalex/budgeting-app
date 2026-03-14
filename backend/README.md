@@ -6,15 +6,11 @@ FastAPI backend for personal budgeting and expense tracking.
 
 **State Pattern**: The `State` class aggregates all services and is created via factory pattern in `main.py`. This provides clean dependency injection and testability.
 
-**Dual Storage Strategy**:
+**CouchDB Storage**:
 
-- **CouchDB**: Transaction data (synced with frontend's PouchDB)
-- **SQLite**: Configuration data (spending limits, account properties, category expansions)
-
-**Why separate databases?**
-
-- CouchDB excels at bidirectional sync for offline-first transactions
-- SQLite is simpler for backend-only configuration that doesn't need sync
+- **`budgeting` database**: Transaction data (synced with frontend's PouchDB)
+- **`budgeting-settings` database**: Configuration data (spending limits, account properties, category expansions)
+- **SQLite**: Legacy storage, kept for backward-compatible backup/restore
 
 **Module Structure**:
 
@@ -30,12 +26,10 @@ FastAPI backend for personal budgeting and expense tracking.
 3. Configure environment variables:
    - `TOKEN` — bearer token for API authentication
    - `PASSWORD` — password for the `/config` endpoint
-   - `SQLITE_PATH` — path to SQLite database file
    - `DB_URL` — CouchDB connection URL
 4. Set up Google Drive credentials (see below)
-5. Migrate DB: `poetry run alembic upgrade head`
-6. Run: `poetry run uvicorn main:app --reload`
-7. API docs: `http://localhost:8000/api`
+5. Run: `poetry run uvicorn main:app --reload`
+6. API docs: `http://localhost:8000/api`
 
 ## Docker Setup 🐳
 
@@ -57,8 +51,8 @@ docker-compose up
 
 ```
 backup.zip
-├── sqlite/budgeting-app.sqlite3   # Full SQLite database copy
-└── couchdb/budgeting.json          # All CouchDB documents as JSON
+├── couchdb/budgeting.json                # All transaction documents as JSON
+└── couchdb/budgeting-settings.json       # All settings documents as JSON
 ```
 
 **Google Drive (optional):** scheduled backups upload the ZIP to Google Drive when credentials are configured:
@@ -103,9 +97,10 @@ poetry run alembic upgrade head
 - `src/budgeting_app_backend/`: Core application code
   - `state.py`: Service aggregator (State pattern)
   - `protocols/`: Interface definitions
-  - `settings/`: Configuration management (SQLite)
+  - `couchdb_settings.py`: Settings backed by CouchDB `budgeting-settings` database
+  - `settings/`: Configuration management (Pydantic models)
   - `transactions/`: Transaction data access (CouchDB)
-  - `backup/`: Full backup/restore (ZIP with SQLite + CouchDB)
+  - `backup/`: Full backup/restore (ZIP with CouchDB databases)
   - `importing/`, `exporting/`: CSV data transfer
 
 ### Testing
@@ -116,7 +111,6 @@ API documentation with interactive testing: `http://localhost:8000/api`
 
 - **[Services](./src/budgeting_app_backend/services/PRD.md)**: GoogleDriveService for optional cloud backup uploads
 - **[Settings](./src/budgeting_app_backend/settings/PRD.md)**: Application configuration management
-- **[SQLite](./src/budgeting_app_backend/sqlite/PRD.md)**: SQLite abstraction for settings storage
 - **[Transactions](./src/budgeting_app_backend/transactions/PRD.md)**: CouchDB access and Google Drive dump
 - **[Exporting](./src/budgeting_app_backend/exporting/PRD.md)**: CSV generation from CouchDB transactions
 - **[Importing](./src/budgeting_app_backend/importing/PRD.md)**: CSV-based full database replacement

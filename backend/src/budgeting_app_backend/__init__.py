@@ -7,8 +7,7 @@ from .state import (
     AccountPropertiesValue,
     UploadDetailsValue,
 )
-from .sqlite import SqliteConnection
-from .sql_settings import SqlSettings
+from .couchdb_settings import CouchDbSettings
 
 
 __all__ = [
@@ -19,6 +18,5 @@ __all__ = [
     "CategoryExpansionsValue",
     "AccountPropertiesValue",
     "UploadDetailsValue",
-    "SqliteConnection",
-    "SqlSettings",
+    "CouchDbSettings",
 ]

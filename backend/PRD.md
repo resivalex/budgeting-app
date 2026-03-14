@@ -18,7 +18,7 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 - **`POST /spending-limits/month-budget`** and **`POST /spending-limits/month-budget-item`**: Partial budget updates by month
 - **`GET /category-expansions`** / **`POST /category-expansions`**: Read/write category display name mappings
 - **`GET /account-properties`** / **`POST /account-properties`**: Read/write per-account visual properties (colors)
-- **`GET /backup`**: Download a ZIP archive containing both SQLite and CouchDB dumps
+- **`GET /backup`**: Download a ZIP archive containing CouchDB dumps
 - **`POST /restore`**: Upload a backup ZIP to restore both databases
 - **`POST /trigger-backup`**: Create a backup and upload it to Google Drive
 - **`GET /health`**: Returns scheduler running status and next scheduled backup time
@@ -38,8 +38,8 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 
 ### Backup & Restore
 
-- **Full ZIP Backup**: Creates a ZIP with `sqlite/budgeting-app.sqlite3` and `couchdb/budgeting.json` (all documents)
-- **Full ZIP Restore**: Extracts ZIP and restores both databases; updates `transactionsUploadedAt`
+- **Full ZIP Backup**: Creates a ZIP with `couchdb/budgeting.json` (transactions) and `couchdb/budgeting-settings.json` (settings)
+- **Full ZIP Restore**: Extracts ZIP and restores both CouchDB databases; updates `transactionsUploadedAt`
 - **Scheduled Backups**: Daily automated backup at configurable time (default 3:00 AM UTC), optionally uploaded to Google Drive
 - **Manual Trigger**: On-demand backup via `POST /trigger-backup`
 

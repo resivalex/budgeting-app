@@ -1,6 +1,6 @@
 # Settings Module
 
-Persistent key-value configuration store backed by SQLite, exposing four typed service classes.
+Persistent key-value configuration store backed by CouchDB (`budgeting-settings` database), exposing four typed service classes.
 
 ## Architecture
 
@@ -22,5 +22,5 @@ from budgeting_app_backend.settings import SpendingLimits, SpendingLimitsValue, 
 
 ## Dependencies
 
-- `SettingsProtocol` (in `protocols/`) — storage interface implemented by `SqlSettings`
+- `SettingsProtocol` (in `protocols/`) — storage interface implemented by `CouchDbSettings`
 - Composed and wired by `State` in `state.py`

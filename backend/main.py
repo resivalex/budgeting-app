@@ -9,8 +9,7 @@ from budgeting_app_backend import (
     CategoryExpansionsValue,
     AccountPropertiesValue,
     UploadDetailsValue,
-    SqliteConnection,
-    SqlSettings,
+    CouchDbSettings,
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -24,7 +23,6 @@ from budgeting_app_backend.backup import BackupService, BackupScheduler
 DB_URL = os.getenv("DB_URL")
 TOKEN = os.getenv("TOKEN")
 PASSWORD = os.getenv("PASSWORD")
-SQLITE_PATH = os.getenv("SQLITE_PATH")
 GOOGLE_DRIVE_CREDENTIALS_PATH = os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
 GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
 
@@ -49,15 +47,14 @@ logger = logging.getLogger(__name__)
 
 
 def create_state() -> State:
-    sqlite_connection = SqliteConnection(sqlite_path=SQLITE_PATH)
-    app_settings = SqlSettings(sql_connection=sqlite_connection)
+    app_settings = CouchDbSettings(db_url=DB_URL)
     return State(
         db_url=DB_URL,
         settings=app_settings,
     )
 
 
-backup_service = BackupService(sqlite_path=SQLITE_PATH, db_url=DB_URL)
+backup_service = BackupService(db_url=DB_URL)
 
 backup_scheduler = BackupScheduler(
     backup_service=backup_service,
