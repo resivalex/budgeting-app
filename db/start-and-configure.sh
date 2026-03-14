@@ -34,6 +34,10 @@ curl -s -X PUT "http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@localhost:5984/_node/
 
 echo "CORS configured successfully via wrapper script!"
 
+echo "Creating required databases..."
+curl -s -X PUT "http://${COUCHDB_USER}:${COUCHDB_PASSWORD}@localhost:5984/budgeting-settings" > /dev/null || true
+echo "Databases ready."
+
 # Bring the background CouchDB process back to the foreground
 # This makes the script wait for CouchDB to exit, keeping the container running
 echo "Waiting for CouchDB process (PID: $PID) to exit..."
