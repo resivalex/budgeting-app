@@ -10,16 +10,16 @@ All domains are re-exported from `index.ts` as a barrel.
 
 ## Domains
 
-| Class                     | Responsibility                                                                                                                                                                   |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TransactionDomain`       | Pure static utility: computes aggregations (accounts, categories, currencies) from a transaction list                                                                            |
-| `SyncDomain`              | Orchestrates local→remote sync; detects server-side DB resets via `transactionsUploadedAt` timestamp; manages offline status; fires `onLoadingChange` during network replication |
-| `SettingsDomain`          | Reads category expansions and account properties directly from PouchDB (`DbService`)                                                                                             |
-| `BudgetsDomain`           | Loads spending limits; computes budget totals with multi-currency conversion; generates synthetic summary and total budget entries                                               |
-| `TransactionFormDomain`   | Derives form options (categories, budget names, payees) from aggregations and spending limits; validates and builds `TransactionDTO`                                             |
-| `TransactionFilterDomain` | Filters transactions by multiple criteria; supports cross-layout (EN/RU keyboard) matching                                                                                       |
-| `ExportDomain`            | Fetches CSV from backend and triggers browser download                                                                                                                           |
-| `AuthDomain`              | Login/logout; persists backend config in localStorage                                                                                                                            |
+| Class                     | Responsibility                                                                                                                                                                                                                                  |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TransactionDomain`       | Pure static utility: computes aggregations (accounts, categories, currencies) from a transaction list                                                                                                                                           |
+| `SyncDomain`              | Orchestrates local→remote sync; detects server-side DB resets via `transactionsUploadedAt` timestamp; manages offline status; fires `onLoadingChange` during network replication; provides `forceRefresh()` for full database reset and re-pull |
+| `SettingsDomain`          | Reads category expansions and account properties directly from PouchDB (`DbService`)                                                                                                                                                            |
+| `BudgetsDomain`           | Loads spending limits; computes budget totals with multi-currency conversion; generates synthetic summary and total budget entries                                                                                                              |
+| `TransactionFormDomain`   | Derives form options (categories, budget names, payees) from aggregations and spending limits; validates and builds `TransactionDTO`                                                                                                            |
+| `TransactionFilterDomain` | Filters transactions by multiple criteria; supports cross-layout (EN/RU keyboard) matching                                                                                                                                                      |
+| `ExportDomain`            | Fetches CSV from backend and triggers browser download                                                                                                                                                                                          |
+| `AuthDomain`              | Login/logout; persists backend config in localStorage                                                                                                                                                                                           |
 
 ## Key Patterns
 

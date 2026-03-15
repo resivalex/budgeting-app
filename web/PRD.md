@@ -12,6 +12,7 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 - **Progressive Web App**: PWA capabilities with responsive design and mobile-optimized interactions
 - **Multi-Currency Financial Management**: Full support for multiple currencies with configurable exchange rates and automatic conversion
 - **Real-time Data Synchronization**: Bidirectional sync between local and remote databases with conflict resolution and database reset detection
+- **Render Error Recovery**: Automatic data refresh on UI rendering failure with graceful degradation to a technical error screen if the problem persists
 
 ### User Interface & Navigation
 

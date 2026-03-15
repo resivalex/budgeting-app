@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react'
+import { useCallback, useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import App from './App'
+import RenderErrorBoundary from './RenderErrorBoundary'
 import { useServices } from '@/services'
 import { TransactionDTO } from '@/types'
 import { useTransactionsDomain, useSyncDomain, useSettingsDomain } from '@/hooks'
@@ -23,7 +24,7 @@ export default function AuthorizedAppContainer() {
 
   const navigate = useNavigate()
 
-  useSettingsDomain(backendService, dbService)
+  const { refreshSettings } = useSettingsDomain(backendService, dbService)
 
   const {
     transactions,
@@ -33,8 +34,14 @@ export default function AuthorizedAppContainer() {
     deleteTransaction: deleteLocalTransaction,
   } = useTransactionsDomain()
 
-  const { isLoading, offlineMode, addDbTransaction, replaceDbTransaction, removeDbTransaction } =
-    useSyncDomain(backendService, dbService, instanceId)
+  const {
+    isLoading,
+    offlineMode,
+    addDbTransaction,
+    replaceDbTransaction,
+    removeDbTransaction,
+    forceRefresh,
+  } = useSyncDomain(backendService, dbService, instanceId)
 
   const [lastNotificationText, setLastNotificationText] = useState('')
 
@@ -67,29 +74,36 @@ export default function AuthorizedAppContainer() {
     await exportDomain.exportToCsv()
   }
 
+  const refreshAllData = useCallback(async () => {
+    await forceRefresh()
+    await refreshSettings()
+  }, [forceRefresh, refreshSettings])
+
   return (
-    <App
-      transactions={transactions}
-      transactionAggregations={transactionsAggregations}
-      filterAccountName={filterAccountName}
-      filterPayee={filterPayee}
-      filterComment={filterComment}
-      filterCategory={filterCategory}
-      filterBudgetName={filterBudgetName}
-      onFilterAccountNameChange={setFilterAccountName}
-      onFilterPayeeChange={setFilterPayee}
-      onFilterCommentChange={setFilterComment}
-      onFilterCategoryChange={setFilterCategory}
-      onFilterBudgetNameChange={setFilterBudgetName}
-      isLoading={isLoading}
-      offlineMode={offlineMode}
-      lastNotificationText={lastNotificationText}
-      onExport={handleExport}
-      onLogout={handleLogout}
-      onAddTransaction={addTransaction}
-      onEditTransaction={editTransaction}
-      onRemoveTransaction={removeTransaction}
-      onDismissNotification={() => setLastNotificationText('')}
-    />
+    <RenderErrorBoundary onForceRefresh={refreshAllData}>
+      <App
+        transactions={transactions}
+        transactionAggregations={transactionsAggregations}
+        filterAccountName={filterAccountName}
+        filterPayee={filterPayee}
+        filterComment={filterComment}
+        filterCategory={filterCategory}
+        filterBudgetName={filterBudgetName}
+        onFilterAccountNameChange={setFilterAccountName}
+        onFilterPayeeChange={setFilterPayee}
+        onFilterCommentChange={setFilterComment}
+        onFilterCategoryChange={setFilterCategory}
+        onFilterBudgetNameChange={setFilterBudgetName}
+        isLoading={isLoading}
+        offlineMode={offlineMode}
+        lastNotificationText={lastNotificationText}
+        onExport={handleExport}
+        onLogout={handleLogout}
+        onAddTransaction={addTransaction}
+        onEditTransaction={editTransaction}
+        onRemoveTransaction={removeTransaction}
+        onDismissNotification={() => setLastNotificationText('')}
+      />
+    </RenderErrorBoundary>
   )
 }

@@ -12,7 +12,7 @@ Users can create, view, update, and delete transactions. Transactions are always
 
 ### Synchronization
 
-The app stays in sync with the remote backend while remaining fully usable offline. On reconnect, local data is reconciled with the server. If the server data has been reset (e.g. after a bulk import), the local database is automatically rebuilt from the remote source. The UI reflects online/offline status throughout.
+The app stays in sync with the remote backend while remaining fully usable offline. On reconnect, local data is reconciled with the server. If the server data has been reset (e.g. after a bulk import), the local database is automatically rebuilt from the remote source. A forced refresh can also be triggered on demand (e.g. after a render failure) to fully reset and re-pull all data. The UI reflects online/offline status throughout.
 
 ### Settings
 

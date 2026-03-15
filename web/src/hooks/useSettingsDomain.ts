@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useSetAtom } from 'jotai'
 import { categoryExpansionsAtom, accountPropertiesAtom, spendingLimitsAtom } from '@/state'
 import { SettingsDomain, BudgetsDomain } from '@/domain'
@@ -18,20 +18,10 @@ export function useSettingsDomain(backendService: BackendService, dbService: DbS
     [backendService, storageService],
   )
 
-  useEffect(() => {
-    async function loadSettings() {
-      setCategoryExpansions(await settingsDomain.loadCategoryExpansions())
-      setAccountProperties(await settingsDomain.loadAccountProperties())
-
-      try {
-        const spendingLimits = await budgetsDomain.loadSpendingLimits()
-        setSpendingLimits(spendingLimits)
-      } catch {
-        // spending limits unavailable; migration will wait
-      }
-    }
-
-    void loadSettings()
+  const refreshSettings = useCallback(async () => {
+    setCategoryExpansions(await settingsDomain.loadCategoryExpansions())
+    setAccountProperties(await settingsDomain.loadAccountProperties())
+    setSpendingLimits(await budgetsDomain.loadSpendingLimits())
   }, [
     settingsDomain,
     budgetsDomain,
@@ -39,4 +29,10 @@ export function useSettingsDomain(backendService: BackendService, dbService: DbS
     setAccountProperties,
     setSpendingLimits,
   ])
+
+  useEffect(() => {
+    void refreshSettings()
+  }, [refreshSettings])
+
+  return { refreshSettings }
 }

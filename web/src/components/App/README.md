@@ -21,8 +21,14 @@ AppContainer
 - `useSettingsDomain` — app-wide settings loaded from PouchDB
 - `ExportDomain` / `AuthDomain` — instantiated with `useMemo` to avoid recreation on re-render
 - Implements two-phase transaction writes: db write first (sync layer), then local state update
+- Wraps `App` in `RenderErrorBoundary` so that rendering failures don't kill the sync loop
 
 **`App`** is a pure presentational shell: React Router `<Routes>`, layout structure, and prop-driven callbacks. No business logic.
+
+**`RenderErrorBoundary`** isolates rendering crashes from the sync lifecycle:
+
+- First failure: shows a spinner ("Синхронизация данных") and triggers a full data refresh (PouchDB reset + pull + settings reload)
+- If the re-render still fails: shows an error screen ("Возникла ошибка") with scrollable technical details (type, message, stack trace)
 
 ## Key Patterns
 

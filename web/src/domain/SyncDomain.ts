@@ -95,6 +95,12 @@ class SyncDomain {
     await this.dbService.removeTransaction(transactionId)
     void this.pushToRemote()
   }
+
+  async forceRefresh(): Promise<void> {
+    await this.dbService.reset()
+    await this.dbService.pullChanges()
+    await this.pullFromLocalDb()
+  }
 }
 
 export default SyncDomain

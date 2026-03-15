@@ -119,11 +119,16 @@ export function useSyncDomain(
     [syncDomain],
   )
 
+  const forceRefresh = useCallback(async () => {
+    await syncDomain.forceRefresh()
+  }, [syncDomain])
+
   return {
     isLoading,
     offlineMode: syncStatus.isOffline,
     addDbTransaction,
     replaceDbTransaction,
     removeDbTransaction,
+    forceRefresh,
   }
 }

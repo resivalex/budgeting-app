@@ -13,16 +13,17 @@ Main application shell providing authentication, navigation, data synchronizatio
 - **Transaction Filtering**: Filter transaction list by account, payee, comment, category, and budget
 - **Data Export**: Export all transactions to CSV
 - **Status Feedback**: Loading indicator during data sync; app version display in menu
+- **Render Error Recovery**: If the UI fails to render due to stale or incompatible data, the app automatically pulls fresh data and retries; persistent failures show technical error details
 
 ## Navigation
 
-| Path                           | Screen                           |
-| ------------------------------ | -------------------------------- |
-| `/`                            | Home dashboard                   |
-| `/transactions`                | Transaction list                 |
-| `/budgets`                     | Budget overview                  |
-| `/add`                         | Add transaction form              |
-| `/transactions/:transactionId` | Edit transaction form             |
+| Path                           | Screen                |
+| ------------------------------ | --------------------- |
+| `/`                            | Home dashboard        |
+| `/transactions`                | Transaction list      |
+| `/budgets`                     | Budget overview       |
+| `/add`                         | Add transaction form  |
+| `/transactions/:transactionId` | Edit transaction form |
 
 ## User Workflows
 
