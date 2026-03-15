@@ -8,14 +8,17 @@ Infrastructure service layer providing backend API communication, offline-first 
 
 ### User Configuration Persistence
 
-User credentials (backend URL, token, database URL), spending limits, category expansions, and account properties are persisted locally so settings survive page reloads without re-authenticating.
+User credentials (backend URL, token, database URL) and sync timestamps are persisted locally so settings survive page reloads without re-authenticating.
 
 ### Backend Integration
 
 - **Authentication**: User logs in with a backend URL and password to obtain a session token.
-- **Spending Limits**: Retrieves and updates multi-currency budget configuration.
-- **Category & Account Data**: Loads category display name mappings and per-account visual properties from the backend.
 - **CSV Export**: Requests a transaction export from the backend for download.
+
+### Settings from CouchDB
+
+- **Spending Limits**: Read and written directly from CouchDB `budgeting-settings` database via PouchDB — no backend API involved.
+- **Category & Account Data**: Category display name mappings and per-account visual properties are loaded directly from CouchDB.
 
 ### Offline-First Transaction Storage
 

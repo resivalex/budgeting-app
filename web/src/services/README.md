@@ -19,11 +19,11 @@ ServiceProvider
 
 ### `BackendService`
 
-Authenticated HTTP client targeting a configurable backend URL. API responses are normalized to camelCase DTOs before returning to callers.
+Authenticated HTTP client targeting a configurable backend URL. Handles login config, settings retrieval, and CSV export.
 
 ### `DbService`
 
-PouchDB-based local store synced with a remote CouchDB instance. Sync is intentionally one-shot (not live) to give the app explicit control over when data is pushed or pulled. `pushChanges` replicates local → remote; `pullChanges` replicates remote → local. Database reset destroys and recreates the local instance to mirror a server-side data reset. `DbService` has no UI dependencies — it is a pure data service with no knowledge of React state or loading indicators.
+PouchDB-based local store synced with a remote CouchDB instance. Sync is intentionally one-shot (not live) to give the app explicit control over when data is pushed or pulled. `pushChanges` replicates local → remote; `pullChanges` replicates remote → local. Database reset destroys and recreates the local instance to mirror a server-side data reset. Settings (category expansions, account properties, spending limits) are read and written directly from the remote CouchDB `budgeting-settings` database, with snake_case ↔ camelCase mapping handled internally. `DbService` has no UI dependencies — it is a pure data service with no knowledge of React state or loading indicators.
 
 ### `StorageService`
 

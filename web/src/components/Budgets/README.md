@@ -25,7 +25,7 @@ type BudgetDTO = {
 }
 ```
 
-All computed budget data comes from `useBudgetsDomain` (see `web/src/hooks/useBudgetsDomain.ts`), which fetches spending limits from the backend and matches transactions client-side.
+All computed budget data comes from `useBudgetsDomain` (see `web/src/hooks/useBudgetsDomain.ts`), which reads spending limits directly from CouchDB via `DbService` and matches transactions client-side.
 
 ## Key Design Decisions
 

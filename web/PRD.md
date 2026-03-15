@@ -37,7 +37,7 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 
 - **Account Dashboard**: Overview of all accounts with color-coded balances (see [Home PRD](./src/components/Home/PRD.md))
 - **Data Export**: CSV export with timestamped filenames
-- **Spending Limits Configuration**: Backend-managed budget configuration with per-month currency support
+- **Spending Limits Configuration**: Budget configuration stored in CouchDB and accessed directly via PouchDB with per-month currency support
 
 ### Authentication & Security
 
@@ -50,7 +50,7 @@ Each domain service encapsulates a specific business capability:
 
 - **TransactionDomain**: Transaction CRUD operations, aggregations (balances by account, suggestions for payee/category/account)
 - **SyncDomain**: Pull/push sync lifecycle, database reset detection and recovery
-- **SettingsDomain**: Loading and caching backend configuration (category expansions, account properties)
+- **SettingsDomain**: Loading category expansions and account properties from CouchDB
 - **BudgetsDomain**: Budget totals by `budget_name`, multi-currency conversion, month-by-month filtering
 - **TransactionFormDomain**: Form validation, category extension lookup, auto-suggestions, budget name resolution from category
 - **TransactionFilterDomain**: Transaction filtering across account, payee, comment, category, and budget name with cross-language matching

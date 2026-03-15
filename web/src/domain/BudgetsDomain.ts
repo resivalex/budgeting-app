@@ -1,5 +1,5 @@
 import { TransactionDTO, SpendingLimitsDTO } from '@/types'
-import { BackendService, StorageService } from '@/services'
+import { DbService } from '@/services'
 import { convertToLocaleTime } from '@/utils'
 import _ from 'lodash'
 
@@ -26,26 +26,14 @@ export interface BudgetResult {
 }
 
 class BudgetsDomain {
-  private backendService: BackendService
-  private storageService: StorageService
+  private dbService: DbService
 
-  constructor(backendService: BackendService, storageService: StorageService) {
-    this.backendService = backendService
-    this.storageService = storageService
+  constructor(dbService: DbService) {
+    this.dbService = dbService
   }
 
   async loadSpendingLimits(): Promise<SpendingLimitsDTO> {
-    try {
-      const spendingLimits = await this.backendService.getSpendingLimits()
-      this.storageService.set('spendingLimits', spendingLimits)
-      return spendingLimits
-    } catch (error) {
-      const cached = this.storageService.get('spendingLimits')
-      if (cached) {
-        return cached
-      }
-      return { limits: [], monthCurrencyConfigs: [] }
-    }
+    return this.dbService.getSpendingLimits()
   }
 
   async updateBudgetItem(
@@ -53,8 +41,24 @@ class BudgetsDomain {
     name: string,
     currency: string,
     amount: number,
-  ): Promise<void> {
-    await this.backendService.setMonthSpendingItemLimit(monthDate, name, currency, amount)
+  ): Promise<SpendingLimitsDTO> {
+    const spendingLimits = await this.dbService.getSpendingLimits()
+
+    const limit = spendingLimits.limits.find((l) => l.name === name)
+    if (!limit) {
+      throw new Error(`Unknown limit name: ${name}`)
+    }
+
+    const existingMonth = limit.monthLimits.find((ml) => ml.date === monthDate)
+    if (existingMonth) {
+      existingMonth.currency = currency
+      existingMonth.amount = amount
+    } else {
+      limit.monthLimits.push({ date: monthDate, currency, amount })
+    }
+
+    await this.dbService.saveSpendingLimits(spendingLimits)
+    return spendingLimits
   }
 
   calculateBudgets(

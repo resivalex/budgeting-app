@@ -13,7 +13,7 @@ export default function BudgetsContainer({
   transactionAggregations,
   onTransactionRemove,
 }: BudgetsContainerProps) {
-  const { backendService } = useServices()
+  const { dbService } = useServices()
   const [focusedBudgetName, setFocusedBudgetName] = useState('')
 
   const {
@@ -23,7 +23,7 @@ export default function BudgetsContainer({
     expectationRatio,
     setSelectedMonth,
     updateBudgetItem,
-  } = useBudgetsDomain(backendService)
+  } = useBudgetsDomain(dbService)
 
   const focusedBudget = budgets.find((budget) => budget.name === focusedBudgetName) || null
 

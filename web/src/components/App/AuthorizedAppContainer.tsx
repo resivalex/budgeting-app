@@ -24,7 +24,7 @@ export default function AuthorizedAppContainer() {
 
   const navigate = useNavigate()
 
-  const { refreshSettings } = useSettingsDomain(backendService, dbService)
+  const { refreshSettings } = useSettingsDomain(dbService)
 
   const {
     transactions,

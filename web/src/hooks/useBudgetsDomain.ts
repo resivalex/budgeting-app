@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { spendingLimitsAtom, transactionsAtom } from '@/state'
 import { BudgetsDomain, BudgetResult } from '@/domain'
-import { BackendService, StorageService } from '@/services'
+import { DbService } from '@/services'
 
 interface UseBudgetsDomainReturn {
   budgets: BudgetResult[]
@@ -14,17 +14,12 @@ interface UseBudgetsDomainReturn {
   refreshSpendingLimits: () => Promise<void>
 }
 
-export function useBudgetsDomain(backendService: BackendService): UseBudgetsDomainReturn {
+export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
   const [spendingLimits, setSpendingLimits] = useAtom(spendingLimitsAtom)
   const transactions = useAtomValue(transactionsAtom)
   const [selectedMonth, setSelectedMonth] = useState<string>('')
 
-  const storageService = useMemo(() => new StorageService(), [])
-
-  const budgetsDomain = useMemo(
-    () => new BudgetsDomain(backendService, storageService),
-    [backendService, storageService],
-  )
+  const budgetsDomain = useMemo(() => new BudgetsDomain(dbService), [dbService])
 
   const availableMonths = useMemo(
     () => budgetsDomain.getAvailableMonths(spendingLimits),
@@ -55,10 +50,10 @@ export function useBudgetsDomain(backendService: BackendService): UseBudgetsDoma
 
   const updateBudgetItem = useCallback(
     async (name: string, currency: string, amount: number) => {
-      await budgetsDomain.updateBudgetItem(selectedMonth, name, currency, amount)
-      await refreshSpendingLimits()
+      const updated = await budgetsDomain.updateBudgetItem(selectedMonth, name, currency, amount)
+      setSpendingLimits(updated)
     },
-    [budgetsDomain, selectedMonth, refreshSpendingLimits],
+    [budgetsDomain, selectedMonth, setSpendingLimits],
   )
 
   useEffect(() => {

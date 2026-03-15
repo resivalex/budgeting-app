@@ -16,11 +16,11 @@ The app continuously synchronizes with the remote server: pulling new transactio
 
 ### Settings
 
-User-defined category expansions and account properties are loaded at startup. When the backend is unavailable, previously cached values are used so the UI remains functional offline.
+User-defined category expansions, account properties, and spending limits are loaded at startup directly from CouchDB via PouchDB.
 
 ### Budgets
 
-Users can select a month, view spending against per-category limits, and see how far into the month they are. Budget limits can be updated and are persisted to the backend.
+Users can select a month, view spending against per-category limits, and see how far into the month they are. Budget limits can be updated and are persisted directly to CouchDB.
 
 ### Transaction Form
 

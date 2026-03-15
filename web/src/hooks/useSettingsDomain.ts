@@ -2,21 +2,16 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSetAtom } from 'jotai'
 import { categoryExpansionsAtom, accountPropertiesAtom, spendingLimitsAtom } from '@/state'
 import { SettingsDomain, BudgetsDomain } from '@/domain'
-import { BackendService, DbService, StorageService } from '@/services'
+import { DbService } from '@/services'
 
-export function useSettingsDomain(backendService: BackendService, dbService: DbService) {
+export function useSettingsDomain(dbService: DbService) {
   const setCategoryExpansions = useSetAtom(categoryExpansionsAtom)
   const setAccountProperties = useSetAtom(accountPropertiesAtom)
   const setSpendingLimits = useSetAtom(spendingLimitsAtom)
 
-  const storageService = useMemo(() => new StorageService(), [])
-
   const settingsDomain = useMemo(() => new SettingsDomain(dbService), [dbService])
 
-  const budgetsDomain = useMemo(
-    () => new BudgetsDomain(backendService, storageService),
-    [backendService, storageService],
-  )
+  const budgetsDomain = useMemo(() => new BudgetsDomain(dbService), [dbService])
 
   const refreshSettings = useCallback(async () => {
     setCategoryExpansions(await settingsDomain.loadCategoryExpansions())

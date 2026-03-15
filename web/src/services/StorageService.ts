@@ -1,9 +1,8 @@
-import { ConfigDataDTO, SpendingLimitsDTO } from '@/types'
+import { ConfigDataDTO } from '@/types'
 
 type StorageKeys = {
   config: ConfigDataDTO
   transactionsUploadedAt: string
-  spendingLimits: SpendingLimitsDTO
 }
 
 type StorageKey = keyof StorageKeys

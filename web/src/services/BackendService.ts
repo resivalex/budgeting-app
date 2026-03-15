@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { ConfigDataDTO, SpendingLimitsDTO } from '@/types'
+import { ConfigDataDTO } from '@/types'
 
 interface SettingsData {
   transactionsUploadedAt: string
@@ -42,43 +42,6 @@ class BackendService {
     return {
       transactionsUploadedAt: response.data.transactions_uploaded_at,
     }
-  }
-
-  async getSpendingLimits(): Promise<SpendingLimitsDTO> {
-    const response = await this.axiosInstance.get('/spending-limits')
-
-    const data = response.data
-    return {
-      limits: data.limits.map((limit: any) => ({
-        name: limit.name,
-        color: limit.color,
-        categories: limit.categories,
-        monthLimits: limit.month_limits.map((monthLimit: any) => ({
-          date: monthLimit.date,
-          currency: monthLimit.currency,
-          amount: monthLimit.amount,
-        })),
-      })),
-      monthCurrencyConfigs: data.month_currency_configs.map((monthCurrencyConfig: any) => ({
-        date: monthCurrencyConfig.date,
-        config: {
-          mainCurrency: monthCurrencyConfig.config.main_currency,
-          conversionRates: monthCurrencyConfig.config.conversion_rates,
-        },
-      })),
-    }
-  }
-
-  async setMonthSpendingItemLimit(
-    date: string,
-    name: string,
-    currency: string,
-    amount: number,
-  ): Promise<void> {
-    await this.axiosInstance.post('/spending-limits/month-budget-item', {
-      date: date,
-      limit: { name: name, currency: currency, amount: amount },
-    })
   }
 
   async getExportingCsvString(): Promise<string> {
