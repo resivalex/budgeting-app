@@ -99,7 +99,6 @@ poetry run alembic upgrade head
   - `protocols/`: Interface definitions
   - `couchdb_settings.py`: Settings backed by CouchDB `budgeting-settings` database
   - `settings/`: Configuration management (Pydantic models)
-  - `transactions/`: Transaction data access (CouchDB)
   - `backup/`: Full backup/restore (ZIP with CouchDB databases)
   - `importing/`, `exporting/`: CSV data transfer
 
@@ -111,7 +110,6 @@ API documentation with interactive testing: `http://localhost:8000/api`
 
 - **[Services](./src/budgeting_app_backend/services/PRD.md)**: GoogleDriveService for optional cloud backup uploads
 - **[Settings](./src/budgeting_app_backend/settings/PRD.md)**: Application configuration management
-- **[Transactions](./src/budgeting_app_backend/transactions/PRD.md)**: CouchDB access and Google Drive dump
 - **[Exporting](./src/budgeting_app_backend/exporting/PRD.md)**: CSV generation from CouchDB transactions
 - **[Importing](./src/budgeting_app_backend/importing/PRD.md)**: CSV-based full database replacement
 - **[Backup](./src/budgeting_app_backend/backup/PRD.md)**: ZIP backup and restore of both databases

@@ -1,6 +1,5 @@
 import budgeting_app_backend.load_env  # noqa
 from fastapi import FastAPI, UploadFile, HTTPException, Request
-from typing import List
 from budgeting_app_backend import (
     State,
     SpendingLimitsValue,
@@ -121,12 +120,6 @@ async def config(password: str):
 async def settings(request: Request) -> UploadDetailsValue:
     check_authorization(request)
     return create_state().settings()
-
-
-@app.get("/transactions", tags=["State"])
-async def transactions(request: Request) -> List:
-    check_authorization(request)
-    return create_state().transactions()
 
 
 @app.post("/importing", tags=["State"])

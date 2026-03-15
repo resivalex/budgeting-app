@@ -1,11 +1,9 @@
-from typing import List
 from datetime import datetime
 
 from budgeting_app_backend.protocols import SettingsProtocol
 
 from .exporting import CsvExporting as TransactionsCsvExporting
 from .importing import CsvImporting as TransactionsCsvImporting
-from .transactions import DbSource as TransactionsDbSource
 from .settings import (
     SpendingLimits,
     SpendingLimitsValue,
@@ -35,9 +33,6 @@ class State:
     def exporting(self) -> bytes:
         csv_exporting = TransactionsCsvExporting(url=self._db_url)
         return csv_exporting.perform().encode("utf-8")
-
-    def transactions(self) -> List:
-        return TransactionsDbSource(url=self._db_url).all()
 
     def settings(self) -> UploadDetailsValue:
         return self._upload_details.get()

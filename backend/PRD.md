@@ -10,7 +10,6 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 
 - **`GET /config`** (password-authenticated): Returns bearer token and CouchDB URL for frontend initialization
 - **`GET /settings`**: Returns `transactionsUploadedAt` timestamp for frontend database reset detection
-- **`GET /transactions`**: Returns all transaction documents from CouchDB
 - **`POST /importing`**: Accepts CSV file upload; replaces the CouchDB database with the uploaded CSV contents
 - **`GET /exporting`**: Returns all transactions as a CSV file with standard columns
 - **`GET /spending-limits`** / **`POST /spending-limits`**: Read/write full spending limits configuration
