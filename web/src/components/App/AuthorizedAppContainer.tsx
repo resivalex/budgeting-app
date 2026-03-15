@@ -23,7 +23,7 @@ export default function AuthorizedAppContainer() {
 
   const navigate = useNavigate()
 
-  useSettingsDomain(backendService)
+  useSettingsDomain(backendService, dbService)
 
   const {
     transactions,

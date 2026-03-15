@@ -16,7 +16,7 @@ The app stays in sync with the remote backend while remaining fully usable offli
 
 ### Settings
 
-Category expansions (human-readable category labels) and account visual properties are loaded from the backend and available offline via a local cache.
+Category expansions (human-readable category labels) and account visual properties are stored as documents in the CouchDB/PouchDB database and read directly from the local PouchDB replica.
 
 ### Budgets
 

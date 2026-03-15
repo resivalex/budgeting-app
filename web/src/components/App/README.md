@@ -18,7 +18,7 @@ AppContainer
 
 - `useTransactionsDomain` — local transaction list and aggregations
 - `useSyncDomain` — CouchDB sync, offline detection, per-instance coordination via a `uuidv4` instance ID
-- `useSettingsDomain` — app-wide settings loaded from the backend
+- `useSettingsDomain` — app-wide settings loaded from PouchDB
 - `ExportDomain` / `AuthDomain` — instantiated with `useMemo` to avoid recreation on re-render
 - Implements two-phase transaction writes: db write first (sync layer), then local state update
 

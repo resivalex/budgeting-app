@@ -6,8 +6,6 @@ from budgeting_app_backend import (
     SpendingLimitsValue,
     MonthSliceSpendingLimitsValue,
     MonthItemSpendingLimitValue,
-    CategoryExpansionsValue,
-    AccountPropertiesValue,
     UploadDetailsValue,
     CouchDbSettings,
 )
@@ -237,32 +235,6 @@ async def set_budget_month_item_limit(
     check_authorization(request)
     create_state().set_budget_month_item_limit(value)
     return "OK"
-
-
-@app.post("/category-expansions", tags=["State"])
-async def set_category_expansion(value: CategoryExpansionsValue, request: Request):
-    check_authorization(request)
-    create_state().set_category_expansions(value)
-    return "OK"
-
-
-@app.get("/category-expansions", tags=["State"])
-async def get_category_expansion(request: Request) -> CategoryExpansionsValue:
-    check_authorization(request)
-    return create_state().get_category_expansions()
-
-
-@app.post("/account-properties", tags=["State"])
-async def set_account_properties(value: AccountPropertiesValue, request: Request):
-    check_authorization(request)
-    create_state().set_account_properties(value)
-    return "OK"
-
-
-@app.get("/account-properties", tags=["State"])
-async def get_account_properties(request: Request) -> AccountPropertiesValue:
-    check_authorization(request)
-    return create_state().get_account_properties()
 
 
 def custom_openapi():

@@ -1,4 +1,4 @@
-import { TransactionDTO } from '@/types'
+import { TransactionDTO, CategoryExpansionsDTO, AccountPropertiesDTO } from '@/types'
 import PouchDB from 'pouchdb'
 
 function initializeLocalPouchDB() {
@@ -9,6 +9,10 @@ function initializeRemotePouchDB(dbUrl: string) {
   return new PouchDB(dbUrl + '/budgeting')
 }
 
+function initializeRemoteSettingsDB(dbUrl: string) {
+  return new PouchDB(dbUrl + '/budgeting-settings')
+}
+
 interface DbServiceProps {
   dbUrl: string
 }
@@ -16,10 +20,12 @@ interface DbServiceProps {
 export default class DbService {
   private localDB: any
   private readonly remoteDB: any
+  private readonly remoteSettingsDB: any
 
   constructor(props: DbServiceProps) {
     this.localDB = initializeLocalPouchDB()
     this.remoteDB = initializeRemotePouchDB(props.dbUrl)
+    this.remoteSettingsDB = initializeRemoteSettingsDB(props.dbUrl)
   }
 
   async reset() {
@@ -47,6 +53,24 @@ export default class DbService {
     console.log('readAllDocs')
     const result = await this.localDB.allDocs({ include_docs: true })
     return result.rows.map((row: any) => row.doc as TransactionDTO)
+  }
+
+  async getCategoryExpansions(): Promise<CategoryExpansionsDTO> {
+    try {
+      const doc = await this.remoteSettingsDB.get('category_expansions')
+      return doc.value as CategoryExpansionsDTO
+    } catch {
+      return { expansions: [] }
+    }
+  }
+
+  async getAccountProperties(): Promise<AccountPropertiesDTO> {
+    try {
+      const doc = await this.remoteSettingsDB.get('account_properties')
+      return doc.value as AccountPropertiesDTO
+    } catch {
+      return { accounts: [] }
+    }
   }
 
   async pushChanges(): Promise<boolean> {

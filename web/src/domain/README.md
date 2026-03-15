@@ -14,7 +14,7 @@ All domains are re-exported from `index.ts` as a barrel.
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `TransactionDomain`       | Pure static utility: computes aggregations (accounts, categories, currencies) from a transaction list                                                                            |
 | `SyncDomain`              | Orchestrates local→remote sync; detects server-side DB resets via `transactionsUploadedAt` timestamp; manages offline status; fires `onLoadingChange` during network replication |
-| `SettingsDomain`          | Fetches and caches category expansions and account properties in localStorage                                                                                                    |
+| `SettingsDomain`          | Reads category expansions and account properties directly from PouchDB (`DbService`)                                                                                             |
 | `BudgetsDomain`           | Loads spending limits; computes budget totals with multi-currency conversion; generates synthetic summary and total budget entries                                               |
 | `TransactionFormDomain`   | Derives form options (categories, budget names, payees) from aggregations and spending limits; validates and builds `TransactionDTO`                                             |
 | `TransactionFilterDomain` | Filters transactions by multiple criteria; supports cross-layout (EN/RU keyboard) matching                                                                                       |
@@ -26,4 +26,3 @@ All domains are re-exported from `index.ts` as a barrel.
 - **Dependency injection**: services passed to constructors, not imported as singletons
 - **Callback-based output**: `SyncDomain` uses `SyncCallbacks` (`onOfflineChange`, `onTransactionsLoaded`, `onLoadingChange`) to push updates without coupling to Jotai or any state library
 - **Static helpers**: `TransactionDomain.getAggregations()` is a pure static method usable without an instance
-- **localStorage caching**: settings and auth config are cached locally for offline resilience

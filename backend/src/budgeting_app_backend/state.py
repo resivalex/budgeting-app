@@ -11,10 +11,6 @@ from .settings import (
     SpendingLimitsValue,
     MonthSliceSpendingLimitsValue,
     MonthItemSpendingLimitValue,
-    CategoryExpansions,
-    CategoryExpansionsValue,
-    AccountProperties,
-    AccountPropertiesValue,
     UploadDetails,
     UploadDetailsValue,
 )
@@ -28,8 +24,6 @@ class State:
     ):
         self._db_url = db_url
         self._spending_limits = SpendingLimits(settings=settings)
-        self._category_expansions = CategoryExpansions(settings=settings)
-        self._account_properties = AccountProperties(settings=settings)
         self._upload_details = UploadDetails(settings=settings)
 
     def importing(self, content: bytes):
@@ -62,18 +56,6 @@ class State:
 
     def set_budget_month_item_limit(self, value: MonthItemSpendingLimitValue):
         self._spending_limits.set_month_budget_item(value)
-
-    def set_category_expansions(self, value: CategoryExpansionsValue):
-        self._category_expansions.set(value)
-
-    def get_category_expansions(self):
-        return self._category_expansions.get()
-
-    def set_account_properties(self, value: AccountPropertiesValue):
-        self._account_properties.set(value)
-
-    def get_account_properties(self):
-        return self._account_properties.get()
 
     def mark_transactions_uploaded(self):
         self._upload_details.set(uploaded_at=datetime.utcnow().isoformat())

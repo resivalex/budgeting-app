@@ -3,8 +3,6 @@ from .state import (
     SpendingLimitsValue,
     MonthSliceSpendingLimitsValue,
     MonthItemSpendingLimitValue,
-    CategoryExpansionsValue,
-    AccountPropertiesValue,
     UploadDetailsValue,
 )
 from .couchdb_settings import CouchDbSettings
@@ -15,8 +13,6 @@ __all__ = [
     "SpendingLimitsValue",
     "MonthSliceSpendingLimitsValue",
     "MonthItemSpendingLimitValue",
-    "CategoryExpansionsValue",
-    "AccountPropertiesValue",
     "UploadDetailsValue",
     "CouchDbSettings",
 ]

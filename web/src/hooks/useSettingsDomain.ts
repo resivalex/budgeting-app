@@ -2,19 +2,16 @@ import { useEffect, useMemo } from 'react'
 import { useSetAtom } from 'jotai'
 import { categoryExpansionsAtom, accountPropertiesAtom, spendingLimitsAtom } from '@/state'
 import { SettingsDomain, BudgetsDomain } from '@/domain'
-import { BackendService, StorageService } from '@/services'
+import { BackendService, DbService, StorageService } from '@/services'
 
-export function useSettingsDomain(backendService: BackendService) {
+export function useSettingsDomain(backendService: BackendService, dbService: DbService) {
   const setCategoryExpansions = useSetAtom(categoryExpansionsAtom)
   const setAccountProperties = useSetAtom(accountPropertiesAtom)
   const setSpendingLimits = useSetAtom(spendingLimitsAtom)
 
   const storageService = useMemo(() => new StorageService(), [])
 
-  const settingsDomain = useMemo(
-    () => new SettingsDomain(backendService, storageService),
-    [backendService, storageService],
-  )
+  const settingsDomain = useMemo(() => new SettingsDomain(dbService), [dbService])
 
   const budgetsDomain = useMemo(
     () => new BudgetsDomain(backendService, storageService),
@@ -23,25 +20,8 @@ export function useSettingsDomain(backendService: BackendService) {
 
   useEffect(() => {
     async function loadSettings() {
-      try {
-        const categoryExpansions = await settingsDomain.loadCategoryExpansions()
-        setCategoryExpansions(categoryExpansions)
-      } catch {
-        const cached = settingsDomain.getCachedCategoryExpansions()
-        if (cached) {
-          setCategoryExpansions(cached)
-        }
-      }
-
-      try {
-        const accountProperties = await settingsDomain.loadAccountProperties()
-        setAccountProperties(accountProperties)
-      } catch {
-        const cached = settingsDomain.getCachedAccountProperties()
-        if (cached) {
-          setAccountProperties(cached)
-        }
-      }
+      setCategoryExpansions(await settingsDomain.loadCategoryExpansions())
+      setAccountProperties(await settingsDomain.loadAccountProperties())
 
       try {
         const spendingLimits = await budgetsDomain.loadSpendingLimits()

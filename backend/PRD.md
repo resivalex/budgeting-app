@@ -16,8 +16,6 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 - **`GET /spending-limits`** / **`POST /spending-limits`**: Read/write full spending limits configuration
 - **`GET /spending-limits/month-budget`**: Read a single month's budget slice
 - **`POST /spending-limits/month-budget`** and **`POST /spending-limits/month-budget-item`**: Partial budget updates by month
-- **`GET /category-expansions`** / **`POST /category-expansions`**: Read/write category display name mappings
-- **`GET /account-properties`** / **`POST /account-properties`**: Read/write per-account visual properties (colors)
 - **`GET /backup`**: Download a ZIP archive containing CouchDB dumps
 - **`POST /restore`**: Upload a backup ZIP to restore both databases
 - **`POST /trigger-backup`**: Create a backup and upload it to Google Drive
@@ -26,8 +24,6 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 ### Configuration Management
 
 - **Spending Limits**: Named budgets with per-month limits, currencies, category lists, and color; supports multi-currency conversion configuration
-- **Category Expansions**: Maps short category codes to expanded display names shown in the frontend
-- **Account Properties**: Per-account color configuration for frontend visual display
 - **Upload Timestamp**: Tracks the last CSV import time; frontend compares this to detect a server-side database reset
 
 ### Data Import/Export

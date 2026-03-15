@@ -1,10 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import {
-  ConfigDataDTO,
-  SpendingLimitsDTO,
-  CategoryExpansionsDTO,
-  AccountPropertiesDTO,
-} from '@/types'
+import { ConfigDataDTO, SpendingLimitsDTO } from '@/types'
 
 interface SettingsData {
   transactionsUploadedAt: string
@@ -84,18 +79,6 @@ class BackendService {
       date: date,
       limit: { name: name, currency: currency, amount: amount },
     })
-  }
-
-  async getCategoryExpansions(): Promise<CategoryExpansionsDTO> {
-    const response = await this.axiosInstance.get('/category-expansions')
-
-    return response.data
-  }
-
-  async getAccountProperties(): Promise<AccountPropertiesDTO> {
-    const response = await this.axiosInstance.get('/account-properties')
-
-    return response.data
   }
 
   async getExportingCsvString(): Promise<string> {
