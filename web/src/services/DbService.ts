@@ -61,7 +61,6 @@ export default class DbService {
   }
 
   async readAllDocs(): Promise<TransactionDTO[]> {
-    console.log('readAllDocs')
     const result = await this.localDB.allDocs({ include_docs: true })
     return result.rows.map((row: any) => row.doc as TransactionDTO)
   }
@@ -160,7 +159,6 @@ export default class DbService {
   }
 
   async pushChanges(): Promise<boolean> {
-    console.log('pushChanges')
     return new Promise<boolean>((resolve, reject) => {
       this.localDB.replicate
         .to(this.remoteDB, {
@@ -169,11 +167,9 @@ export default class DbService {
           timeout: 5000,
         })
         .on('complete', () => {
-          console.log('pushChanges complete')
           resolve(true)
         })
         .on('error', (err: any) => {
-          console.log('pushChanges error')
           reject(err)
         })
     })
@@ -198,7 +194,6 @@ export default class DbService {
           resolve(hasChanges)
         })
         .on('error', (err: any) => {
-          console.error('pullChanges error')
           reject(err)
         })
     })

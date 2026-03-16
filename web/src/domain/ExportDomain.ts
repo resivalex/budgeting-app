@@ -1,7 +1,7 @@
 import { BackendService } from '@/services'
 
 class ExportDomain {
-  private backendService: BackendService
+  private readonly backendService: BackendService
 
   constructor(backendService: BackendService) {
     this.backendService = backendService

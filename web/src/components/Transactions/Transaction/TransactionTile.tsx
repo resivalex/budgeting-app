@@ -1,4 +1,3 @@
-import React from 'react'
 import Measure from 'react-measure'
 import { convertToLocaleTime } from '@/utils'
 import { useLongPress, LongPressDetectEvents } from 'use-long-press'

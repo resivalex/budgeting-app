@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react'
+import { useRef, useState, useEffect, useMemo } from 'react'
 import { TransactionTile } from './Transaction'
 import { TransactionDTO } from '@/types'
 import { List, AutoSizer } from 'react-virtualized'

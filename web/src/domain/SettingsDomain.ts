@@ -2,7 +2,7 @@ import { CategoryExpansionsDTO, AccountPropertiesDTO } from '@/types'
 import { DbService } from '@/services'
 
 class SettingsDomain {
-  private dbService: DbService
+  private readonly dbService: DbService
 
   constructor(dbService: DbService) {
     this.dbService = dbService

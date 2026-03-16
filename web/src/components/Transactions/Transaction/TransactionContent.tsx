@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import classNames from 'classnames'
 import { convertCurrencyCodeToSymbol, formatFinancialAmount } from '@/utils'
 import dayjs from 'dayjs'

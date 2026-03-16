@@ -1,4 +1,3 @@
-// Jotai atoms barrel export
 export {
   transactionsAtom,
   transactionsAggregationsAtom,

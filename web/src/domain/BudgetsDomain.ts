@@ -26,7 +26,7 @@ export interface BudgetResult {
 }
 
 class BudgetsDomain {
-  private dbService: DbService
+  private readonly dbService: DbService
 
   constructor(dbService: DbService) {
     this.dbService = dbService

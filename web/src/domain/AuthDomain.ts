@@ -2,7 +2,7 @@ import { StorageService, BackendService } from '@/services'
 import { ConfigDataDTO } from '@/types'
 
 class AuthDomain {
-  private storageService: StorageService
+  private readonly storageService: StorageService
 
   constructor(storageService: StorageService) {
     this.storageService = storageService

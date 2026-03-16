@@ -8,10 +8,10 @@ export interface SyncCallbacks {
 }
 
 class SyncDomain {
-  private backendService: BackendService
-  private dbService: DbService
-  private storageService: StorageService
-  private callbacks: SyncCallbacks
+  private readonly backendService: BackendService
+  private readonly dbService: DbService
+  private readonly storageService: StorageService
+  private readonly callbacks: SyncCallbacks
   private initialized: boolean = false
   private isPushing: boolean = false
   hasPushError: boolean = false
