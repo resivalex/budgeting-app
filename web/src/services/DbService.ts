@@ -18,6 +18,10 @@ function initializeRemoteSettingsDB(dbUrl: string) {
   return new PouchDB(dbUrl + '/budgeting-settings')
 }
 
+function initializeLocalSettingsDB() {
+  return new PouchDB('budgeting-settings')
+}
+
 interface DbServiceProps {
   dbUrl: string
 }
@@ -26,11 +30,13 @@ export default class DbService {
   private localDB: any
   private readonly remoteDB: any
   private readonly remoteSettingsDB: any
+  private readonly localSettingsDB: any
 
   constructor(props: DbServiceProps) {
     this.localDB = initializeLocalPouchDB()
     this.remoteDB = initializeRemotePouchDB(props.dbUrl)
     this.remoteSettingsDB = initializeRemoteSettingsDB(props.dbUrl)
+    this.localSettingsDB = initializeLocalSettingsDB()
   }
 
   async reset() {
@@ -60,9 +66,22 @@ export default class DbService {
     return result.rows.map((row: any) => row.doc as TransactionDTO)
   }
 
+  async pullSettingsChanges(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      this.localSettingsDB.replicate
+        .from(this.remoteSettingsDB, {
+          live: false,
+          retry: false,
+          timeout: 5000,
+        })
+        .on('complete', () => resolve())
+        .on('error', () => resolve())
+    })
+  }
+
   async getCategoryExpansions(): Promise<CategoryExpansionsDTO> {
     try {
-      const doc = await this.remoteSettingsDB.get('category_expansions')
+      const doc = await this.localSettingsDB.get('category_expansions')
       return doc.value as CategoryExpansionsDTO
     } catch {
       return { expansions: [] }
@@ -71,7 +90,7 @@ export default class DbService {
 
   async getAccountProperties(): Promise<AccountPropertiesDTO> {
     try {
-      const doc = await this.remoteSettingsDB.get('account_properties')
+      const doc = await this.localSettingsDB.get('account_properties')
       return doc.value as AccountPropertiesDTO
     } catch {
       return { accounts: [] }
@@ -80,7 +99,7 @@ export default class DbService {
 
   async getSpendingLimits(): Promise<SpendingLimitsDTO> {
     try {
-      const doc = await this.remoteSettingsDB.get('spending_limits')
+      const doc = await this.localSettingsDB.get('spending_limits')
       const data = doc.value
       return {
         limits: (data.limits || []).map((limit: any) => ({
@@ -128,11 +147,16 @@ export default class DbService {
     }
 
     try {
-      const existing = await this.remoteSettingsDB.get('spending_limits')
-      await this.remoteSettingsDB.put({ ...existing, value: snakeCaseValue })
+      const existing = await this.localSettingsDB.get('spending_limits')
+      await this.localSettingsDB.put({ ...existing, value: snakeCaseValue })
     } catch {
-      await this.remoteSettingsDB.put({ _id: 'spending_limits', value: snakeCaseValue })
+      await this.localSettingsDB.put({ _id: 'spending_limits', value: snakeCaseValue })
     }
+    await this.localSettingsDB.replicate.to(this.remoteSettingsDB, {
+      live: false,
+      retry: false,
+      timeout: 5000,
+    })
   }
 
   async pushChanges(): Promise<boolean> {
