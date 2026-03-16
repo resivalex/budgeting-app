@@ -2,9 +2,6 @@ import budgeting_app_backend.load_env  # noqa
 from fastapi import FastAPI, UploadFile, HTTPException, Request
 from budgeting_app_backend import (
     State,
-    SpendingLimitsValue,
-    MonthSliceSpendingLimitsValue,
-    MonthItemSpendingLimitValue,
     UploadDetailsValue,
     CouchDbSettings,
 )
@@ -189,45 +186,6 @@ async def restore_backup(file: UploadFile, request: Request):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error restoring backup: {str(e)}")
-
-
-@app.post("/spending-limits", tags=["State"])
-async def set_spending_limits(value: SpendingLimitsValue, request: Request):
-    check_authorization(request)
-    create_state().set_spending_limits(value)
-    return "OK"
-
-
-@app.get("/spending-limits", tags=["State"])
-async def get_spending_limits(request: Request) -> SpendingLimitsValue:
-    check_authorization(request)
-    return create_state().get_spending_limits()
-
-
-@app.post("/spending-limits/month-budget", tags=["State"])
-async def set_budget_month_limit(
-    value: MonthSliceSpendingLimitsValue, request: Request
-):
-    check_authorization(request)
-    create_state().set_budget_month_limit(value)
-    return "OK"
-
-
-@app.get("/spending-limits/month-budget", tags=["State"])
-async def get_budget_month_limit(
-    month: str, request: Request
-) -> MonthSliceSpendingLimitsValue:
-    check_authorization(request)
-    return create_state().get_budget_month_limit(month)
-
-
-@app.post("/spending-limits/month-budget-item", tags=["State"])
-async def set_budget_month_item_limit(
-    value: MonthItemSpendingLimitValue, request: Request
-):
-    check_authorization(request)
-    create_state().set_budget_month_item_limit(value)
-    return "OK"
 
 
 def custom_openapi():

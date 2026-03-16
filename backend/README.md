@@ -9,7 +9,7 @@ FastAPI backend for personal budgeting and expense tracking.
 **CouchDB Storage**:
 
 - **`budgeting` database**: Transaction data (synced with frontend's PouchDB)
-- **`budgeting-settings` database**: Configuration data (spending limits, account properties, category expansions)
+- **`budgeting-settings` database**: Configuration data (account properties, category expansions)
 - **SQLite**: Legacy storage, kept for backward-compatible backup/restore
 
 **Module Structure**:

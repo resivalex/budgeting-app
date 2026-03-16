@@ -12,9 +12,6 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 - **`GET /settings`**: Returns `transactionsUploadedAt` timestamp for frontend database reset detection
 - **`POST /importing`**: Accepts CSV file upload; replaces the CouchDB database with the uploaded CSV contents
 - **`GET /exporting`**: Returns all transactions as a CSV file with standard columns
-- **`GET /spending-limits`** / **`POST /spending-limits`**: Read/write full spending limits configuration
-- **`GET /spending-limits/month-budget`**: Read a single month's budget slice
-- **`POST /spending-limits/month-budget`** and **`POST /spending-limits/month-budget-item`**: Partial budget updates by month
 - **`GET /backup`**: Download a ZIP archive containing CouchDB dumps
 - **`POST /restore`**: Upload a backup ZIP to restore both databases
 - **`POST /trigger-backup`**: Create a backup and upload it to Google Drive
@@ -22,8 +19,7 @@ FastAPI backend providing transaction access, configuration management, CSV impo
 
 ### Configuration Management
 
-- **Spending Limits**: Named budgets with per-month limits, currencies, category lists, and color; supports multi-currency conversion configuration
-- **Upload Timestamp**: Tracks the last CSV import time; frontend compares this to detect a server-side database reset
+- **Upload Timestamp**: Tracks the last CSV import time; frontend compares this to detect a server-side database reset and trigger a full resync
 
 ### Data Import/Export
 
