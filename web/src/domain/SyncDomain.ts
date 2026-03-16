@@ -33,7 +33,7 @@ class SyncDomain {
     this.callbacks.onTransactionsLoaded(transactions)
   }
 
-  async pullFromRemote(): Promise<void> {
+  async syncWithRemote(): Promise<void> {
     if (!this.initialized) {
       await this.pullFromLocalDb()
       this.initialized = true
@@ -61,6 +61,7 @@ class SyncDomain {
       }
 
       this.callbacks.onOfflineChange(false)
+      void this.pushToRemote()
     } catch (error: unknown) {
       this.callbacks.onOfflineChange(true)
     }

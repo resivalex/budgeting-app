@@ -70,15 +70,15 @@ export function useSyncDomain(
       }
     }
 
-    const schedulePull = () => {
-      void syncDomainRef.current.pullFromRemote().finally(() => {
+    const scheduleSync = () => {
+      void syncDomainRef.current.syncWithRemote().finally(() => {
         if (!cancelled) {
-          pullIntervalId = setTimeout(schedulePull, SYNC_INTERVAL_MS)
+          pullIntervalId = setTimeout(scheduleSync, SYNC_INTERVAL_MS)
         }
       })
     }
 
-    const initialPullTimeout = setTimeout(schedulePull, IMMEDIATE_FIRST_PULL)
+    const initialPullTimeout = setTimeout(scheduleSync, IMMEDIATE_FIRST_PULL)
 
     const retryTimeout = setTimeout(() => {
       retryFailedPush()
