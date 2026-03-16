@@ -18,7 +18,11 @@ Jotai atoms for application-wide reactive state. All atoms are exported from `in
 
 ### `spendingLimitsAtom`
 
-Plain atom holding the full `SpendingLimitsDTO` (`limits[]` + `monthCurrencyConfigs[]`).
+Plain atom holding `SpendingLimitsDTO` (`limits[]` — budget category definitions with per-month amounts).
+
+### `currencyConfigsAtom`
+
+Plain atom holding `CurrencyConfigsDTO` (`monthCurrencyConfigs[]` — per-month main currency and conversion rates). Loaded independently from the `currency_configs` CouchDB document.
 
 ## Pattern
 

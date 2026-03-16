@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { spendingLimitsAtom, transactionsAtom } from '@/state'
+import { spendingLimitsAtom, currencyConfigsAtom, transactionsAtom } from '@/state'
 import { BudgetsDomain, BudgetResult } from '@/domain'
 import { DbService } from '@/services'
 
@@ -16,6 +16,7 @@ interface UseBudgetsDomainReturn {
 
 export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
   const [spendingLimits, setSpendingLimits] = useAtom(spendingLimitsAtom)
+  const [currencyConfigs, setCurrencyConfigs] = useAtom(currencyConfigsAtom)
   const transactions = useAtomValue(transactionsAtom)
   const [selectedMonth, setSelectedMonth] = useState<string>('')
 
@@ -35,8 +36,13 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
 
   const budgets = useMemo(() => {
     if (!selectedMonth) return []
-    return budgetsDomain.calculateBudgets(transactions, spendingLimits, selectedMonth)
-  }, [budgetsDomain, transactions, spendingLimits, selectedMonth])
+    return budgetsDomain.calculateBudgets(
+      transactions,
+      spendingLimits,
+      currencyConfigs,
+      selectedMonth,
+    )
+  }, [budgetsDomain, transactions, spendingLimits, currencyConfigs, selectedMonth])
 
   const expectationRatio = useMemo(
     () => budgetsDomain.calculateExpectationRatio(selectedMonth),
@@ -44,9 +50,13 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
   )
 
   const refreshSpendingLimits = useCallback(async () => {
-    const limits = await budgetsDomain.loadSpendingLimits()
+    const [limits, currencyConfigsData] = await Promise.all([
+      budgetsDomain.loadSpendingLimits(),
+      budgetsDomain.loadCurrencyConfigs(),
+    ])
     setSpendingLimits(limits)
-  }, [budgetsDomain, setSpendingLimits])
+    setCurrencyConfigs(currencyConfigsData)
+  }, [budgetsDomain, setSpendingLimits, setCurrencyConfigs])
 
   const updateBudgetItem = useCallback(
     async (name: string, currency: string, amount: number) => {

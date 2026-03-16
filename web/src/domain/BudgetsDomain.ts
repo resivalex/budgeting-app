@@ -1,4 +1,4 @@
-import { TransactionDTO, SpendingLimitsDTO } from '@/types'
+import { TransactionDTO, SpendingLimitsDTO, CurrencyConfigsDTO } from '@/types'
 import { DbService } from '@/services'
 import { convertToLocaleTime } from '@/utils'
 import _ from 'lodash'
@@ -36,6 +36,10 @@ class BudgetsDomain {
     return this.dbService.getSpendingLimits()
   }
 
+  async loadCurrencyConfigs(): Promise<CurrencyConfigsDTO> {
+    return this.dbService.getCurrencyConfigs()
+  }
+
   async updateBudgetItem(
     monthDate: string,
     name: string,
@@ -64,9 +68,10 @@ class BudgetsDomain {
   calculateBudgets(
     transactions: TransactionDTO[],
     spendingLimits: SpendingLimitsDTO,
+    currencyConfigs: CurrencyConfigsDTO,
     monthDate: string,
   ): BudgetResult[] {
-    const monthCurrencyConfig = spendingLimits.monthCurrencyConfigs.find(
+    const monthCurrencyConfig = currencyConfigs.monthCurrencyConfigs.find(
       (c) => c.date === monthDate,
     )
     if (!monthCurrencyConfig) {

@@ -22,4 +22,8 @@ Application-wide state that components read and update reactively, covering tran
 
 ### Spending Limits
 
-- Budget limits and currency conversion configurations per month are accessible globally for budget tracking and reporting.
+- Monthly budget category limits are accessible globally for budget tracking and reporting.
+
+### Currency Configs
+
+- Per-month currency configurations (main currency and conversion rates) are accessible globally for multi-currency budget calculations.

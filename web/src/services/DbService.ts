@@ -3,6 +3,7 @@ import {
   CategoryExpansionsDTO,
   AccountPropertiesDTO,
   SpendingLimitsDTO,
+  CurrencyConfigsDTO,
 } from '@/types'
 import PouchDB from 'pouchdb'
 
@@ -111,6 +112,17 @@ export default class DbService {
             amount: ml.amount,
           })),
         })),
+      }
+    } catch {
+      return { limits: [] }
+    }
+  }
+
+  async getCurrencyConfigs(): Promise<CurrencyConfigsDTO> {
+    try {
+      const doc = await this.localSettingsDB.get('currency_configs')
+      const data = doc.value
+      return {
         monthCurrencyConfigs: (data.month_currency_configs || []).map((mcc: any) => ({
           date: mcc.date,
           config: {
@@ -120,7 +132,7 @@ export default class DbService {
         })),
       }
     } catch {
-      return { limits: [], monthCurrencyConfigs: [] }
+      return { monthCurrencyConfigs: [] }
     }
   }
 
@@ -135,13 +147,6 @@ export default class DbService {
           currency: ml.currency,
           amount: ml.amount,
         })),
-      })),
-      month_currency_configs: spendingLimits.monthCurrencyConfigs.map((mcc) => ({
-        date: mcc.date,
-        config: {
-          main_currency: mcc.config.mainCurrency,
-          conversion_rates: mcc.config.conversionRates,
-        },
       })),
     }
 

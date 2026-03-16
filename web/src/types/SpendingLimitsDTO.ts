@@ -1,13 +1,3 @@
-interface ConversionRate {
-  currency: string
-  rate: number
-}
-
-interface CurrencyConfig {
-  mainCurrency: string
-  conversionRates: ConversionRate[]
-}
-
 interface MonthSpendingLimit {
   date: string
   currency: string
@@ -21,12 +11,6 @@ interface SpendingLimit {
   monthLimits: MonthSpendingLimit[]
 }
 
-interface MonthCurrencyConfig {
-  date: string
-  config: CurrencyConfig
-}
-
 export interface SpendingLimitsDTO {
   limits: SpendingLimit[]
-  monthCurrencyConfigs: MonthCurrencyConfig[]
 }

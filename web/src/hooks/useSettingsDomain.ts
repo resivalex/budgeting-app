@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useSetAtom } from 'jotai'
-import { categoryExpansionsAtom, accountPropertiesAtom, spendingLimitsAtom } from '@/state'
+import {
+  categoryExpansionsAtom,
+  accountPropertiesAtom,
+  spendingLimitsAtom,
+  currencyConfigsAtom,
+} from '@/state'
 import { SettingsDomain, BudgetsDomain } from '@/domain'
 import { DbService } from '@/services'
 
@@ -8,6 +13,7 @@ export function useSettingsDomain(dbService: DbService) {
   const setCategoryExpansions = useSetAtom(categoryExpansionsAtom)
   const setAccountProperties = useSetAtom(accountPropertiesAtom)
   const setSpendingLimits = useSetAtom(spendingLimitsAtom)
+  const setCurrencyConfigs = useSetAtom(currencyConfigsAtom)
 
   const settingsDomain = useMemo(() => new SettingsDomain(dbService), [dbService])
 
@@ -18,6 +24,7 @@ export function useSettingsDomain(dbService: DbService) {
     setCategoryExpansions(await settingsDomain.loadCategoryExpansions())
     setAccountProperties(await settingsDomain.loadAccountProperties())
     setSpendingLimits(await budgetsDomain.loadSpendingLimits())
+    setCurrencyConfigs(await budgetsDomain.loadCurrencyConfigs())
   }, [
     dbService,
     settingsDomain,
@@ -25,6 +32,7 @@ export function useSettingsDomain(dbService: DbService) {
     setCategoryExpansions,
     setAccountProperties,
     setSpendingLimits,
+    setCurrencyConfigs,
   ])
 
   useEffect(() => {

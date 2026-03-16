@@ -11,3 +11,4 @@ export { configAtom, categoryExpansionsAtom, accountPropertiesAtom } from './con
 export type { ConfigState } from './configAtom'
 
 export { spendingLimitsAtom } from './spendingLimitsAtom'
+export { currencyConfigsAtom } from './currencyConfigsAtom'

@@ -16,7 +16,7 @@ The app continuously synchronizes with the remote server: pulling new transactio
 
 ### Settings
 
-User-defined category expansions, account properties, and spending limits are loaded at startup directly from CouchDB via PouchDB.
+User-defined category expansions, account properties, spending limits, and currency configs are loaded at startup directly from CouchDB via PouchDB.
 
 ### Budgets
 
