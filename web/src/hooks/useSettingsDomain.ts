@@ -20,13 +20,11 @@ export function useSettingsDomain(dbService: DbService) {
   const budgetsDomain = useMemo(() => new BudgetsDomain(dbService), [dbService])
 
   const refreshSettings = useCallback(async () => {
-    await dbService.pullSettingsChanges()
     setCategoryExpansions(await settingsDomain.loadCategoryExpansions())
     setAccountProperties(await settingsDomain.loadAccountProperties())
     setSpendingLimits(await budgetsDomain.loadSpendingLimits())
     setCurrencyConfigs(await budgetsDomain.loadCurrencyConfigs())
   }, [
-    dbService,
     settingsDomain,
     budgetsDomain,
     setCategoryExpansions,

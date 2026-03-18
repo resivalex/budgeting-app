@@ -6,9 +6,9 @@ Containerized CouchDB database providing document storage and bidirectional repl
 
 ## Features
 
-### Transaction Storage
+### Document Storage
 
-- Stores financial transactions as JSON documents in the `budgeting` database
+- Stores all documents in a single `budgeting` database: transactions (`tx:`-prefixed keys, `kind: "transaction"`) and settings (`cfg:`-prefixed keys, `kind: "setting"`)
 - Schemaless design: new fields can be added without migrations; the frontend defaults missing fields on read (e.g., `budget_name` defaults to `""`)
 
 ### Offline-First Sync

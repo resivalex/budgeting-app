@@ -7,7 +7,7 @@ A comprehensive offline-first personal financial management application providin
 ## Data Flows
 
 - **Transaction Data**: Lives in CouchDB and syncs bidirectionally with the browser's local storage for offline-first capability. The backend reads transactions from CouchDB for exports and backups.
-- **Configuration Data**: Spending limits, account properties, and category expansions are stored in a settings database, managed exclusively by the backend.
+- **Configuration Data**: Spending limits, account properties, and category expansions are stored as `cfg:`-prefixed documents in the same `budgeting` database, synced to the frontend alongside transactions.
 - **Backups**: Automated daily backups (transactions + settings) to Google Drive. Manual backup and restore are also available.
 
 ## Functionality

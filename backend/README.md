@@ -8,8 +8,7 @@ FastAPI backend for personal budgeting and expense tracking.
 
 **CouchDB Storage**:
 
-- **`budgeting` database**: Transaction data (synced with frontend's PouchDB)
-- **`budgeting-settings` database**: Configuration data (account properties, category expansions)
+- **`budgeting` database**: All documents — transactions (`tx:`-prefixed, `kind: "transaction"`) and settings (`cfg:`-prefixed, `kind: "setting"`), synced with frontend's PouchDB
 - **SQLite**: Legacy storage, kept for backward-compatible backup/restore
 
 **Module Structure**:
@@ -51,8 +50,7 @@ docker-compose up
 
 ```
 backup.zip
-├── couchdb/budgeting.json                # All transaction documents as JSON
-└── couchdb/budgeting-settings.json       # All settings documents as JSON
+└── couchdb/budgeting.json    # All documents (transactions + settings) as JSON
 ```
 
 **Google Drive (optional):** scheduled backups upload the ZIP to Google Drive when credentials are configured:
@@ -97,7 +95,7 @@ poetry run alembic upgrade head
 - `src/budgeting_app_backend/`: Core application code
   - `state.py`: Service aggregator (State pattern)
   - `protocols/`: Interface definitions
-  - `couchdb_settings.py`: Settings backed by CouchDB `budgeting-settings` database
+  - `couchdb_settings.py`: Settings backed by CouchDB `budgeting` database (`cfg:`-prefixed keys)
   - `settings/`: Configuration management (Pydantic models)
   - `backup/`: Full backup/restore (ZIP with CouchDB databases)
   - `importing/`, `exporting/`: CSV data transfer
@@ -112,7 +110,7 @@ API documentation with interactive testing: `http://localhost:8000/api`
 - **[Settings](./src/budgeting_app_backend/settings/PRD.md)**: Application configuration management
 - **[Exporting](./src/budgeting_app_backend/exporting/PRD.md)**: CSV generation from CouchDB transactions
 - **[Importing](./src/budgeting_app_backend/importing/PRD.md)**: CSV-based full database replacement
-- **[Backup](./src/budgeting_app_backend/backup/PRD.md)**: ZIP backup and restore of both databases
+- **[Backup](./src/budgeting_app_backend/backup/PRD.md)**: ZIP backup and restore of the `budgeting` database
 
 ## License 📝
 

@@ -11,7 +11,7 @@ Containerized CouchDB instance providing document storage and sync for the budge
 - Optimistic concurrency via `_rev` revision field — conflicts detected automatically across replicas
 - HTTP/REST API — frontend PouchDB syncs directly without a backend intermediary
 
-**Data model**: Each transaction is a JSON document with `_id` (UUID) and `_rev` (revision). New fields are added without schema migrations.
+**Data model**: A single `budgeting` database stores all documents. Transactions have `_id` prefixed with `tx:` and `kind: "transaction"`. Settings have `_id` prefixed with `cfg:` and `kind: "setting"`. Each document has a `_rev` revision for conflict detection. New fields are added without schema migrations.
 
 **Startup**: `start-and-configure.sh` wraps the default CouchDB entrypoint, waits for the API to become available, then applies CORS configuration via the CouchDB HTTP API using environment variable values.
 

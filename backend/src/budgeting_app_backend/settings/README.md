@@ -1,6 +1,6 @@
 # Settings Module
 
-Persistent key-value configuration store backed by CouchDB (`budgeting-settings` database), exposing three typed service classes.
+Persistent key-value configuration store backed by CouchDB (`budgeting` database, `cfg:`-prefixed keys), exposing three typed service classes.
 
 ## Architecture
 

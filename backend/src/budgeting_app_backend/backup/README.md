@@ -4,15 +4,14 @@
 
 Two classes with clear separation of concerns:
 
-- **`BackupService`** — creates and restores ZIP archives containing both databases
+- **`BackupService`** — creates and restores ZIP archives containing the unified `budgeting` database
 - **`BackupScheduler`** — wraps `BackupService` with APScheduler cron scheduling and Google Drive upload
 
 ## ZIP Archive Structure
 
 ```
 backup.zip
-├── couchdb/budgeting.json                # JSON dump of all transaction documents
-└── couchdb/budgeting-settings.json       # JSON dump of all settings documents
+└── couchdb/budgeting.json    # JSON dump of all documents (transactions + settings)
 ```
 
 ## Key Design Decisions

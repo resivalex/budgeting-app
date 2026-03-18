@@ -29,7 +29,7 @@ class SyncDomain {
   }
 
   async pullFromLocalDb(): Promise<void> {
-    const transactions = await this.dbService.readAllDocs()
+    const transactions = await this.dbService.readAllTransactions()
     this.callbacks.onTransactionsLoaded(transactions)
   }
 

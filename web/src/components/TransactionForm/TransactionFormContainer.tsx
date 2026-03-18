@@ -187,7 +187,7 @@ export default function TransactionFormContainer({
       return
     }
     const transaction = domain.buildTransactionDTO({
-      id: transactionId || uuidv4(),
+      id: transactionId || 'tx:' + uuidv4(),
       datetime: convertToUtcTime(datetime),
       account,
       category,

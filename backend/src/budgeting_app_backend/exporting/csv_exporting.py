@@ -10,7 +10,10 @@ class CsvExporting:
     def perform(self):
         db = _get_or_create_database(self.__server, "budgeting")
         records = db.all()
-        records = [doc["doc"] for doc in records]
+        records = [
+            doc["doc"] for doc in records
+            if doc["doc"].get("kind") == "transaction"
+        ]
         columns = [
             "datetime",
             "account",
@@ -26,7 +29,8 @@ class CsvExporting:
             df = pd.DataFrame(columns=columns)
         else:
             df = pd.DataFrame(records)
-            df = df.drop(columns=["_id", "_rev"])
+            drop_cols = [c for c in ["_id", "_rev", "kind"] if c in df.columns]
+            df = df.drop(columns=drop_cols)
             df = df.sort_values(by=["datetime"], ascending=False)
             df = df[columns]
 

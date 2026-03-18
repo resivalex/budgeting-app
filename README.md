@@ -13,9 +13,10 @@ Three-tier offline-first application:
 ### Data Flow
 
 ```
-Web (PouchDB) <--sync--> CouchDB <--read--> Backend (FastAPI)
-                          CouchDB (settings/limits)
+Web (PouchDB) <--sync--> CouchDB (budgeting) <--read--> Backend (FastAPI)
 ```
+
+A single `budgeting` database stores all documents. Transactions use `tx:`-prefixed keys and `kind: "transaction"`. Settings use `cfg:`-prefixed keys and `kind: "setting"`.
 
 ## Components
 

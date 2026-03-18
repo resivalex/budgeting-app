@@ -9,4 +9,5 @@ export interface TransactionDTO {
   payee: string
   comment: string
   budget_name: string
+  kind: 'transaction'
 }
