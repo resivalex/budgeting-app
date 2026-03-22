@@ -13,7 +13,7 @@ export function mergeAccountDetailsAndProperties(
     coloredAccounts.push({
       account: account.id,
       name: account.name,
-      currency: accountDetail?.currency ?? account.currency,
+      currency: account.currency,
       balance: accountDetail?.balance ?? 0,
       color: account.color,
     })

@@ -5,7 +5,7 @@ import { ColoredAccountDetailsDTO, AccountPropertiesDTO } from '@/types'
 import { mergeAccountDetailsAndProperties } from '@/utils'
 
 const emptyAccountProperties: AccountPropertiesDTO = {
-  accounts: [] as unknown as AccountPropertiesDTO['accounts'],
+  accounts: [],
 }
 
 export function useColoredAccounts(): ColoredAccountDetailsDTO[] {
