@@ -85,7 +85,6 @@ export default function App({
         return (
           <ColoredAccountSelect
             ref={limitedSelectRef}
-            accountDetails={transactionAggregations.accountDetails}
             value={value}
             onChange={onChange}
             availableAccountNames={availableNames}
@@ -110,7 +109,6 @@ export default function App({
         return (
           <ColoredAccountSelect
             ref={fullSelectRef}
-            accountDetails={transactionAggregations.accountDetails}
             value={value}
             onChange={onChange}
             availableAccountNames={transactionAggregations.accountDetails.map(

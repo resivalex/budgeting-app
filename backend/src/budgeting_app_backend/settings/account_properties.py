@@ -5,6 +5,8 @@ from budgeting_app_backend.protocols import SettingsProtocol
 
 
 class SingleAccountProperties(BaseModel):
+    id: str
+    currency: str
     name: str
     color: str
 

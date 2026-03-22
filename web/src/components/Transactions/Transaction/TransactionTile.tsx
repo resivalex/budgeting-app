@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import ruLocale from 'dayjs/locale/ru'
 import { TransactionDTO } from '@/types'
 import TransactionContent from './TransactionContent'
+import { useAccountNameResolver } from '@/hooks'
 
 dayjs.locale(ruLocale)
 
@@ -21,6 +22,7 @@ export default function TransactionTile({
   onDimensionsChange,
   onLongPress,
 }: Props) {
+  const resolveAccountName = useAccountNameResolver()
   const longPressBind = useLongPress(onLongPress, {
     onFinish: onLongPress,
     threshold: 500,
@@ -55,8 +57,8 @@ export default function TransactionTile({
             <div {...longPressBind()} className="box m-0 is-flex">
               <TransactionContent
                 category={t.category}
-                account={t.account}
-                payee={t.payee}
+                account={resolveAccountName(t.account)}
+                payee={t.type === 'transfer' ? resolveAccountName(t.payee) : t.payee}
                 comment={t.comment}
                 type={t.type}
                 amount={t.amount}

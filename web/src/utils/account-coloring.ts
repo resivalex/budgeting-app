@@ -9,19 +9,17 @@ export function mergeAccountDetailsAndProperties(
   const coloredAccounts: ColoredAccountDetailsDTO[] = []
   const uncoloredAccounts: ColoredAccountDetailsDTO[] = []
   accountProperties.accounts.forEach((account) => {
-    const accountDetail = accountDetails.find((a) => a.account === account.name)
-    if (!accountDetail) {
-      return
-    }
+    const accountDetail = accountDetails.find((a) => a.account === account.id)
     coloredAccounts.push({
-      account: account.name,
-      currency: accountDetail.currency,
-      balance: accountDetail.balance,
+      account: account.id,
+      name: account.name,
+      currency: accountDetail?.currency ?? account.currency,
+      balance: accountDetail?.balance ?? 0,
       color: account.color,
     })
   })
   accountDetails.forEach((detail) => {
-    const properties = accountProperties.accounts.find((a) => a.name === detail.account)
+    const properties = accountProperties.accounts.find((a) => a.id === detail.account)
 
     if (properties) {
       return
@@ -29,6 +27,7 @@ export function mergeAccountDetailsAndProperties(
 
     uncoloredAccounts.push({
       account: detail.account,
+      name: detail.account,
       currency: detail.currency,
       balance: detail.balance,
       color: defaultColor,

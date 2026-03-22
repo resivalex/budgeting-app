@@ -117,7 +117,7 @@ function StepByStepTransactionForm({
 
   const accountOptions = accounts.map((a) => ({
     value: a.account,
-    label: `${formatFinancialAmount(a.balance)} ${convertCurrencyCodeToSymbol(a.currency)} | ${a.account}`,
+    label: `${formatFinancialAmount(a.balance)} ${convertCurrencyCodeToSymbol(a.currency)} | ${a.name}`,
     color: a.color,
   }))
 

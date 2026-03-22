@@ -3,6 +3,7 @@ import { convertToLocaleTime, convertCurrencyCodeToSymbol, formatFinancialAmount
 import { TransactionDTO } from '@/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { useAccountNameResolver } from '@/hooks'
 
 interface Props {
   transaction: TransactionDTO
@@ -13,11 +14,14 @@ interface Props {
 
 export default function TransactionInfoModal({ transaction, onClose, onRemove, onEdit }: Props) {
   const [isRemoveActive, setIsRemoveActive] = useState(false)
+  const resolveAccountName = useAccountNameResolver()
   if (!transaction) return null
 
   const { datetime, account, category, type, amount, currency, payee, comment } = transaction
 
   const datetimeString = convertToLocaleTime(datetime)
+  const accountName = resolveAccountName(account)
+  const payeeDisplay = type === 'transfer' ? resolveAccountName(payee) : payee
 
   async function handleRemoveClick(transactionId: string) {
     if (isRemoveActive) {
@@ -47,7 +51,7 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
             <strong>Дата и время:</strong> {datetimeString}
           </p>
           <p>
-            <strong>Счёт:</strong> {account}
+            <strong>Счёт:</strong> {accountName}
           </p>
           <p>
             <strong>Категория:</strong> {category}
@@ -65,7 +69,7 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
             {convertCurrencyCodeToSymbol(currency)}
           </p>
           <p>
-            <strong>Получатель:</strong> {payee}
+            <strong>Получатель:</strong> {payeeDisplay}
           </p>
           <p>
             <strong>Комментарий:</strong> {comment}

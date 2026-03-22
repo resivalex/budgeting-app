@@ -1,32 +1,25 @@
 import { useImperativeHandle, forwardRef, useRef, MutableRefObject, useState } from 'react'
 import Select from 'react-select'
-import {
-  convertCurrencyCodeToSymbol,
-  reactSelectColorStyles,
-  useColoredAccounts,
-  formatFinancialAmount,
-} from '@/utils'
-import { AccountDetailsDTO } from '@/types'
+import { convertCurrencyCodeToSymbol, reactSelectColorStyles, formatFinancialAmount } from '@/utils'
+import { useColoredAccounts } from '@/hooks'
 
 const ColoredAccountSelect = forwardRef(
   (
     {
       value,
       onChange,
-      accountDetails,
       availableAccountNames,
       emptyOption,
     }: {
       value: string
       onChange: (value: string) => void
-      accountDetails: AccountDetailsDTO[]
       availableAccountNames: string[]
       emptyOption: string | null
     },
     ref,
   ) => {
     const [menuIsOpen, setMenuOpen] = useState(false)
-    const coloredAccounts = useColoredAccounts(localStorage.accountProperties || '', accountDetails)
+    const coloredAccounts = useColoredAccounts()
     const availableColoredAccounts = coloredAccounts.filter((a) =>
       availableAccountNames.includes(a.account),
     )
@@ -34,7 +27,7 @@ const ColoredAccountSelect = forwardRef(
     const accountOptions = availableColoredAccounts.map((a) => ({
       value: a.account,
       label: `${formatFinancialAmount(a.balance)} ${convertCurrencyCodeToSymbol(a.currency)} | ${
-        a.account
+        a.name
       }`,
       color: a.color,
     }))

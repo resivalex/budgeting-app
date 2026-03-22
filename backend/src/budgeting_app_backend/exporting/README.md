@@ -4,7 +4,7 @@ Exports all CouchDB transactions as an in-memory CSV string — no temp files.
 
 ## Architecture
 
-**`CsvExporting`** — accepts a CouchDB URL, fetches all documents from the `budgeting` database, drops CouchDB system fields (`_id`, `_rev`), and returns a CSV string via pandas and StringIO.
+**`CsvExporting`** — accepts a CouchDB URL, fetches all documents from the `budgeting` database, loads `cfg:account_properties` to build an ID-to-name map, replaces account IDs with human-readable names in the exported CSV (including transfer payee fields), drops CouchDB system fields (`_id`, `_rev`), and returns a CSV string via pandas and StringIO.
 
 ## Usage
 

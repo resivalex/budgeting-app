@@ -5,7 +5,7 @@ export default function HomeContainer() {
   const coloredAccounts = useColoredAccounts()
 
   const accounts = coloredAccounts.map((account) => ({
-    name: account.account,
+    name: account.name,
     currency: account.currency,
     balance: account.balance,
     color: account.color,

@@ -31,7 +31,7 @@ A comprehensive offline-first personal financial management application providin
 ### Data Management & Security
 
 - **Automated Cloud Backup**: Scheduled daily backups to Google Drive with manual trigger capabilities for comprehensive data protection
-- **Import/Export Capabilities**: CSV-based data import and export functionality (including budget_name) for backup, migration, and external system integration
+- **Export Capabilities**: CSV data export functionality (including budget_name) with account IDs resolved to human-readable names for backup, migration, and external system integration
 - **Secure Authentication**: Password-based authentication with token management and automatic session restoration
 - **Data Integrity**: Comprehensive data validation, error handling, and consistency checks across all operations
 - **Privacy Protection**: Local-first data architecture with optional cloud synchronization ensuring user data privacy
@@ -47,7 +47,7 @@ A comprehensive offline-first personal financial management application providin
 ### Integration
 
 - **Google Drive Backup**: Automated daily backup uploads to Google Drive; manual trigger also available
-- **CSV Import/Export**: Full-fidelity import and export including `budget_name` field, compatible with external tools
+- **CSV Export**: Full-fidelity export including `budget_name` field with account IDs resolved to names, compatible with external tools
 - **Web-Based**: Accessible on desktop and mobile browsers without installation
 
 ## Component References

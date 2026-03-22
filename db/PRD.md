@@ -30,4 +30,4 @@ Containerized CouchDB database providing document storage and bidirectional repl
 ## Integration
 
 - **[Frontend](../web/PRD.md)**: PouchDB sync target
-- **[Backend](../backend/PRD.md)**: Reads transactions for export; overwrites database during CSV import
+- **[Backend](../backend/PRD.md)**: Reads transactions for export and backup/restore

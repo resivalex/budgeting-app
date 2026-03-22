@@ -1,4 +1,5 @@
 import pycouchdb
+import pycouchdb.exceptions
 import pandas as pd
 import io
 
@@ -9,11 +10,16 @@ class CsvExporting:
 
     def perform(self):
         db = _get_or_create_database(self.__server, "budgeting")
+        id_to_name = _load_account_id_to_name_map(db)
         records = db.all()
         records = [
             doc["doc"] for doc in records
             if doc["doc"].get("kind") == "transaction"
         ]
+        for record in records:
+            record["account"] = id_to_name.get(record.get("account", ""), record.get("account", ""))
+            if record.get("type") == "transfer":
+                record["payee"] = id_to_name.get(record.get("payee", ""), record.get("payee", ""))
         columns = [
             "datetime",
             "account",
@@ -38,6 +44,15 @@ class CsvExporting:
         df.to_csv(stream, index=False)
 
         return stream.getvalue()
+
+
+def _load_account_id_to_name_map(db):
+    try:
+        doc = db.get("cfg:account_properties")
+    except pycouchdb.exceptions.NotFound:
+        return {}
+    accounts = doc.get("value", {}).get("accounts", [])
+    return {a["id"]: a["name"] for a in accounts if "id" in a and "name" in a}
 
 
 def _get_or_create_database(server, db_name):

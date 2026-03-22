@@ -16,7 +16,7 @@ Each account can have a display color assigned, used for visual differentiation 
 
 ### Upload State
 
-Tracks when the last CSV import occurred. The frontend compares this timestamp against its local state to detect server-side database resets and trigger a full resync.
+Tracks when the last database restore occurred. The frontend compares this timestamp against its local state to detect server-side database resets and trigger a full resync.
 
 ## Default States
 

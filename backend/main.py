@@ -119,14 +119,6 @@ async def settings(request: Request) -> UploadDetailsValue:
     return create_state().settings()
 
 
-@app.post("/importing", tags=["State"])
-async def importing(file: UploadFile, request: Request):
-    check_authorization(request)
-    content = file.file.read()
-    create_state().importing(content)
-    return "OK"
-
-
 @app.get("/exporting", tags=["State"])
 async def exporting(request: Request):
     check_authorization(request)

@@ -35,7 +35,7 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 
 ### Account & Data Management
 
-- **Account Dashboard**: Overview of all accounts with color-coded balances (see [Home PRD](./src/components/Home/PRD.md))
+- **Account Dashboard**: Overview of all accounts with color-coded balances; accounts are identified by ID internally with human-readable names resolved from `cfg:account_properties` (see [Home PRD](./src/components/Home/PRD.md))
 - **Data Export**: CSV export with timestamped filenames
 - **Spending Limits Configuration**: Budget configuration stored in CouchDB and accessed directly via PouchDB with per-month currency support
 
