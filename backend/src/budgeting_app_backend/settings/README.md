@@ -1,10 +1,10 @@
 # Settings Module
 
-Persistent key-value configuration store backed by CouchDB (`budgeting` database, `cfg:`-prefixed keys), exposing three typed service classes.
+Persistent key-value configuration store backed by CouchDB (`budgeting` database, `cfg:`-prefixed keys).
 
 ## Architecture
 
-Each service class (`CategoryExpansions`, `AccountProperties`, `UploadDetails`) accepts a `SettingsProtocol` in its constructor and serializes/deserializes Pydantic models as JSON strings. This keeps the services storage-agnostic and easy to test with a mock.
+`UploadDetails` accepts a `SettingsProtocol` in its constructor and serializes/deserializes Pydantic models as JSON strings. This keeps the service storage-agnostic and easy to test with a mock.
 
 ## Public API
 
