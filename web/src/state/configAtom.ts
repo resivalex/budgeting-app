@@ -26,3 +26,14 @@ export const accountPropertiesAtom = atom(
     set(configAtom, { ...get(configAtom), accountProperties })
   },
 )
+
+export const accountIdToNameAtom = atom((get) => {
+  const accountProperties = get(accountPropertiesAtom)
+  const map: Record<string, string> = {}
+  if (accountProperties) {
+    accountProperties.accounts.forEach((a) => {
+      map[a.id] = a.name
+    })
+  }
+  return map
+})
