@@ -43,8 +43,6 @@ services:
       service: web-prod
     build:
       context: ./web
-    env_file:
-      - ./web/.env
     expose:
       - "3000"
     depends_on:
