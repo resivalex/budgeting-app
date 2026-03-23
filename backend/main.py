@@ -31,6 +31,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],
 )
 
 logging.basicConfig(
@@ -127,8 +128,8 @@ async def exporting(request: Request):
     filename = f"export-{today}.csv"
     return StreamingResponse(
         iter([csv_bytes]),
-        media_type="text/csv",
-        headers={"Content-Disposition": f"attachment;filename={filename}"},
+        media_type="application/octet-stream",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
 
 
@@ -161,8 +162,8 @@ async def download_backup(request: Request):
         filename = f"backup-{today}.json"
         return StreamingResponse(
             iter([json_bytes]),
-            media_type="application/json",
-            headers={"Content-Disposition": f"attachment;filename={filename}"},
+            media_type="application/octet-stream",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating backup: {str(e)}")
