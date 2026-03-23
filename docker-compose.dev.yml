@@ -32,7 +32,5 @@ services:
       service: web-dev
     volumes:
       - "./web:/app"
-    env_file:
-      - ./web/.env
     depends_on:
       - backend
