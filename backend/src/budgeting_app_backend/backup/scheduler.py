@@ -39,13 +39,13 @@ class BackupScheduler:
     def _perform_backup(self):
         logger.info("Starting scheduled daily backup...")
         try:
-            zip_bytes = self.backup_service.create_backup_zip()
-            self._upload_to_google_drive(zip_bytes)
+            json_bytes = self.backup_service.create_backup_json()
+            self._upload_to_google_drive(json_bytes)
             logger.info("Daily backup completed successfully.")
         except Exception as e:
             logger.error(f"Unexpected error during daily backup: {str(e)}")
 
-    def _upload_to_google_drive(self, zip_bytes: bytes):
+    def _upload_to_google_drive(self, json_bytes: bytes):
         if not self._google_drive_credentials_path or not self._google_drive_folder_id:
             logger.warning("Google Drive not configured, skipping upload")
             return
@@ -58,8 +58,8 @@ class BackupScheduler:
                 folder_id=self._google_drive_folder_id,
             )
             today = datetime.now().strftime("%Y-%m-%d")
-            filename = f"backup-{today}.zip"
-            result = drive.upload_file(zip_bytes, mime_type="application/zip", filename=filename)
+            filename = f"backup-{today}.json"
+            result = drive.upload_file(json_bytes, mime_type="application/json", filename=filename)
             logger.info(f"Uploaded backup to Google Drive: {result.get('name')}")
         except Exception as e:
             logger.error(f"Failed to upload backup to Google Drive: {str(e)}")
@@ -88,12 +88,12 @@ class BackupScheduler:
     def trigger_backup_now(self) -> Dict[str, Any]:
         logger.info("Manually triggered backup...")
         try:
-            zip_bytes = self.backup_service.create_backup_zip()
-            self._upload_to_google_drive(zip_bytes)
+            json_bytes = self.backup_service.create_backup_json()
+            self._upload_to_google_drive(json_bytes)
             return {
                 "status": "success",
                 "message": "Backup completed successfully",
-                "size_bytes": len(zip_bytes),
+                "size_bytes": len(json_bytes),
             }
         except Exception as e:
             logger.error(f"Error in manual backup: {str(e)}")

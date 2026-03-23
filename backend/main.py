@@ -156,12 +156,12 @@ async def trigger_backup(request: Request):
 async def download_backup(request: Request):
     check_authorization(request)
     try:
-        zip_bytes = backup_service.create_backup_zip()
+        json_bytes = backup_service.create_backup_json()
         today = datetime.now().strftime("%Y-%m-%d")
-        filename = f"backup-{today}.zip"
+        filename = f"backup-{today}.json"
         return StreamingResponse(
-            iter([zip_bytes]),
-            media_type="application/zip",
+            iter([json_bytes]),
+            media_type="application/json",
             headers={"Content-Disposition": f"attachment;filename={filename}"},
         )
     except Exception as e:
@@ -172,8 +172,8 @@ async def download_backup(request: Request):
 async def restore_backup(file: UploadFile, request: Request):
     check_authorization(request)
     try:
-        zip_bytes = file.file.read()
-        result = backup_service.restore_from_zip(zip_bytes)
+        json_bytes = file.file.read()
+        result = backup_service.restore_from_json(json_bytes)
         create_state().mark_transactions_uploaded()
         return result
     except ValueError as e:
