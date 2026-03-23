@@ -1,4 +1,10 @@
-import { TransactionDTO, SpendingLimitsDTO, CurrencyConfigsDTO } from '@/types'
+import {
+  TransactionDTO,
+  SpendingLimitsDTO,
+  CurrencyConfigsDTO,
+  BucketsDTO,
+  BucketDTO,
+} from '@/types'
 import { DbService } from '@/services'
 import { convertToLocaleTime } from '@/utils'
 import _ from 'lodash'
@@ -6,6 +12,7 @@ import _ from 'lodash'
 type ConversionMapType = { [sourceCurrency: string]: { [targetCurrency: string]: number } }
 
 interface MonthSpendingLimit {
+  bucketId: string
   name: string
   color: string
   categories: string[]
@@ -15,6 +22,7 @@ interface MonthSpendingLimit {
 }
 
 export interface BudgetResult {
+  bucketId: string
   name: string
   color: string
   currency: string
@@ -36,21 +44,25 @@ class BudgetsDomain {
     return this.dbService.getSpendingLimits()
   }
 
+  async loadBuckets(): Promise<BucketsDTO> {
+    return this.dbService.getBuckets()
+  }
+
   async loadCurrencyConfigs(): Promise<CurrencyConfigsDTO> {
     return this.dbService.getCurrencyConfigs()
   }
 
   async updateBudgetItem(
     monthDate: string,
-    name: string,
+    bucketId: string,
     currency: string,
     amount: number,
   ): Promise<SpendingLimitsDTO> {
     const spendingLimits = await this.dbService.getSpendingLimits()
 
-    const limit = spendingLimits.limits.find((l) => l.name === name)
+    const limit = spendingLimits.limits.find((l) => l.bucketId === bucketId)
     if (!limit) {
-      throw new Error(`Unknown limit name: ${name}`)
+      throw new Error(`Unknown limit bucket: ${bucketId}`)
     }
 
     const existingMonth = limit.monthLimits.find((ml) => ml.date === monthDate)
@@ -69,6 +81,7 @@ class BudgetsDomain {
     transactions: TransactionDTO[],
     spendingLimits: SpendingLimitsDTO,
     currencyConfigs: CurrencyConfigsDTO,
+    buckets: BucketsDTO,
     monthDate: string,
   ): BudgetResult[] {
     const monthCurrencyConfig = currencyConfigs.monthCurrencyConfigs.find(
@@ -79,9 +92,16 @@ class BudgetsDomain {
     }
     const currencyConfig = { ...monthCurrencyConfig.config }
 
+    const bucketMap = new Map<string, BucketDTO>()
+    buckets.buckets.forEach((b) => bucketMap.set(b.id, b))
+
     const conversionMap = this.buildConversionMap(currencyConfig)
     const monthTransactions = this.filterMonthTransactions(transactions, monthDate, conversionMap)
-    const monthSpendingLimits = this.extractMonthSpendingLimits(spendingLimits, monthDate)
+    const monthSpendingLimits = this.extractMonthSpendingLimits(
+      spendingLimits,
+      bucketMap,
+      monthDate,
+    )
 
     const totalLimit = this.buildTotalLimit(
       monthSpendingLimits,
@@ -103,6 +123,7 @@ class BudgetsDomain {
     const restBudget = this.calculateRestBudget(unassignedTransactions, restLimit, conversionMap)
 
     const totalBudget: BudgetResult = {
+      bucketId: '',
       name: totalLimit.name,
       color: totalLimit.color,
       currency: totalLimit.currency,
@@ -172,10 +193,8 @@ class BudgetsDomain {
     currencyConfig.conversionRates.forEach((conversionRate) => {
       currencyConfig.conversionRates.forEach((anotherConversionRate) => {
         if (anotherConversionRate.currency !== conversionRate.currency) {
-          const invertedRate = 1.0 / conversionRate.rate
-          const anotherInvertedRate = 1.0 / anotherConversionRate.rate
           conversionMap[conversionRate.currency][anotherConversionRate.currency] =
-            invertedRate / anotherInvertedRate
+            anotherConversionRate.rate / conversionRate.rate
         }
       })
     })
@@ -206,6 +225,7 @@ class BudgetsDomain {
 
   private extractMonthSpendingLimits(
     spendingLimits: SpendingLimitsDTO,
+    bucketMap: Map<string, BucketDTO>,
     monthDate: string,
   ): MonthSpendingLimit[] {
     const monthDateObject = new Date(monthDate)
@@ -220,10 +240,12 @@ class BudgetsDomain {
       if (!monthLimit) {
         return null
       }
+      const bucket = bucketMap.get(spendingLimit.bucketId)
       return {
-        name: spendingLimit.name,
-        color: spendingLimit.color,
-        categories: spendingLimit.categories,
+        bucketId: spendingLimit.bucketId,
+        name: bucket?.name ?? spendingLimit.bucketId,
+        color: bucket?.color ?? '#b6b6b6',
+        categories: bucket?.categories ?? [],
         currency: monthLimit.currency,
         amount: monthLimit.amount,
         isEditable: true,
@@ -240,6 +262,7 @@ class BudgetsDomain {
     conversionMap: ConversionMapType,
   ): MonthSpendingLimit {
     const totalLimit: MonthSpendingLimit = {
+      bucketId: '',
       name: 'ОБЩИЙ',
       color: '#b6b6b6',
       categories: [],
@@ -257,6 +280,7 @@ class BudgetsDomain {
 
   private buildRestLimit(mainCurrency: string): MonthSpendingLimit {
     return {
+      bucketId: '',
       name: 'Другое',
       color: '#b6b6b6',
       currency: mainCurrency,
@@ -272,6 +296,7 @@ class BudgetsDomain {
     conversionMap: ConversionMapType,
   ): BudgetResult {
     const budget: BudgetResult = {
+      bucketId: spendingLimit.bucketId,
       name: spendingLimit.name,
       color: spendingLimit.color,
       currency: spendingLimit.currency,
@@ -283,7 +308,7 @@ class BudgetsDomain {
     }
 
     transactions.forEach((transaction) => {
-      if (transaction.budget_name === spendingLimit.name) {
+      if (transaction.bucket_id === spendingLimit.bucketId) {
         budget.transactions.push(transaction)
         const sign = transaction.type === 'expense' ? 1 : -1
         budget.spentAmount +=
@@ -302,6 +327,7 @@ class BudgetsDomain {
     conversionMap: ConversionMapType,
   ): BudgetResult {
     const budget: BudgetResult = {
+      bucketId: '',
       name: restLimit.name,
       color: restLimit.color,
       currency: restLimit.currency,

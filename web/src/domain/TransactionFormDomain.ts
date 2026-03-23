@@ -3,6 +3,7 @@ import {
   CategoryExpansionsDTO,
   ColoredAccountDetailsDTO,
   SpendingLimitsDTO,
+  BucketsDTO,
 } from '@/types'
 import { TransactionAggregator } from '@/services'
 
@@ -106,10 +107,10 @@ class TransactionFormDomain {
     )
   }
 
-  getBudgetNamesForCategory(category: string, spendingLimits: SpendingLimitsDTO): string[] {
-    return spendingLimits.limits
-      .filter((limit) => limit.categories.includes(category))
-      .map((limit) => limit.name)
+  getBucketIdsForCategory(category: string, buckets: BucketsDTO): string[] {
+    return buckets.buckets
+      .filter((bucket) => bucket.categories.includes(category))
+      .map((bucket) => bucket.id)
   }
 
   buildTransactionDTO(params: {
@@ -123,7 +124,7 @@ class TransactionFormDomain {
     payee: string
     payeeTransferAccount: string
     comment: string
-    budget_name: string
+    bucket_id: string
   }): TransactionDTO {
     return {
       _id: params.id,
@@ -135,7 +136,7 @@ class TransactionFormDomain {
       currency: params.currency,
       payee: params.type === 'transfer' ? params.payeeTransferAccount : params.payee,
       comment: params.comment,
-      budget_name: params.type === 'transfer' ? '' : params.budget_name,
+      bucket_id: params.bucket_id || 'default',
       kind: 'transaction',
     }
   }

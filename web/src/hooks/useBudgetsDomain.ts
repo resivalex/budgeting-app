@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { spendingLimitsAtom, currencyConfigsAtom, transactionsAtom } from '@/state'
+import { spendingLimitsAtom, currencyConfigsAtom, transactionsAtom, bucketsAtom } from '@/state'
 import { BudgetsDomain, BudgetResult } from '@/domain'
 import { DbService } from '@/services'
 
@@ -10,7 +10,7 @@ interface UseBudgetsDomainReturn {
   selectedMonth: string
   expectationRatio: number | null
   setSelectedMonth: (month: string) => void
-  updateBudgetItem: (name: string, currency: string, amount: number) => Promise<void>
+  updateBudgetItem: (bucketId: string, currency: string, amount: number) => Promise<void>
   refreshSpendingLimits: () => Promise<void>
 }
 
@@ -18,6 +18,7 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
   const [spendingLimits, setSpendingLimits] = useAtom(spendingLimitsAtom)
   const [currencyConfigs, setCurrencyConfigs] = useAtom(currencyConfigsAtom)
   const transactions = useAtomValue(transactionsAtom)
+  const buckets = useAtomValue(bucketsAtom)
   const [selectedMonth, setSelectedMonth] = useState<string>('')
 
   const budgetsDomain = useMemo(() => new BudgetsDomain(dbService), [dbService])
@@ -40,9 +41,10 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
       transactions,
       spendingLimits,
       currencyConfigs,
+      buckets,
       selectedMonth,
     )
-  }, [budgetsDomain, transactions, spendingLimits, currencyConfigs, selectedMonth])
+  }, [budgetsDomain, transactions, spendingLimits, currencyConfigs, buckets, selectedMonth])
 
   const expectationRatio = useMemo(
     () => budgetsDomain.calculateExpectationRatio(selectedMonth),
@@ -59,8 +61,13 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
   }, [budgetsDomain, setSpendingLimits, setCurrencyConfigs])
 
   const updateBudgetItem = useCallback(
-    async (name: string, currency: string, amount: number) => {
-      const updated = await budgetsDomain.updateBudgetItem(selectedMonth, name, currency, amount)
+    async (bucketId: string, currency: string, amount: number) => {
+      const updated = await budgetsDomain.updateBudgetItem(
+        selectedMonth,
+        bucketId,
+        currency,
+        amount,
+      )
       setSpendingLimits(updated)
     },
     [budgetsDomain, selectedMonth, setSpendingLimits],

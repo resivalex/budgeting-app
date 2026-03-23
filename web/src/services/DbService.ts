@@ -4,6 +4,7 @@ import {
   AccountPropertiesDTO,
   SpendingLimitsDTO,
   CurrencyConfigsDTO,
+  BucketsDTO,
 } from '@/types'
 import PouchDB from 'pouchdb'
 
@@ -76,15 +77,22 @@ export default class DbService {
     }
   }
 
+  async getBuckets(): Promise<BucketsDTO> {
+    try {
+      const doc = await this.localDB.get('cfg:buckets')
+      return doc.value as BucketsDTO
+    } catch {
+      return { buckets: [] }
+    }
+  }
+
   async getSpendingLimits(): Promise<SpendingLimitsDTO> {
     try {
       const doc = await this.localDB.get('cfg:spending_limits')
       const data = doc.value
       return {
         limits: (data.limits || []).map((limit: any) => ({
-          name: limit.name,
-          color: limit.color,
-          categories: limit.categories,
+          bucketId: limit.bucket_id,
           monthLimits: (limit.month_limits || []).map((ml: any) => ({
             date: ml.date,
             currency: ml.currency,
@@ -118,9 +126,7 @@ export default class DbService {
   async saveSpendingLimits(spendingLimits: SpendingLimitsDTO): Promise<void> {
     const snakeCaseValue = {
       limits: spendingLimits.limits.map((limit) => ({
-        name: limit.name,
-        color: limit.color,
-        categories: limit.categories,
+        bucket_id: limit.bucketId,
         month_limits: limit.monthLimits.map((ml) => ({
           date: ml.date,
           currency: ml.currency,

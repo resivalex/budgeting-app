@@ -5,9 +5,7 @@ interface MonthSpendingLimit {
 }
 
 interface SpendingLimit {
-  name: string
-  color: string
-  categories: string[]
+  bucketId: string
   monthLimits: MonthSpendingLimit[]
 }
 

@@ -10,15 +10,15 @@ export default function TransactionsPage({
   filterPayee,
   filterComment,
   filterCategory,
-  filterBudgetName,
+  filterBucketId,
   categories,
-  budgetNames,
+  bucketOptions,
   transactions,
   onFilterAccountNameChange,
   onFilterPayeeChange,
   onFilterCommentChange,
   onFilterCategoryChange,
-  onFilterBudgetNameChange,
+  onFilterBucketIdChange,
   onRemove,
 }: {
   AccountSelect: FC<{
@@ -29,23 +29,23 @@ export default function TransactionsPage({
   filterPayee: string
   filterComment: string
   filterCategory: string
-  filterBudgetName: string
+  filterBucketId: string
   categories: string[]
-  budgetNames: string[]
+  bucketOptions: { id: string; name: string }[]
   transactions: TransactionDTO[]
   accountDetails: AccountDetailsDTO[]
   onFilterAccountNameChange: (accountName: string) => void
   onFilterPayeeChange: (payee: string) => void
   onFilterCommentChange: (comment: string) => void
   onFilterCategoryChange: (category: string) => void
-  onFilterBudgetNameChange: (budgetName: string) => void
+  onFilterBucketIdChange: (bucketId: string) => void
   onRemove: (id: string) => Promise<void>
 }) {
   const [isFilterExpanded, setIsFilterExpanded] = useState(false)
   const [localFilterPayee, setLocalFilterPayee] = useState(filterPayee)
   const [localFilterComment, setLocalFilterComment] = useState(filterComment)
   const [localFilterCategory, setLocalFilterCategory] = useState(filterCategory)
-  const [localFilterBudgetName, setLocalFilterBudgetName] = useState(filterBudgetName)
+  const [localFilterBucketId, setLocalFilterBucketId] = useState(filterBucketId)
 
   const handleSearchIconClick = () => {
     setIsFilterExpanded(!isFilterExpanded)
@@ -55,7 +55,7 @@ export default function TransactionsPage({
     onFilterPayeeChange(localFilterPayee)
     onFilterCommentChange(localFilterComment)
     onFilterCategoryChange(localFilterCategory)
-    onFilterBudgetNameChange(localFilterBudgetName)
+    onFilterBucketIdChange(localFilterBucketId)
     setIsFilterExpanded(false)
   }
 
@@ -63,19 +63,20 @@ export default function TransactionsPage({
     setLocalFilterPayee('')
     setLocalFilterComment('')
     setLocalFilterCategory('')
-    setLocalFilterBudgetName('')
+    setLocalFilterBucketId('')
     onFilterPayeeChange('')
     onFilterCommentChange('')
     onFilterCategoryChange('')
-    onFilterBudgetNameChange('')
+    onFilterBucketIdChange('')
     setIsFilterExpanded(false)
   }
 
+  const selectedBucketName = bucketOptions.find((b) => b.id === filterBucketId)?.name || ''
   const activeFilters: string[] = []
   if (filterPayee) activeFilters.push(`Получатель: ${filterPayee}`)
   if (filterComment) activeFilters.push(`Комментарий: ${filterComment}`)
   if (filterCategory) activeFilters.push(`Категория: ${filterCategory}`)
-  if (filterBudgetName) activeFilters.push(`Бюджет: ${filterBudgetName}`)
+  if (filterBucketId) activeFilters.push(`Бюджет: ${selectedBucketName}`)
 
   return (
     <div
@@ -150,13 +151,13 @@ export default function TransactionsPage({
             <div className="control">
               <div className="select is-small">
                 <select
-                  value={localFilterBudgetName}
-                  onChange={(e) => setLocalFilterBudgetName(e.target.value)}
+                  value={localFilterBucketId}
+                  onChange={(e) => setLocalFilterBucketId(e.target.value)}
                 >
                   <option value="">(все)</option>
-                  {budgetNames.map((b) => (
-                    <option key={b} value={b}>
-                      {b}
+                  {bucketOptions.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
                     </option>
                   ))}
                 </select>

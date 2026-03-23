@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import ruLocale from 'dayjs/locale/ru'
 import { TransactionDTO } from '@/types'
 import TransactionContent from './TransactionContent'
-import { useAccountNameResolver } from '@/hooks'
+import { useAccountNameResolver, useBucketNameResolver } from '@/hooks'
 
 dayjs.locale(ruLocale)
 
@@ -23,6 +23,7 @@ export default function TransactionTile({
   onLongPress,
 }: Props) {
   const resolveAccountName = useAccountNameResolver()
+  const resolveBucketName = useBucketNameResolver()
   const longPressBind = useLongPress(onLongPress, {
     onFinish: onLongPress,
     threshold: 500,
@@ -64,7 +65,9 @@ export default function TransactionTile({
                 amount={t.amount}
                 currency={t.currency}
                 localTime={datetimeString.split(' ')[1]}
-                budgetName={t.budget_name}
+                budgetName={
+                  t.bucket_id && t.bucket_id !== 'default' ? resolveBucketName(t.bucket_id) : ''
+                }
               />
             </div>
           </div>

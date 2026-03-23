@@ -10,7 +10,7 @@ Main application shell providing authentication, navigation, data synchronizatio
 - **Offline Support**: Overlay indicator when the backend is unreachable; local data remains accessible
 - **Navigation**: Routes between home dashboard, transaction list, budget view, and transaction add/edit forms
 - **Transaction Management**: Add, edit, and delete transactions with immediate user feedback via toast notifications
-- **Transaction Filtering**: Filter transaction list by account, payee, comment, category, and budget
+- **Transaction Filtering**: Filter transaction list by account, payee, comment, category, and bucket
 - **Data Export**: Export all transactions to CSV
 - **Status Feedback**: Loading indicator during data sync; app version display in menu
 - **Render Error Recovery**: If the UI fails to render due to stale or incompatible data, the app automatically pulls fresh data and retries; persistent failures show technical error details

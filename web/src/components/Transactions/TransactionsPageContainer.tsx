@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { TransactionDTO, AccountDetailsDTO } from '@/types'
 import TransactionsPage from './TransactionsPage'
 import { TransactionFilterDomain } from '@/domain'
-import { spendingLimitsAtom } from '@/state'
+import { bucketsAtom } from '@/state'
 
 const filterDomain = new TransactionFilterDomain()
 
@@ -16,12 +16,12 @@ export default function TransactionsPageContainer({
   filterPayee,
   filterComment,
   filterCategory,
-  filterBudgetName,
+  filterBucketId,
   onFilterAccountNameChange,
   onFilterPayeeChange,
   onFilterCommentChange,
   onFilterCategoryChange,
-  onFilterBudgetNameChange,
+  onFilterBucketIdChange,
   onRemove,
 }: {
   AccountSelect: FC<{
@@ -35,16 +35,16 @@ export default function TransactionsPageContainer({
   filterPayee: string
   filterComment: string
   filterCategory: string
-  filterBudgetName: string
+  filterBucketId: string
   onFilterAccountNameChange: (accountName: string) => void
   onFilterPayeeChange: (payee: string) => void
   onFilterCommentChange: (comment: string) => void
   onFilterCategoryChange: (category: string) => void
-  onFilterBudgetNameChange: (budgetName: string) => void
+  onFilterBucketIdChange: (bucketId: string) => void
   onRemove: (id: string) => Promise<void>
 }) {
-  const spendingLimits = useAtomValue(spendingLimitsAtom)
-  const budgetNames = spendingLimits.limits.map((l) => l.name)
+  const buckets = useAtomValue(bucketsAtom)
+  const bucketOptions = buckets.buckets.map((b) => ({ id: b.id, name: b.name }))
 
   const filteredTransactions = useMemo(
     () =>
@@ -53,9 +53,9 @@ export default function TransactionsPageContainer({
         payee: filterPayee,
         comment: filterComment,
         category: filterCategory,
-        budgetName: filterBudgetName,
+        bucketId: filterBucketId,
       }),
-    [transactions, filterAccountName, filterPayee, filterComment, filterCategory, filterBudgetName],
+    [transactions, filterAccountName, filterPayee, filterComment, filterCategory, filterBucketId],
   )
 
   return (
@@ -65,16 +65,16 @@ export default function TransactionsPageContainer({
       filterPayee={filterPayee}
       filterComment={filterComment}
       filterCategory={filterCategory}
-      filterBudgetName={filterBudgetName}
+      filterBucketId={filterBucketId}
       categories={categories}
-      budgetNames={budgetNames}
+      bucketOptions={bucketOptions}
       transactions={filteredTransactions}
       accountDetails={accountDetails}
       onFilterAccountNameChange={onFilterAccountNameChange}
       onFilterPayeeChange={onFilterPayeeChange}
       onFilterCommentChange={onFilterCommentChange}
       onFilterCategoryChange={onFilterCategoryChange}
-      onFilterBudgetNameChange={onFilterBudgetNameChange}
+      onFilterBucketIdChange={onFilterBucketIdChange}
       onRemove={onRemove}
     />
   )

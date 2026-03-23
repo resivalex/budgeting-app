@@ -53,8 +53,7 @@ export default function BudgetName({
     }
   }, [isExpanded, isMobile])
 
-  const allOptions = [...budgetNameOptions, { value: '', label: '(без бюджета)' }]
-  const selectedOption = allOptions.find((option) => option.value === budgetName)
+  const selectedOption = budgetNameOptions.find((option) => option.value === budgetName)
 
   const handleBudgetNameChange = (value: string) => {
     onBudgetNameChange(value)
@@ -67,17 +66,15 @@ export default function BudgetName({
         <BudgetNameLabel className="is-size-7" $isExpanded={isExpanded}>
           Бюджет
         </BudgetNameLabel>
-        <SelectedBudgetName>
-          {selectedOption ? selectedOption.label : '(без бюджета)'}
-        </SelectedBudgetName>
+        <SelectedBudgetName>{selectedOption?.label || budgetName}</SelectedBudgetName>
       </div>
     )
   }
 
   if (isMobile) {
     const filteredOptions = search
-      ? allOptions.filter((o) => o.label.toLowerCase().includes(search.toLowerCase()))
-      : allOptions
+      ? budgetNameOptions.filter((o) => o.label.toLowerCase().includes(search.toLowerCase()))
+      : budgetNameOptions
 
     return (
       <OverlayWithSearch
@@ -121,7 +118,7 @@ export default function BudgetName({
             if (!selectedOption) return
             handleBudgetNameChange(selectedOption.value)
           }}
-          options={allOptions}
+          options={budgetNameOptions}
           styles={reactSelectSmallStyles}
           placeholder="Выберите из списка..."
         />

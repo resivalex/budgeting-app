@@ -17,9 +17,9 @@ User credentials (backend URL, token, database URL) and sync timestamps are pers
 
 ### Settings from CouchDB
 
-- **Spending Limits**: Budget category limits are read and written from the `budgeting` database (`cfg:spending_limits` document) via PouchDB — no backend API involved.
-- **Currency Configs**: Month-specific currency configurations (main currency and conversion rates) are loaded from a separate `currency_configs` document in CouchDB.
-- **Category & Account Data**: Category display name mappings and per-account visual properties are loaded directly from CouchDB.
+- **Bucket Definitions & Spending Limits**: Bucket definitions and spending limits are read and written locally.
+- **Currency Configs**: Month-specific currency configurations (main currency and conversion rates) are loaded from local storage.
+- **Category & Account Data**: Category display name mappings and per-account visual properties are loaded from local storage.
 
 ### Offline-First Transaction Storage
 

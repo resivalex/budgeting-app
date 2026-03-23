@@ -2,7 +2,7 @@
 
 ## Overview
 
-Step-by-step transaction creation and editing interface with intelligent defaults, validation, and budget name assignment.
+Step-by-step transaction creation and editing interface with intelligent defaults, validation, and bucket assignment.
 
 ## Functionality
 
@@ -16,8 +16,8 @@ Step-by-step transaction creation and editing interface with intelligent default
 - **Historical Data Integration**: Leverages past transaction history for smart suggestions and autocomplete
 - **Multi-currency Support**: Handles different currencies with proper conversion and display
 - **Category Extensions**: Supports expanded category names for better organization
-- **Budget Name Auto-Assignment**: When a category is selected, the form automatically resolves and assigns the corresponding `budget_name` by looking up which budget owns that category in spending limits; if exactly one budget matches, it is auto-selected
-- **Budget Name Dropdown**: Users can manually expand and change the `budget_name`; the dropdown lists budgets matching the current category first, then unmatching budgets, then "(без бюджета)" at the end; completing the category step advances focus directly to payee, skipping budget_name
+- **Bucket Auto-Assignment**: When a category is selected, the form automatically resolves and assigns the corresponding bucket; if exactly one bucket matches the category, it is auto-selected
+- **Bucket Dropdown**: Users can manually expand and change the bucket; the dropdown lists buckets matching the current category first, then non-matching buckets, with the default bucket always last; completing the category step advances focus directly to payee, skipping bucket selection
 - **Transfer Account Swap**: If the user selects the same account for both source and destination in a transfer, they are automatically swapped to prevent duplicates
 - **Date/Time Handling**: Proper timezone conversion between local and UTC times
 

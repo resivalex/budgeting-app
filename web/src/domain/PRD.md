@@ -20,15 +20,15 @@ Category expansions (human-readable category labels) and account visual properti
 
 ### Budgets
 
-Users can define monthly spending limits per budget and track actuals against them. Transactions are assigned to budgets via a `budget_name` field. Unassigned transactions appear in a "Другое" (Other) bucket. A "ОБЩИЙ" (Total) budget summarizes spending across all defined budgets. Multi-currency accounts are supported through currency conversion. Budget limits can be updated in-app.
+Users can define monthly spending limits per bucket and track actuals against them. Every transaction is assigned to a bucket; unassigned transactions appear in a "Другое" (Other) group. A "ОБЩИЙ" (Total) budget summarizes spending across all defined buckets. Multi-currency accounts are supported through currency conversion. Budget limits can be updated in-app.
 
 ### Transaction Form
 
-The form assists users with smart defaults: category labels are expanded for clarity, budget names are resolved from the selected category, and payee/comment suggestions are filtered by context. Transfer transactions filter available currencies and accounts appropriately. The form validates input before submission.
+The form assists users with smart defaults: category labels are expanded for clarity, the bucket is auto-assigned from the selected category, and payee/comment suggestions are filtered by context. Transfer transactions filter available currencies and accounts appropriately. The form validates input before submission.
 
 ### Transaction Filtering
 
-Users can filter the transaction list by account, payee, comment, category, and budget name. Text search supports mistyped input due to cross-layout (English/Russian keyboard) matching. Transfers can be filtered by either the source or destination account.
+Users can filter the transaction list by account, payee, comment, category, and bucket. Text search supports mistyped input due to cross-layout (English/Russian keyboard) matching. Transfers can be filtered by either the source or destination account.
 
 ### Export
 

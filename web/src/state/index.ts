@@ -17,3 +17,4 @@ export type { ConfigState } from './configAtom'
 
 export { spendingLimitsAtom } from './spendingLimitsAtom'
 export { currencyConfigsAtom } from './currencyConfigsAtom'
+export { bucketsAtom, bucketIdToNameAtom } from './bucketsAtom'

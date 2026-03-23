@@ -33,7 +33,7 @@ export default function App({
   filterPayee,
   filterComment,
   filterCategory,
-  filterBudgetName,
+  filterBucketId,
   isLoading,
   offlineMode,
   lastNotificationText,
@@ -43,7 +43,7 @@ export default function App({
   onFilterPayeeChange,
   onFilterCommentChange,
   onFilterCategoryChange,
-  onFilterBudgetNameChange,
+  onFilterBucketIdChange,
   onAddTransaction,
   onEditTransaction,
   onRemoveTransaction,
@@ -55,7 +55,7 @@ export default function App({
   filterPayee: string
   filterComment: string
   filterCategory: string
-  filterBudgetName: string
+  filterBucketId: string
   isLoading: boolean
   offlineMode: boolean
   lastNotificationText: string
@@ -65,7 +65,7 @@ export default function App({
   onFilterPayeeChange: (payee: string) => void
   onFilterCommentChange: (comment: string) => void
   onFilterCategoryChange: (category: string) => void
-  onFilterBudgetNameChange: (budgetName: string) => void
+  onFilterBucketIdChange: (bucketId: string) => void
   onAddTransaction: (transaction: TransactionDTO) => Promise<void>
   onEditTransaction: (transaction: TransactionDTO) => Promise<void>
   onRemoveTransaction: (id: string) => Promise<void>
@@ -163,12 +163,12 @@ export default function App({
                   filterPayee={filterPayee}
                   filterComment={filterComment}
                   filterCategory={filterCategory}
-                  filterBudgetName={filterBudgetName}
+                  filterBucketId={filterBucketId}
                   onFilterAccountNameChange={onFilterAccountNameChange}
                   onFilterPayeeChange={onFilterPayeeChange}
                   onFilterCommentChange={onFilterCommentChange}
                   onFilterCategoryChange={onFilterCategoryChange}
-                  onFilterBudgetNameChange={onFilterBudgetNameChange}
+                  onFilterBucketIdChange={onFilterBucketIdChange}
                   onRemove={onRemoveTransaction}
                 />
               }

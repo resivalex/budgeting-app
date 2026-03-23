@@ -36,18 +36,18 @@ export default function TransactionFormContainer({
   const [payeeTransferAccount, setPayeeTransferAccount] = useState('')
   const [payee, setPayee] = useState('')
   const [comment, setComment] = useState('')
-  const [budgetName, setBudgetName] = useState('')
+  const [bucketId, setBucketId] = useState('default')
   const [datetime, setDatetime] = useState(new Date().toISOString())
 
   const {
     categoryOptions,
-    budgetNameOptions,
+    bucketOptions,
     coloredAccounts,
     transactions,
     allCurrencies,
     allPayees,
     allComments,
-    spendingLimits,
+    buckets,
     domain,
   } = useTransactionFormDomain()
 
@@ -71,7 +71,7 @@ export default function TransactionFormContainer({
       setPayee(t.payee)
     }
     setComment(t.comment)
-    setBudgetName(t.budget_name)
+    setBucketId(t.bucket_id)
     setDatetime(convertToLocaleTime(t.datetime))
   }
 
@@ -102,7 +102,7 @@ export default function TransactionFormContainer({
     setPayee('')
     setPayeeTransferAccount('')
     setComment('')
-    setBudgetName('')
+    setBucketId('default')
     setDatetime(new Date().toISOString())
   }
 
@@ -197,7 +197,7 @@ export default function TransactionFormContainer({
       payee,
       payeeTransferAccount,
       comment,
-      budget_name: budgetName,
+      bucket_id: bucketId,
     })
     await onApply(transaction)
   }
@@ -248,30 +248,35 @@ export default function TransactionFormContainer({
 
   const handleCategoryChange = (category: string) => {
     setCategory(category)
-    const budgetNames = domain.getBudgetNamesForCategory(category, spendingLimits)
-    if (budgetNames.length === 1) {
-      setBudgetName(budgetNames[0])
-    } else if (budgetNames.length === 0) {
-      setBudgetName('')
+    const matchingBucketIds = domain.getBucketIdsForCategory(category, buckets)
+    if (matchingBucketIds.length === 1) {
+      setBucketId(matchingBucketIds[0])
+    } else if (matchingBucketIds.length === 0) {
+      setBucketId('default')
     } else {
-      if (!budgetNames.includes(budgetName)) {
-        setBudgetName(budgetNames[0])
+      if (!matchingBucketIds.includes(bucketId)) {
+        setBucketId(matchingBucketIds[0])
       }
     }
   }
 
-  const handleBudgetNameChange = (budgetName: string) => setBudgetName(budgetName)
+  const handleBucketIdChange = (id: string) => setBucketId(id)
 
-  const matchingBudgetNames = useMemo(
-    () => domain.getBudgetNamesForCategory(category, spendingLimits),
-    [domain, category, spendingLimits],
+  const matchingBucketIds = useMemo(
+    () => domain.getBucketIdsForCategory(category, buckets),
+    [domain, category, buckets],
   )
 
-  const orderedBudgetNameOptions = useMemo(() => {
-    const matching = budgetNameOptions.filter((o) => matchingBudgetNames.includes(o.value))
-    const nonMatching = budgetNameOptions.filter((o) => !matchingBudgetNames.includes(o.value))
-    return [...matching, ...nonMatching]
-  }, [budgetNameOptions, matchingBudgetNames])
+  const orderedBucketOptions = useMemo(() => {
+    const matching = bucketOptions.filter(
+      (o) => o.value !== 'default' && matchingBucketIds.includes(o.value),
+    )
+    const nonMatching = bucketOptions.filter(
+      (o) => o.value !== 'default' && !matchingBucketIds.includes(o.value),
+    )
+    const defaultOption = bucketOptions.find((o) => o.value === 'default')
+    return [...matching, ...nonMatching, ...(defaultOption ? [defaultOption] : [])]
+  }, [bucketOptions, matchingBucketIds])
 
   const viewDatetime = new Date(datetime)
 
@@ -289,7 +294,7 @@ export default function TransactionFormContainer({
       account={account}
       currency={currency}
       category={category}
-      budgetName={budgetName}
+      budgetName={bucketId}
       payee={payee}
       payeeTransferAccount={payeeTransferAccount}
       comment={comment}
@@ -299,7 +304,7 @@ export default function TransactionFormContainer({
       onAmountChange={handleAmountChange}
       onAccountChange={handleAccountChange}
       onCategoryChange={handleCategoryChange}
-      onBudgetNameChange={handleBudgetNameChange}
+      onBudgetNameChange={handleBucketIdChange}
       onPayeeChange={handlePayeeChange}
       onPayeeTransferAccountChange={handlePayeeTransferAccountChange}
       onCommentChange={handleCommentChange}
@@ -307,7 +312,7 @@ export default function TransactionFormContainer({
       // Dropdown options
       accounts={availableColoredAccounts}
       categoryOptions={categoryOptions}
-      budgetNameOptions={orderedBudgetNameOptions}
+      budgetNameOptions={orderedBucketOptions}
       currencies={availableCurrencies}
       payees={payees}
       comments={comments}

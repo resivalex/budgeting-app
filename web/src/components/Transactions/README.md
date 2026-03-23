@@ -5,7 +5,7 @@
 Container pattern with a two-level nesting:
 
 ```
-TransactionsPageContainer   — filtering logic, reads spendingLimitsAtom for budget names
+TransactionsPageContainer   — filtering logic, reads bucketsAtom for bucket names
   └── TransactionsPage      — filter UI (collapsible panel, active-filter tags)
         └── TransactionsContainer  — focus/unfocus state, React Router navigation
               └── Transactions     — virtualized list, date-header grouping, modal trigger
@@ -16,7 +16,7 @@ TransactionsPageContainer   — filtering logic, reads spendingLimitsAtom for bu
 ## Key Libraries
 
 - **react-virtualized** (`List` + `AutoSizer`) — renders only visible rows; dynamic row heights are tracked in state and recomputed on change.
-- **Jotai** (`spendingLimitsAtom`) — budget name list sourced from global atom in `TransactionsPageContainer`.
+- **Jotai** (`bucketsAtom`) — bucket name list sourced from global atom in `TransactionsPageContainer`.
 - **React Router** — `TransactionsContainer` calls `navigate` to push the edit route.
 - **TransactionFilterDomain** — stateless domain class instantiated once per module; handles multi-field filtering with cross-language (English/Russian) matching.
 
@@ -24,7 +24,7 @@ TransactionsPageContainer   — filtering logic, reads spendingLimitsAtom for bu
 
 | Component                   | Responsibility                                                                       |
 | --------------------------- | ------------------------------------------------------------------------------------ |
-| `TransactionsPageContainer` | Applies `TransactionFilterDomain` filter, supplies `budgetNames` from Jotai          |
+| `TransactionsPageContainer` | Applies `TransactionFilterDomain` filter, supplies bucket options from Jotai          |
 | `TransactionsPage`          | Collapsible filter panel, active-filter tag display, local filter state before apply |
 | `TransactionsContainer`     | `focusedTransactionId` state, edit navigation                                        |
 | `Transactions`              | Virtualized list, date-header memo, row height tracking, modal rendering             |

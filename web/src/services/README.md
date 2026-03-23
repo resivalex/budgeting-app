@@ -23,7 +23,7 @@ Authenticated HTTP client targeting a configurable backend URL. Handles login co
 
 ### `DbService`
 
-PouchDB-based local store synced with a remote CouchDB instance. Sync is intentionally one-shot (not live) to give the app explicit control over when data is pushed or pulled. `pushChanges` replicates local → remote; `pullChanges` replicates remote → local. Database reset destroys and recreates the local instance to mirror a server-side data reset. Settings (category expansions, account properties, spending limits, currency configs) are read and written from the `budgeting` database using `cfg:`-prefixed keys, with snake_case ↔ camelCase mapping handled internally. `spending_limits` and `currency_configs` are stored as separate documents and loaded independently. `DbService` has no UI dependencies — it is a pure data service with no knowledge of React state or loading indicators.
+PouchDB-based local store synced with a remote CouchDB instance. Sync is intentionally one-shot (not live) to give the app explicit control over when data is pushed or pulled. `pushChanges` replicates local → remote; `pullChanges` replicates remote → local. Database reset destroys and recreates the local instance to mirror a server-side data reset. Settings (category expansions, account properties, bucket definitions, spending limits, currency configs) are read and written from the `budgeting` database using `cfg:`-prefixed keys, with snake_case ↔ camelCase mapping handled internally. Bucket definitions (`cfg:buckets`), `spending_limits`, and `currency_configs` are stored as separate documents and loaded independently. `DbService` has no UI dependencies — it is a pure data service with no knowledge of React state or loading indicators.
 
 ### `StorageService`
 

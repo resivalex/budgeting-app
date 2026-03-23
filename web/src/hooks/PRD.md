@@ -12,15 +12,15 @@ Users can view, add, edit, and delete transactions with changes reflected in the
 
 ### Background Sync
 
-The app continuously synchronizes with the remote server: pulling new transactions on a regular cadence (next pull starts 10 seconds after the previous one completes) and retrying failed pushes automatically. Only one push runs at a time — if a push is already in progress when a new one is triggered, the new one is skipped and the next retry will pick up any pending changes. Sync status (offline, error, in-progress) is surfaced to the UI so users can see connectivity state. A force-refresh capability allows the error boundary to trigger a full database reset and re-pull when rendering fails due to stale data.
+The app continuously synchronizes with the remote server: pulling new transactions on a regular cadence and retrying failed pushes automatically. Only one push runs at a time — if a push is already in progress when a new one is triggered, the new one is skipped and the next retry will pick up any pending changes. Sync status (offline, error, in-progress) is surfaced to the UI so users can see connectivity state. A force-refresh capability allows the error boundary to trigger a full database reset and re-pull when rendering fails due to stale data.
 
 ### Settings
 
-User-defined category expansions, account properties, spending limits, and currency configs are loaded at startup directly from CouchDB via PouchDB.
+User-defined category expansions, account properties, spending limits, and currency configs are loaded at startup from local storage.
 
 ### Budgets
 
-Users can select a month, view spending against per-category limits, and see how far into the month they are. Budget limits can be updated and are persisted directly to CouchDB.
+Users can select a month, view spending against per-category limits, and see how far into the month they are. Budget limits can be updated and are persisted locally.
 
 ### Transaction Form
 
@@ -32,4 +32,4 @@ Accounts are displayed with user-assigned colors, allowing quick visual distinct
 
 ### Mobile Detection
 
-The `useIsMobile` hook provides responsive breakpoint detection, enabling components to render mobile-optimized UIs (such as fullscreen overlays for form field selection) on narrow viewports.
+Responsive breakpoint detection enables components to render mobile-optimized UIs (such as fullscreen overlays for form field selection) on narrow viewports.

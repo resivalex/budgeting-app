@@ -8,7 +8,7 @@ Cloud storage integration enabling the application to durably back up its data t
 
 ### Google Drive File Upload
 
-The application uploads ZIP archives of the `budgeting` database to a designated Google Drive folder on a configurable schedule, ensuring data can be restored from cloud storage in case of local data loss.
+The application uploads ZIP database archives to a designated Google Drive folder on a configurable schedule, ensuring data can be restored from cloud storage in case of local data loss.
 
 ## Integration Points
 

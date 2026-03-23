@@ -33,5 +33,5 @@ AppContainer
 ## Key Patterns
 
 - **Memoized account select components**: `LimitedAccountSelect` and `FullAccountSelect` are created via `useMemo` + `forwardRef` inside `AuthorizedAppContainer` so that account aggregation data is closed over rather than prop-drilled through routing boundaries.
-- **Filter state**: Five filter fields (`account`, `payee`, `comment`, `category`, `budgetName`) live in `AuthorizedAppContainer` and are passed down to the transactions route.
+- **Filter state**: Five filter fields (`account`, `payee`, `comment`, `category`, `bucketId`) live in `AuthorizedAppContainer` and are passed down to the transactions route.
 - **Notifications**: `lastNotificationText` state drives a transient `<Notification>` toast after add/edit/delete.

@@ -9,7 +9,7 @@ interface Props {
   selectedMonth: string
   availableMonths: string[]
   onMonthSelect: (month: string) => void
-  onBudgetItemChange: (name: string, currency: string, amount: number) => void
+  onBudgetItemChange: (bucketId: string, currency: string, amount: number) => void
   onFocus: (name: string) => void
   focusedBudget: BudgetDTO | null
   commonBudgetsExpectationRatio: number | null
@@ -72,7 +72,7 @@ export default function Budgets({
           onClose={() => onFocus('')}
           onTransactionRemove={onTransactionRemove}
           onBudgetChange={(amount: number, currency: string) =>
-            onBudgetItemChange(focusedBudget.name, currency, amount)
+            onBudgetItemChange(focusedBudget.bucketId, currency, amount)
           }
           availableCurrencies={availableCurrencies}
         />

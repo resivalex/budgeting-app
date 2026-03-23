@@ -4,21 +4,21 @@ import {
   categoryExpansionsAtom,
   transactionsAtom,
   transactionsAggregationsAtom,
-  spendingLimitsAtom,
+  bucketsAtom,
 } from '@/state'
 import { TransactionFormDomain } from '@/domain'
-import { TransactionDTO, ColoredAccountDetailsDTO, SpendingLimitsDTO } from '@/types'
+import { TransactionDTO, ColoredAccountDetailsDTO, BucketsDTO } from '@/types'
 import { useColoredAccounts } from './useColoredAccounts'
 
 interface UseTransactionFormDomainReturn {
   categoryOptions: { value: string; label: string }[]
-  budgetNameOptions: { value: string; label: string }[]
+  bucketOptions: { value: string; label: string }[]
   coloredAccounts: ColoredAccountDetailsDTO[]
   transactions: TransactionDTO[]
   allCurrencies: string[]
   allPayees: string[]
   allComments: string[]
-  spendingLimits: SpendingLimitsDTO
+  buckets: BucketsDTO
   domain: TransactionFormDomain
 }
 
@@ -26,7 +26,7 @@ export function useTransactionFormDomain(): UseTransactionFormDomainReturn {
   const categoryExpansions = useAtomValue(categoryExpansionsAtom)
   const transactions = useAtomValue(transactionsAtom)
   const aggregations = useAtomValue(transactionsAggregationsAtom)
-  const spendingLimits = useAtomValue(spendingLimitsAtom)
+  const buckets = useAtomValue(bucketsAtom)
   const coloredAccounts = useColoredAccounts()
 
   const domain = useMemo(() => new TransactionFormDomain(), [])
@@ -41,20 +41,20 @@ export function useTransactionFormDomain(): UseTransactionFormDomainReturn {
     [domain, aggregations.categories, categoryExtensionsMap],
   )
 
-  const budgetNameOptions = useMemo(
-    () => spendingLimits.limits.map((l) => ({ value: l.name, label: l.name })),
-    [spendingLimits.limits],
+  const bucketOptions = useMemo(
+    () => buckets.buckets.map((b) => ({ value: b.id, label: b.name })),
+    [buckets.buckets],
   )
 
   return {
     categoryOptions,
-    budgetNameOptions,
+    bucketOptions,
     coloredAccounts,
     transactions,
     allCurrencies: aggregations.currencies,
     allPayees: aggregations.payees,
     allComments: aggregations.comments,
-    spendingLimits,
+    buckets,
     domain,
   }
 }

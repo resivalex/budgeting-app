@@ -8,19 +8,18 @@ Containerized CouchDB database providing document storage and bidirectional repl
 
 ### Document Storage
 
-- Stores all documents in a single `budgeting` database: transactions (`tx:`-prefixed keys, `kind: "transaction"`) and settings (`cfg:`-prefixed keys, `kind: "setting"`)
-- Schemaless design: new fields can be added without migrations; the frontend defaults missing fields on read (e.g., `budget_name` defaults to `""`)
+- Stores all transactions and configuration documents in a single database
+- Schemaless design: new fields can be added without migrations; the frontend provides safe defaults for any missing fields
 
 ### Offline-First Sync
 
-- Frontend syncs directly with CouchDB without a backend intermediary
+- Bidirectional replication between the browser and the remote server enables offline usage with automatic reconciliation on reconnect
 - Handles concurrent edits from multiple devices with automatic conflict detection
-- Real-time change feed drives sync updates in the frontend
 
 ### Browser Access
 
-- The web app accesses the database directly from the browser via CouchDB's HTTP API
-- CORS is enabled to allow cross-origin requests from the frontend
+- The web app accesses the database directly from the browser, enabling offline-first functionality
+- Cross-origin access is configured for browser connectivity
 
 ### Multi-Environment Support
 

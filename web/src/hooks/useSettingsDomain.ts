@@ -5,6 +5,7 @@ import {
   accountPropertiesAtom,
   spendingLimitsAtom,
   currencyConfigsAtom,
+  bucketsAtom,
 } from '@/state'
 import { SettingsDomain, BudgetsDomain } from '@/domain'
 import { DbService } from '@/services'
@@ -14,6 +15,7 @@ export function useSettingsDomain(dbService: DbService) {
   const setAccountProperties = useSetAtom(accountPropertiesAtom)
   const setSpendingLimits = useSetAtom(spendingLimitsAtom)
   const setCurrencyConfigs = useSetAtom(currencyConfigsAtom)
+  const setBuckets = useSetAtom(bucketsAtom)
 
   const settingsDomain = useMemo(() => new SettingsDomain(dbService), [dbService])
 
@@ -24,6 +26,7 @@ export function useSettingsDomain(dbService: DbService) {
     setAccountProperties(await settingsDomain.loadAccountProperties())
     setSpendingLimits(await budgetsDomain.loadSpendingLimits())
     setCurrencyConfigs(await budgetsDomain.loadCurrencyConfigs())
+    setBuckets(await budgetsDomain.loadBuckets())
   }, [
     settingsDomain,
     budgetsDomain,
@@ -31,6 +34,7 @@ export function useSettingsDomain(dbService: DbService) {
     setAccountProperties,
     setSpendingLimits,
     setCurrencyConfigs,
+    setBuckets,
   ])
 
   useEffect(() => {

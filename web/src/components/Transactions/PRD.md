@@ -9,7 +9,7 @@ Transaction list page where users browse, filter, and manage their financial rec
 ### Browsing Transactions
 
 - Transactions are grouped by date with formatted date headers (Russian locale).
-- Each row shows category, account, payee, amount, currency; a budget name appears as a colored badge when assigned.
+- Each row shows category, account, payee, amount, currency; a bucket name appears as a colored badge when assigned (hidden for the default bucket).
 - Color-coded amounts indicate income (green) or expense (red).
 - Transfer transactions display source → destination account arrows.
 - Tapping a row's time area reveals the exact time of the transaction.
@@ -17,7 +17,7 @@ Transaction list page where users browse, filter, and manage their financial rec
 
 ### Filtering
 
-- A collapsible search panel lets users filter by account, payee, comment, category, and budget name.
+- A collapsible search panel lets users filter by account, payee, comment, category, and bucket.
 - Filter edits are staged locally; users explicitly commit them via an "Apply" button (which also collapses the panel) or discard them via "Reset".
 - Filters support cross-language matching (English/Russian input).
 - Account filtering covers both sides of transfer transactions.

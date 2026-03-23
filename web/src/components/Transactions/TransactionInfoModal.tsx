@@ -3,7 +3,7 @@ import { convertToLocaleTime, convertCurrencyCodeToSymbol, formatFinancialAmount
 import { TransactionDTO } from '@/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { useAccountNameResolver } from '@/hooks'
+import { useAccountNameResolver, useBucketNameResolver } from '@/hooks'
 
 interface Props {
   transaction: TransactionDTO
@@ -15,6 +15,7 @@ interface Props {
 export default function TransactionInfoModal({ transaction, onClose, onRemove, onEdit }: Props) {
   const [isRemoveActive, setIsRemoveActive] = useState(false)
   const resolveAccountName = useAccountNameResolver()
+  const resolveBucketName = useBucketNameResolver()
   if (!transaction) return null
 
   const { datetime, account, category, type, amount, currency, payee, comment } = transaction
@@ -56,9 +57,9 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
           <p>
             <strong>Категория:</strong> {category}
           </p>
-          {transaction.budget_name && (
+          {transaction.bucket_id && transaction.bucket_id !== 'default' && (
             <p>
-              <strong>Бюджет:</strong> {transaction.budget_name}
+              <strong>Бюджет:</strong> {resolveBucketName(transaction.bucket_id)}
             </p>
           )}
           <p>

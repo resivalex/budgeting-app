@@ -6,7 +6,7 @@ Full-database backup and restore system. Captures a consistent snapshot of the u
 
 ## Features
 
-- **Full backup**: Captures the `budgeting` database as `couchdb/budgeting.json` in a ZIP archive.
+- **Full backup**: Captures the entire database (transactions and settings) as a ZIP archive.
 - **Full restore**: Uploading a backup archive replaces the `budgeting` database, rolling the system back to the archived state.
 - **Automated daily backups**: Scheduler runs a backup once per day (configurable time, default 3:00 AM UTC) and uploads to Google Drive when credentials are present.
 - **Manual trigger**: On-demand backup and upload via API without waiting for the schedule.
@@ -14,15 +14,9 @@ Full-database backup and restore system. Captures a consistent snapshot of the u
 
 ## User Workflows
 
-1. **Download a backup** — call `GET /backup` to receive a ZIP archive of the current database state.
-2. **Restore from backup** — call `POST /restore` with a previously downloaded ZIP to roll back the database to that snapshot.
-3. **Trigger an immediate cloud backup** — call `POST /trigger-backup` to create a backup and push it to Google Drive.
-
-## API Endpoints
-
-- `GET /backup` — Download backup ZIP
-- `POST /restore` — Upload backup ZIP to restore the database
-- `POST /trigger-backup` — Create backup and upload to Google Drive
+1. **Download a backup** — Download a ZIP archive of the current database state.
+2. **Restore from backup** — Upload a previously downloaded ZIP to roll back the database to that snapshot.
+3. **Trigger an immediate cloud backup** — Create a backup and push it to Google Drive on demand.
 
 ## Integrations
 

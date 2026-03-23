@@ -23,21 +23,21 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 
 ### Financial Transaction Management
 
-- **Advanced Transaction Interface**: Transaction list with filtering (account, payee, comment, category, budget_name) and cross-language search (see [Transactions PRD](./src/components/Transactions/PRD.md))
-- **Step-by-Step Transaction Entry**: Guided transaction creation with automatic budget name assignment from category (see [TransactionForm PRD](./src/components/TransactionForm/PRD.md))
-- **Budget Name Assignment**: Transactions carry a `budget_name` linking them to a specific budget; auto-assigned from category on entry, visible as a badge in the transaction list, and editable via dropdown
+- **Advanced Transaction Interface**: Transaction list with filtering (account, payee, comment, category, bucket) and cross-language search (see [Transactions PRD](./src/components/Transactions/PRD.md))
+- **Step-by-Step Transaction Entry**: Guided transaction creation with automatic bucket assignment from category (see [TransactionForm PRD](./src/components/TransactionForm/PRD.md))
+- **Bucket Assignment**: Every transaction is assigned to a bucket; auto-assigned from category on entry, visible as a badge in the transaction list, and editable via dropdown
 
 ### Budget Management & Analytics
 
 - **Visual Budget Tracking**: Budget management with color-coded progress indicators and spending analytics (see [Budgets PRD](./src/components/Budgets/PRD.md))
 - **Monthly Budget Planning**: Month-by-month budget management with expectation ratios
-- **Budget-Name-Based Calculations**: Budget totals computed by matching transaction `budget_name`; transactions without a recognised budget name aggregate under "Другое" (Rest)
+- **Bucket-Based Calculations**: Budget totals computed by bucket assignment; transactions with no specific bucket aggregate under "Другое" (Rest)
 
 ### Account & Data Management
 
-- **Account Dashboard**: Overview of all accounts with color-coded balances; accounts are identified by ID internally with human-readable names resolved from `cfg:account_properties` (see [Home PRD](./src/components/Home/PRD.md))
+- **Account Dashboard**: Overview of all accounts with color-coded balances (see [Home PRD](./src/components/Home/PRD.md))
 - **Data Export**: CSV export with timestamped filenames
-- **Spending Limits Configuration**: Budget configuration stored in CouchDB and accessed directly via PouchDB with per-month currency support
+- **Bucket & Spending Limits Configuration**: Bucket definitions and per-month spending limits are managed locally and synced with the remote database
 
 ### Authentication & Security
 
@@ -46,16 +46,7 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 
 ## Domain Responsibilities
 
-Each domain service encapsulates a specific business capability:
-
-- **TransactionDomain**: Transaction CRUD operations, aggregations (balances by account, suggestions for payee/category/account)
-- **SyncDomain**: Pull/push sync lifecycle, database reset detection and recovery
-- **SettingsDomain**: Loading category expansions and account properties from CouchDB
-- **BudgetsDomain**: Budget totals by `budget_name`, multi-currency conversion, month-by-month filtering
-- **TransactionFormDomain**: Form validation, category extension lookup, auto-suggestions, budget name resolution from category
-- **TransactionFilterDomain**: Transaction filtering across account, payee, comment, category, and budget name with cross-language matching
-- **ExportDomain**: CSV export generation with timestamped filenames and blob download handling
-- **AuthDomain**: Login, logout, and credential persistence
+Each domain service encapsulates a specific business capability: transaction management, data synchronization, settings, budget calculations, transaction form logic, filtering, export, and authentication.
 
 ## Component References
 

@@ -17,7 +17,7 @@ export default function AuthorizedAppContainer() {
   const [filterPayee, setFilterPayee] = useState('')
   const [filterComment, setFilterComment] = useState('')
   const [filterCategory, setFilterCategory] = useState('')
-  const [filterBudgetName, setFilterBudgetName] = useState('')
+  const [filterBucketId, setFilterBucketId] = useState('')
 
   const exportDomain = useMemo(() => new ExportDomain(backendService), [backendService])
   const authDomain = useMemo(() => new AuthDomain(storageService), [storageService])
@@ -88,12 +88,12 @@ export default function AuthorizedAppContainer() {
         filterPayee={filterPayee}
         filterComment={filterComment}
         filterCategory={filterCategory}
-        filterBudgetName={filterBudgetName}
+        filterBucketId={filterBucketId}
         onFilterAccountNameChange={setFilterAccountName}
         onFilterPayeeChange={setFilterPayee}
         onFilterCommentChange={setFilterComment}
         onFilterCategoryChange={setFilterCategory}
-        onFilterBudgetNameChange={setFilterBudgetName}
+        onFilterBucketIdChange={setFilterBucketId}
         isLoading={isLoading}
         offlineMode={offlineMode}
         lastNotificationText={lastNotificationText}

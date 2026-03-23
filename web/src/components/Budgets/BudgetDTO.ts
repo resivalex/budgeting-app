@@ -1,6 +1,7 @@
 import { TransactionDTO } from '@/types'
 
 export type BudgetDTO = {
+  bucketId: string
   name: string
   color: string
   currency: string

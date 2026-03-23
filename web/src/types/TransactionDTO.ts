@@ -8,6 +8,6 @@ export interface TransactionDTO {
   currency: string
   payee: string
   comment: string
-  budget_name: string
+  bucket_id: string
   kind: 'transaction'
 }
