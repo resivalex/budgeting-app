@@ -1,1 +1,3 @@
-export const appVersion: string = import.meta.env.VITE_VERSION || 'unset'
+declare const __APP_VERSION__: string
+
+export const appVersion: string = __APP_VERSION__
