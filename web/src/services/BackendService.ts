@@ -44,13 +44,15 @@ class BackendService {
     }
   }
 
-  async getExportingCsvString(): Promise<string> {
+  async downloadExportingCsv(): Promise<{ blob: Blob; filename: string }> {
     try {
       const response = await this.axiosInstance.get('/exporting', {
         responseType: 'blob',
       })
-
-      return response.data
+      const disposition: string = response.headers['content-disposition'] ?? ''
+      const match = disposition.match(/filename=([^;]+)/)
+      const filename = match ? match[1] : 'export.csv'
+      return { blob: response.data, filename }
     } catch (err) {
       throw new Error('Failed to export CSV.')
     }

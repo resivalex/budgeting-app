@@ -123,10 +123,12 @@ async def settings(request: Request) -> UploadDetailsValue:
 async def exporting(request: Request):
     check_authorization(request)
     csv_bytes = create_state().exporting()
+    today = datetime.now().strftime("%Y%m%d-%H%M")
+    filename = f"export-{today}.csv"
     return StreamingResponse(
         iter([csv_bytes]),
         media_type="text/csv",
-        headers={"Content-Disposition": "attachment;filename=export.csv"},
+        headers={"Content-Disposition": f"attachment;filename={filename}"},
     )
 
 
