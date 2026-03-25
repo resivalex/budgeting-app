@@ -6,6 +6,7 @@ import { useServices } from '@/services'
 import { TransactionDTO } from '@/types'
 import { useTransactionsDomain, useSyncDomain, useSettingsDomain } from '@/hooks'
 import { ExportDomain, AuthDomain } from '@/domain'
+import { deriveAccount } from '@/utils'
 import { v4 as uuidv4 } from 'uuid'
 
 const instanceId = uuidv4()
@@ -70,7 +71,7 @@ function AppWithTransactions({
     await addDbTransaction(t)
     await addLocalTransaction(t)
     onNotify('Запись добавлена')
-    onFilterAccountNameChange(t.account)
+    onFilterAccountNameChange(deriveAccount(t))
     navigate('/transactions', { replace: true })
   }
 

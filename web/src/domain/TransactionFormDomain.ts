@@ -126,17 +126,27 @@ class TransactionFormDomain {
     comment: string
     bucket_id: string
   }): TransactionDTO {
+    const { type } = params
+    const externalAccount = `external_${params.currency.toLowerCase()}`
+    const bucketId = params.bucket_id || 'default'
+
     return {
       _id: params.id,
       datetime: params.datetime,
-      account: params.account,
-      category: params.type === 'transfer' ? '' : params.category,
-      type: params.type,
+      account_from: type === 'income' ? externalAccount : params.account,
+      account_to:
+        type === 'expense'
+          ? externalAccount
+          : type === 'transfer'
+            ? params.payeeTransferAccount
+            : params.account,
+      category: type === 'transfer' ? '' : params.category,
       amount: (parseFloat(params.amount) || 0).toFixed(2),
       currency: params.currency,
-      payee: params.type === 'transfer' ? params.payeeTransferAccount : params.payee,
+      counterparty: type === 'transfer' ? '' : params.payee,
       comment: params.comment,
-      bucket_id: params.bucket_id || 'default',
+      bucket_from: type === 'income' ? bucketId : 'default',
+      bucket_to: type === 'expense' ? bucketId : 'default',
       kind: 'transaction',
     }
   }

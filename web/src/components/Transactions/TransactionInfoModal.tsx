@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { convertToLocaleTime, convertCurrencyCodeToSymbol, formatFinancialAmount } from '@/utils'
+import {
+  convertToLocaleTime,
+  convertCurrencyCodeToSymbol,
+  formatFinancialAmount,
+  deriveTransactionType,
+  deriveAccount,
+  deriveBucketId,
+} from '@/utils'
 import { TransactionDTO } from '@/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -18,11 +25,15 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
   const resolveBucketName = useBucketNameResolver()
   if (!transaction) return null
 
-  const { datetime, account, category, type, amount, currency, payee, comment } = transaction
+  const { datetime, category, amount, currency, comment } = transaction
+  const type = deriveTransactionType(transaction)
+  const accountId = deriveAccount(transaction)
+  const bucketId = deriveBucketId(transaction)
 
   const datetimeString = convertToLocaleTime(datetime)
-  const accountName = resolveAccountName(account)
-  const payeeDisplay = type === 'transfer' ? resolveAccountName(payee) : payee
+  const accountName = resolveAccountName(accountId)
+  const payeeDisplay =
+    type === 'transfer' ? resolveAccountName(transaction.account_to) : transaction.counterparty
 
   async function handleRemoveClick(transactionId: string) {
     if (isRemoveActive) {
@@ -57,9 +68,9 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
           <p>
             <strong>Категория:</strong> {category}
           </p>
-          {transaction.bucket_id && transaction.bucket_id !== 'default' && (
+          {bucketId && bucketId !== 'default' && (
             <p>
-              <strong>Бюджет:</strong> {resolveBucketName(transaction.bucket_id)}
+              <strong>Бюджет:</strong> {resolveBucketName(bucketId)}
             </p>
           )}
           <p>

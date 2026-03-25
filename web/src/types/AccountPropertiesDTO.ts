@@ -4,5 +4,6 @@ export interface AccountPropertiesDTO {
     currency: string
     name: string
     color: string
+    external: boolean
   }[]
 }

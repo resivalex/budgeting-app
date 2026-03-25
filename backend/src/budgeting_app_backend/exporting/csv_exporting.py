@@ -18,10 +18,26 @@ class CsvExporting:
             if doc["doc"].get("kind") == "transaction"
         ]
         for record in records:
-            record["account"] = account_id_to_name.get(record.get("account", ""), record.get("account", ""))
-            if record.get("type") == "transfer":
-                record["payee"] = account_id_to_name.get(record.get("payee", ""), record.get("payee", ""))
-            bucket_id = record.pop("bucket_id", "default")
+            account_from = record.get("account_from", "")
+            account_to = record.get("account_to", "")
+            tx_type = _derive_transaction_type(account_from, account_to)
+            record["type"] = tx_type
+
+            if tx_type == "income":
+                own_account = account_to
+                bucket_id = record.get("bucket_from", "default")
+            elif tx_type == "expense":
+                own_account = account_from
+                bucket_id = record.get("bucket_to", "default")
+            else:
+                own_account = account_from
+                bucket_id = "default"
+
+            record["account"] = account_id_to_name.get(own_account, own_account)
+            if tx_type == "transfer":
+                record["payee"] = account_id_to_name.get(account_to, account_to)
+            else:
+                record["payee"] = record.get("counterparty", "")
             record["bucket"] = bucket_id_to_name.get(bucket_id, bucket_id)
         columns = [
             "datetime",
@@ -38,7 +54,13 @@ class CsvExporting:
             df = pd.DataFrame(columns=columns)
         else:
             df = pd.DataFrame(records)
-            drop_cols = [c for c in ["_id", "_rev", "kind"] if c in df.columns]
+            drop_cols = [
+                c for c in [
+                    "_id", "_rev", "kind",
+                    "account_from", "account_to", "counterparty",
+                    "bucket_from", "bucket_to",
+                ] if c in df.columns
+            ]
             df = df.drop(columns=drop_cols)
             df = df.sort_values(by=["datetime"], ascending=False)
             df = df[columns]
@@ -47,6 +69,14 @@ class CsvExporting:
         df.to_csv(stream, index=False)
 
         return stream.getvalue()
+
+
+def _derive_transaction_type(account_from, account_to):
+    if account_from.startswith("external_"):
+        return "income"
+    if account_to.startswith("external_"):
+        return "expense"
+    return "transfer"
 
 
 def _load_account_id_to_name_map(db):

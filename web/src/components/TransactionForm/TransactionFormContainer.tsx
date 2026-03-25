@@ -11,7 +11,13 @@ import {
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 import { TransactionDTO, TransactionsAggregations } from '@/types'
-import { convertToLocaleTime, convertToUtcTime } from '@/utils'
+import {
+  convertToLocaleTime,
+  convertToUtcTime,
+  deriveTransactionType,
+  deriveAccount,
+  deriveBucketId,
+} from '@/utils'
 import StepByStepTransactionForm from './StepByStepTransactionForm'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTransactionFormDomain } from '@/hooks'
@@ -60,18 +66,19 @@ export default function TransactionFormContainer({
   const lastSerializedTransactionRef = useRef('')
 
   const initializeFormFromTransaction = (t: TransactionDTO) => {
-    setType(t.type)
+    const txType = deriveTransactionType(t)
+    setType(txType)
     setAmount(`${parseFloat(t.amount)}`.replace(',', '.'))
-    setAccount(t.account)
+    setAccount(deriveAccount(t))
     setCurrency(t.currency)
     setCategory(t.category)
-    if (t.type === 'transfer') {
-      setPayeeTransferAccount(t.payee)
+    if (txType === 'transfer') {
+      setPayeeTransferAccount(t.account_to)
     } else {
-      setPayee(t.payee)
+      setPayee(t.counterparty)
     }
     setComment(t.comment)
-    setBucketId(t.bucket_id)
+    setBucketId(deriveBucketId(t))
     setDatetime(convertToLocaleTime(t.datetime))
   }
 

@@ -6,7 +6,7 @@ import {
   BucketDTO,
 } from '@/types'
 import { DbService } from '@/services'
-import { convertToLocaleTime } from '@/utils'
+import { convertToLocaleTime, deriveTransactionType, deriveBucketId } from '@/utils'
 import _ from 'lodash'
 
 type ConversionMapType = { [sourceCurrency: string]: { [targetCurrency: string]: number } }
@@ -209,7 +209,7 @@ class BudgetsDomain {
   ): TransactionDTO[] {
     const monthDateObject = new Date(monthDate)
     return transactions.filter((transaction) => {
-      if (transaction.type === 'transfer') {
+      if (deriveTransactionType(transaction) === 'transfer') {
         return false
       }
       if (!conversionMap[transaction.currency]) {
@@ -308,9 +308,9 @@ class BudgetsDomain {
     }
 
     transactions.forEach((transaction) => {
-      if (transaction.bucket_id === spendingLimit.bucketId) {
+      if (deriveBucketId(transaction) === spendingLimit.bucketId) {
         budget.transactions.push(transaction)
-        const sign = transaction.type === 'expense' ? 1 : -1
+        const sign = deriveTransactionType(transaction) === 'expense' ? 1 : -1
         budget.spentAmount +=
           sign *
           parseFloat(transaction.amount) *
@@ -340,7 +340,7 @@ class BudgetsDomain {
 
     unassignedTransactions.forEach((transaction) => {
       budget.transactions.push(transaction)
-      const sign = transaction.type === 'expense' ? 1 : -1
+      const sign = deriveTransactionType(transaction) === 'expense' ? 1 : -1
       budget.spentAmount +=
         sign * parseFloat(transaction.amount) * conversionMap[transaction.currency][budget.currency]
     })

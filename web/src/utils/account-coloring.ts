@@ -8,7 +8,8 @@ export function mergeAccountDetailsAndProperties(
 ): ColoredAccountDetailsDTO[] {
   const coloredAccounts: ColoredAccountDetailsDTO[] = []
   const uncoloredAccounts: ColoredAccountDetailsDTO[] = []
-  accountProperties.accounts.forEach((account) => {
+  const nonExternalAccounts = accountProperties.accounts.filter((a) => !a.external)
+  nonExternalAccounts.forEach((account) => {
     const accountDetail = accountDetails.find((a) => a.account === account.id)
     coloredAccounts.push({
       account: account.id,

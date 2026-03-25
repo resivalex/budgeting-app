@@ -7,6 +7,13 @@ import {
 import { reactSelectSmallStyles, reactSelectColorStyles } from './react-select-styles'
 import { mergeAccountDetailsAndProperties } from './account-coloring'
 import { useColoredAccounts } from './useColoredAccounts'
+import {
+  isExternalAccount,
+  deriveTransactionType,
+  deriveAccount,
+  derivePayee,
+  deriveBucketId,
+} from './transaction-utils'
 
 export {
   convertToLocaleTime,
@@ -18,4 +25,9 @@ export {
   mergeAccountDetailsAndProperties,
   reactSelectColorStyles,
   useColoredAccounts,
+  isExternalAccount,
+  deriveTransactionType,
+  deriveAccount,
+  derivePayee,
+  deriveBucketId,
 }

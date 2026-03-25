@@ -1,37 +1,6 @@
 import _ from 'lodash'
 import { TransactionDTO, AccountDetailsDTO } from '@/types'
-
-type BalanceChange = {
-  account: string
-  currency: string
-  amount: number
-}
-
-function calculateBalanceChanges(transaction: any): BalanceChange[] {
-  if (transaction.type === 'transfer') {
-    return [
-      {
-        account: transaction.account,
-        currency: transaction.currency,
-        amount: -parseFloat(transaction.amount),
-      },
-      {
-        account: transaction.payee,
-        currency: transaction.currency,
-        amount: parseFloat(transaction.amount),
-      },
-    ]
-  }
-  const transactionSign = transaction.type === 'expense' ? -1 : 1
-
-  return [
-    {
-      account: transaction.account,
-      currency: transaction.currency,
-      amount: parseFloat(transaction.amount) * transactionSign,
-    },
-  ]
-}
+import { isExternalAccount, deriveTransactionType } from '@/utils'
 
 export default class TransactionAggregator {
   transactions: TransactionDTO[]
@@ -41,38 +10,32 @@ export default class TransactionAggregator {
   }
 
   getAccountDetails(): AccountDetailsDTO[] {
-    const accountsStat = this.transactions.reduce((accountCurrencies: any, transaction: any) => {
-      if (!accountCurrencies[transaction.account]) {
-        accountCurrencies[transaction.account] = {
-          currency: transaction.currency,
-          balance: 0,
-        }
+    const accountsStat: Record<string, { currency: string; balance: number }> = {}
+
+    this.transactions.forEach((transaction) => {
+      const { account_from, account_to, currency } = transaction
+      const amount = parseFloat(transaction.amount)
+
+      if (!accountsStat[account_from]) {
+        accountsStat[account_from] = { currency, balance: 0 }
       }
-      const balanceChanges = calculateBalanceChanges(transaction)
-      for (const balanceChange of balanceChanges) {
-        if (!accountCurrencies[balanceChange.account]) {
-          accountCurrencies[balanceChange.account] = {
-            currency: balanceChange.currency,
-            balance: 0,
-          }
-        }
-        if (accountCurrencies[balanceChange.account].currency !== balanceChange.currency) {
-          throw new Error('Currency mismatch')
-        }
-        accountCurrencies[balanceChange.account].balance += balanceChange.amount
+      if (!accountsStat[account_to]) {
+        accountsStat[account_to] = { currency, balance: 0 }
       }
 
-      return accountCurrencies
-    }, {})
-    const accountDetails = Object.keys(accountsStat).map((account) => {
-      return {
-        account: account,
+      accountsStat[account_from].balance -= amount
+      accountsStat[account_to].balance += amount
+    })
+
+    const accountDetails = Object.keys(accountsStat)
+      .filter((account) => !isExternalAccount(account))
+      .map((account) => ({
+        account,
         currency: accountsStat[account].currency,
         balance: accountsStat[account].balance,
-      }
-    })
-    accountDetails.sort((a, b) => (a.balance > b.balance ? -1 : 1))
+      }))
 
+    accountDetails.sort((a, b) => (a.balance > b.balance ? -1 : 1))
     return accountDetails
   }
 
@@ -103,12 +66,12 @@ export default class TransactionAggregator {
 
   getRecentPayees() {
     const payeesSet: { [name: string]: boolean } = {}
-    const result = []
+    const result: string[] = []
     const sortedTransactions = _.sortBy(this.transactions, (t) => -new Date(t.datetime).getTime())
     for (const transaction of sortedTransactions) {
-      if (transaction.type !== 'transfer' && transaction.payee && !payeesSet[transaction.payee]) {
-        payeesSet[transaction.payee] = true
-        result.push(transaction.payee)
+      if (transaction.counterparty && !payeesSet[transaction.counterparty]) {
+        payeesSet[transaction.counterparty] = true
+        result.push(transaction.counterparty)
       }
     }
 
@@ -117,7 +80,7 @@ export default class TransactionAggregator {
 
   getRecentPayeesByCategory(category: string) {
     const payeesSet: { [name: string]: boolean } = {}
-    const result = []
+    const result: string[] = []
     const sortedTransactions = _.sortBy(this.transactions, (t) => -new Date(t.datetime).getTime())
     const orderedTransactions = [
       ...sortedTransactions.filter((t) => t.category === category),
@@ -125,9 +88,9 @@ export default class TransactionAggregator {
     ]
 
     for (const transaction of orderedTransactions) {
-      if (transaction.type !== 'transfer' && transaction.payee && !payeesSet[transaction.payee]) {
-        payeesSet[transaction.payee] = true
-        result.push(transaction.payee)
+      if (transaction.counterparty && !payeesSet[transaction.counterparty]) {
+        payeesSet[transaction.counterparty] = true
+        result.push(transaction.counterparty)
       }
     }
 
@@ -136,7 +99,7 @@ export default class TransactionAggregator {
 
   getRecentComments() {
     const commentsSet: { [name: string]: boolean } = {}
-    const result = []
+    const result: string[] = []
     const sortedTransactions = _.sortBy(this.transactions, (t) => -new Date(t.datetime).getTime())
     for (const transaction of sortedTransactions) {
       if (transaction.comment && !commentsSet[transaction.comment]) {
@@ -150,7 +113,7 @@ export default class TransactionAggregator {
 
   getRecentCommentsByCategory(category: string) {
     const commentsSet: { [name: string]: boolean } = {}
-    const result = []
+    const result: string[] = []
     const sortedTransactions = _.sortBy(this.transactions, (t) => -new Date(t.datetime).getTime())
     const orderedTransactions = [
       ...sortedTransactions.filter((t) => t.category === category),

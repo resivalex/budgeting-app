@@ -16,7 +16,7 @@ Tracks when the server-side database was last changed so the frontend can detect
 
 ### Data Export
 
-On-demand CSV export of all transactions, sorted newest first, with human-readable account and bucket names.
+On-demand CSV export of all transactions, sorted newest first, with human-readable account and bucket names. Transaction types (income/expense/transfer) are derived from account IDs — external accounts (`external_*`) indicate income or expense flows.
 
 ### Backup & Restore
 

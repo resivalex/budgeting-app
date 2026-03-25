@@ -24,11 +24,11 @@ Users can define monthly spending limits per bucket and track actuals against th
 
 ### Transaction Form
 
-The form assists users with smart defaults: category labels are expanded for clarity, the bucket is auto-assigned from the selected category, and payee/comment suggestions are filtered by context. Transfer transactions filter available currencies and accounts appropriately. The form validates input before submission.
+The form assists users with smart defaults: category labels are expanded for clarity, the bucket is auto-assigned from the selected category, and payee/comment suggestions are filtered by context. Transfer transactions filter available currencies and accounts appropriately. The form validates input before submission. Internally, the form maps user inputs (type, account, payee, bucket) to the CouchDB schema (`account_from`/`account_to`, `counterparty`, `bucket_from`/`bucket_to`) using external accounts for income/expense transactions.
 
 ### Transaction Filtering
 
-Users can filter the transaction list by account, payee, comment, category, and bucket. Text search supports mistyped input due to cross-layout (English/Russian keyboard) matching. Transfers can be filtered by either the source or destination account.
+Users can filter the transaction list by account, payee, comment, category, and bucket. Text search supports mistyped input due to cross-layout (English/Russian keyboard) matching. Account filter matches against both `account_from` and `account_to` fields.
 
 ### Export
 

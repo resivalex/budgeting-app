@@ -1,5 +1,6 @@
 import { TransactionDTO } from '@/types'
 import { matchesCrossLanguage } from '@/utils/en-ru-matching'
+import { deriveBucketId } from '@/utils'
 
 interface TransactionFilters {
   accountName: string
@@ -46,11 +47,11 @@ class TransactionFilterDomain {
       return true
     }
 
-    if (transaction.type === 'transfer') {
+    if (!transaction.counterparty) {
       return false
     }
 
-    return matchesCrossLanguage(transaction.payee, filterPayee)
+    return matchesCrossLanguage(transaction.counterparty, filterPayee)
   }
 
   private matchesAccountFilter(transaction: TransactionDTO, filterAccountName: string): boolean {
@@ -58,20 +59,14 @@ class TransactionFilterDomain {
       return true
     }
 
-    if (transaction.type === 'transfer') {
-      return [transaction.account, transaction.payee].includes(filterAccountName)
-    }
-
-    return transaction.account === filterAccountName
+    return (
+      transaction.account_from === filterAccountName || transaction.account_to === filterAccountName
+    )
   }
 
   private matchesCategoryFilter(transaction: TransactionDTO, filterCategory: string): boolean {
     if (!filterCategory) {
       return true
-    }
-
-    if (transaction.type === 'transfer') {
-      return false
     }
 
     return transaction.category === filterCategory
@@ -82,7 +77,7 @@ class TransactionFilterDomain {
       return true
     }
 
-    return transaction.bucket_id === filterBucketId
+    return deriveBucketId(transaction) === filterBucketId
   }
 
   private matchesCommentFilter(transaction: TransactionDTO, filterComment: string): boolean {

@@ -1,13 +1,14 @@
 export interface TransactionDTO {
   _id: string
   datetime: string
-  account: string
+  account_from: string
+  account_to: string
   category: string
-  type: 'income' | 'expense' | 'transfer'
   amount: string
   currency: string
-  payee: string
+  counterparty: string
   comment: string
-  bucket_id: string
+  bucket_from: string
+  bucket_to: string
   kind: 'transaction'
 }
