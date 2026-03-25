@@ -156,7 +156,7 @@ function FormLayout({
         isExpanded: currentStep === accountStep,
         onExpand: () => setCurrentStep(accountStep),
         onComplete: () =>
-          setCurrentStep(type === 'transfer' ? payeeTransferAccountStep : categoryStep),
+          setCurrentStep(type === 'transfer' ? payeeTransferAccountStep : budgetNameStep),
         onCollapse: collapseStep,
       })}
       {type === 'transfer' ? (
@@ -171,15 +171,15 @@ function FormLayout({
         })
       ) : (
         <>
-          {CategoryStep({
-            isExpanded: currentStep === categoryStep,
-            onExpand: () => setCurrentStep(categoryStep),
-            onComplete: () => setCurrentStep(budgetNameStep),
-            onCollapse: collapseStep,
-          })}
           {BudgetNameStep({
             isExpanded: currentStep === budgetNameStep,
             onExpand: () => setCurrentStep(budgetNameStep),
+            onComplete: () => setCurrentStep(categoryStep),
+            onCollapse: collapseStep,
+          })}
+          {CategoryStep({
+            isExpanded: currentStep === categoryStep,
+            onExpand: () => setCurrentStep(categoryStep),
             onComplete: () => setCurrentStep(payeeStep),
             onCollapse: collapseStep,
           })}

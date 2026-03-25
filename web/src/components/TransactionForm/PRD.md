@@ -16,8 +16,9 @@ Step-by-step transaction creation and editing interface with intelligent default
 - **Historical Data Integration**: Leverages past transaction history for smart suggestions and autocomplete
 - **Multi-currency Support**: Handles different currencies with proper conversion and display
 - **Category Extensions**: Supports expanded category names for better organization
-- **Bucket Auto-Assignment**: When a category is selected, the form automatically resolves and assigns the corresponding bucket; if exactly one bucket matches the category, it is auto-selected
-- **Bucket Dropdown**: Users can manually expand and change the bucket; the dropdown lists buckets matching the current category first, then non-matching buckets, with the default bucket always last; completing the category step advances focus directly to payee, skipping bucket selection
+- **Budget-First Flow**: The budget (bucket) field is filled before category. After selecting an account, the user selects a budget first, then a category.
+- **Budget-Aware Category Ordering**: After a budget is selected, the category dropdown shows the categories belonging to that budget at the top, followed by all other categories.
+- **Bucket Dropdown**: Users can manually expand and change the bucket; the dropdown lists buckets matching the current category first, then non-matching buckets, with the default bucket always last.
 - **Transfer Account Swap**: If the user selects the same account for both source and destination in a transfer, they are automatically swapped to prevent duplicates
 - **Date/Time Handling**: Proper timezone conversion between local and UTC times
 

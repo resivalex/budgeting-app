@@ -253,19 +253,7 @@ export default function TransactionFormContainer({
     adjustCurrencyAndAccounts(type, currency)
   }
 
-  const handleCategoryChange = (category: string) => {
-    setCategory(category)
-    const matchingBucketIds = domain.getBucketIdsForCategory(category, buckets)
-    if (matchingBucketIds.length === 1) {
-      setBucketId(matchingBucketIds[0])
-    } else if (matchingBucketIds.length === 0) {
-      setBucketId('default')
-    } else {
-      if (!matchingBucketIds.includes(bucketId)) {
-        setBucketId(matchingBucketIds[0])
-      }
-    }
-  }
+  const handleCategoryChange = (category: string) => setCategory(category)
 
   const handleBucketIdChange = (id: string) => setBucketId(id)
 
@@ -273,6 +261,19 @@ export default function TransactionFormContainer({
     () => domain.getBucketIdsForCategory(category, buckets),
     [domain, category, buckets],
   )
+
+  const orderedCategoryOptions = useMemo(() => {
+    if (bucketId === 'default') {
+      return categoryOptions
+    }
+    const bucket = buckets.buckets.find((b) => b.id === bucketId)
+    if (!bucket) {
+      return categoryOptions
+    }
+    const budgetCategories = categoryOptions.filter((o) => bucket.categories.includes(o.value))
+    const otherCategories = categoryOptions.filter((o) => !bucket.categories.includes(o.value))
+    return [...budgetCategories, ...otherCategories]
+  }, [categoryOptions, bucketId, buckets])
 
   const orderedBucketOptions = useMemo(() => {
     const matching = bucketOptions.filter(
@@ -318,7 +319,7 @@ export default function TransactionFormContainer({
       onDatetimeChange={handleDatetimeChange}
       // Dropdown options
       accounts={availableColoredAccounts}
-      categoryOptions={categoryOptions}
+      categoryOptions={orderedCategoryOptions}
       budgetNameOptions={orderedBucketOptions}
       currencies={availableCurrencies}
       payees={payees}
