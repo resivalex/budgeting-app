@@ -85,6 +85,7 @@ src/
     TransactionForm/  # Guided transaction entry
     Transactions/     # Transaction list with virtualization
     Budgets/          # Budget tracking and planning
+    Buckets/          # Bucket balances overview
     Home/             # Account dashboard
   types/              # TypeScript DTOs and interfaces
   utils/              # Date formatting, account coloring

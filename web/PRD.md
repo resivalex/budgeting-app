@@ -35,6 +35,7 @@ Offline-first React PWA providing personal budget tracking, multi-currency suppo
 
 ### Account & Data Management
 
+- **Bucket Balances**: Overview of all buckets with per-currency balance totals computed from transactions (see [Buckets PRD](./src/components/Buckets/PRD.md))
 - **Account Dashboard**: Overview of all accounts with color-coded balances (see [Home PRD](./src/components/Home/PRD.md))
 - **Data Export**: CSV export with timestamped filenames
 - **Bucket & Spending Limits Configuration**: Bucket definitions and per-month spending limits are managed locally and synced with the remote database
@@ -59,3 +60,4 @@ Each domain service encapsulates a specific business capability: transaction man
 - **[Transactions](./src/components/Transactions/PRD.md)**: Transaction management with filtering and search
 - **[TransactionForm](./src/components/TransactionForm/PRD.md)**: Step-by-step transaction creation and editing
 - **[Budgets](./src/components/Budgets/PRD.md)**: Budget management and tracking
+- **[Buckets](./src/components/Buckets/PRD.md)**: Bucket balances overview

@@ -92,6 +92,16 @@ const Menu: React.FC<Props> = ({ handleLogout, handleExport, appVersion }) => {
             Бюджеты
           </Link>
           <Link
+            to="/buckets"
+            className={classNames('navbar-item', {
+              'has-background-white-bis': location.pathname === '/buckets',
+            })}
+            onClick={toggleMenu}
+            replace
+          >
+            Назначения
+          </Link>
+          <Link
             to="/add"
             className={classNames('navbar-item', {
               'has-background-white-bis': location.pathname === '/add',

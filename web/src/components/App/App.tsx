@@ -7,6 +7,7 @@ import Menu from './Menu'
 import { HomeContainer } from '@/components/Home'
 import { TransactionFormContainer } from '@/components/TransactionForm'
 import { BudgetsContainer } from '../Budgets'
+import { BucketsContainer } from '../Buckets'
 import { TransactionDTO, TransactionsAggregations } from '@/types'
 import { appVersion } from '@/version'
 import { TransactionsPageContainer } from '../Transactions'
@@ -182,6 +183,7 @@ export default function App({
                 />
               }
             />
+            <Route path="/buckets" element={<BucketsContainer />} />
             <Route
               path="/add"
               element={
