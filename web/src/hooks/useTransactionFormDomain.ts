@@ -5,9 +5,10 @@ import {
   transactionsAtom,
   transactionsAggregationsAtom,
   bucketsAtom,
+  spendingLimitsAtom,
 } from '@/state'
 import { TransactionFormDomain } from '@/domain'
-import { TransactionDTO, ColoredAccountDetailsDTO, BucketsDTO } from '@/types'
+import { TransactionDTO, ColoredAccountDetailsDTO, BucketsDTO, SpendingLimitsDTO } from '@/types'
 import { useColoredAccounts } from './useColoredAccounts'
 
 interface UseTransactionFormDomainReturn {
@@ -19,6 +20,7 @@ interface UseTransactionFormDomainReturn {
   allPayees: string[]
   allComments: string[]
   buckets: BucketsDTO
+  spendingLimits: SpendingLimitsDTO
   domain: TransactionFormDomain
 }
 
@@ -27,6 +29,7 @@ export function useTransactionFormDomain(): UseTransactionFormDomainReturn {
   const transactions = useAtomValue(transactionsAtom)
   const aggregations = useAtomValue(transactionsAggregationsAtom)
   const buckets = useAtomValue(bucketsAtom)
+  const spendingLimits = useAtomValue(spendingLimitsAtom)
   const coloredAccounts = useColoredAccounts()
 
   const domain = useMemo(() => new TransactionFormDomain(), [])
@@ -55,6 +58,7 @@ export function useTransactionFormDomain(): UseTransactionFormDomainReturn {
     allPayees: aggregations.payees,
     allComments: aggregations.comments,
     buckets,
+    spendingLimits,
     domain,
   }
 }

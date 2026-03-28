@@ -54,6 +54,7 @@ export default function TransactionFormContainer({
     allPayees,
     allComments,
     buckets,
+    spendingLimits,
     domain,
   } = useTransactionFormDomain()
 
@@ -258,22 +259,26 @@ export default function TransactionFormContainer({
   const handleBucketIdChange = (id: string) => setBucketId(id)
 
   const matchingBucketIds = useMemo(
-    () => domain.getBucketIdsForCategory(category, buckets),
-    [domain, category, buckets],
+    () => domain.getBucketIdsForCategory(category, spendingLimits),
+    [domain, category, spendingLimits],
   )
 
   const orderedCategoryOptions = useMemo(() => {
     if (bucketId === 'default') {
       return categoryOptions
     }
-    const bucket = buckets.buckets.find((b) => b.id === bucketId)
-    if (!bucket) {
+    const spendingLimit = spendingLimits.limits.find((l) => l.bucketId === bucketId)
+    if (!spendingLimit) {
       return categoryOptions
     }
-    const budgetCategories = categoryOptions.filter((o) => bucket.categories.includes(o.value))
-    const otherCategories = categoryOptions.filter((o) => !bucket.categories.includes(o.value))
+    const budgetCategories = categoryOptions.filter((o) =>
+      spendingLimit.categories.includes(o.value),
+    )
+    const otherCategories = categoryOptions.filter(
+      (o) => !spendingLimit.categories.includes(o.value),
+    )
     return [...budgetCategories, ...otherCategories]
-  }, [categoryOptions, bucketId, buckets])
+  }, [categoryOptions, bucketId, spendingLimits])
 
   const orderedBucketOptions = useMemo(() => {
     const matching = bucketOptions.filter(

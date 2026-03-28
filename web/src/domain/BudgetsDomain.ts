@@ -245,7 +245,7 @@ class BudgetsDomain {
         bucketId: spendingLimit.bucketId,
         name: bucket?.name ?? spendingLimit.bucketId,
         color: bucket?.color ?? '#b6b6b6',
-        categories: bucket?.categories ?? [],
+        categories: spendingLimit.categories ?? [],
         currency: monthLimit.currency,
         amount: monthLimit.amount,
         isEditable: true,

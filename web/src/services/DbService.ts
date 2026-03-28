@@ -93,6 +93,7 @@ export default class DbService {
       return {
         limits: (data.limits || []).map((limit: any) => ({
           bucketId: limit.bucket_id,
+          categories: limit.categories || [],
           monthLimits: (limit.month_limits || []).map((ml: any) => ({
             date: ml.date,
             currency: ml.currency,
@@ -127,6 +128,7 @@ export default class DbService {
     const snakeCaseValue = {
       limits: spendingLimits.limits.map((limit) => ({
         bucket_id: limit.bucketId,
+        categories: limit.categories,
         month_limits: limit.monthLimits.map((ml) => ({
           date: ml.date,
           currency: ml.currency,

@@ -6,6 +6,7 @@ interface MonthSpendingLimit {
 
 interface SpendingLimit {
   bucketId: string
+  categories: string[]
   monthLimits: MonthSpendingLimit[]
 }
 

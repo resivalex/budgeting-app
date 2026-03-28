@@ -3,7 +3,6 @@ import {
   CategoryExpansionsDTO,
   ColoredAccountDetailsDTO,
   SpendingLimitsDTO,
-  BucketsDTO,
 } from '@/types'
 import { TransactionAggregator } from '@/services'
 
@@ -107,10 +106,10 @@ class TransactionFormDomain {
     )
   }
 
-  getBucketIdsForCategory(category: string, buckets: BucketsDTO): string[] {
-    return buckets.buckets
-      .filter((bucket) => bucket.categories.includes(category))
-      .map((bucket) => bucket.id)
+  getBucketIdsForCategory(category: string, spendingLimits: SpendingLimitsDTO): string[] {
+    return spendingLimits.limits
+      .filter((limit) => limit.categories.includes(category))
+      .map((limit) => limit.bucketId)
   }
 
   buildTransactionDTO(params: {
