@@ -137,7 +137,7 @@ export default function Type({
       </Option>
       <Option $isActive={value === 'custom'} onClick={() => handleOptionClick('custom')}>
         <TypeDot $dotColor="purple" />
-        Кастомный
+        Каст.
       </Option>
     </>
   )
