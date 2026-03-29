@@ -150,7 +150,7 @@ function calculateBucketBalances(
     let externalTotal: number | null = 0
 
     accountMap.forEach((balance, key) => {
-      if (balance !== 0) {
+      if (Math.abs(balance) >= 1e-6) {
         const [account, currency] = key.split('\0')
         const external = externalAccountIds.has(account)
         balances.push({ account, currency, balance, external })
