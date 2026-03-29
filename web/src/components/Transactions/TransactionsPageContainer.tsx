@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai'
 import { TransactionDTO, AccountDetailsDTO } from '@/types'
 import TransactionsPage from './TransactionsPage'
 import { TransactionFilterDomain } from '@/domain'
-import { bucketsAtom } from '@/state'
+import { bucketsAtom, externalAccountIdsAtom } from '@/state'
 
 const filterDomain = new TransactionFilterDomain()
 
@@ -44,18 +44,31 @@ export default function TransactionsPageContainer({
   onRemove: (id: string) => Promise<void>
 }) {
   const buckets = useAtomValue(bucketsAtom)
+  const externalAccountIds = useAtomValue(externalAccountIdsAtom)
   const bucketOptions = buckets.buckets.map((b) => ({ id: b.id, name: b.name }))
 
   const filteredTransactions = useMemo(
     () =>
-      filterDomain.filterTransactions(transactions, {
-        accountName: filterAccountName,
-        payee: filterPayee,
-        comment: filterComment,
-        category: filterCategory,
-        bucketId: filterBucketId,
-      }),
-    [transactions, filterAccountName, filterPayee, filterComment, filterCategory, filterBucketId],
+      filterDomain.filterTransactions(
+        transactions,
+        {
+          accountName: filterAccountName,
+          payee: filterPayee,
+          comment: filterComment,
+          category: filterCategory,
+          bucketId: filterBucketId,
+        },
+        externalAccountIds,
+      ),
+    [
+      transactions,
+      filterAccountName,
+      filterPayee,
+      filterComment,
+      filterCategory,
+      filterBucketId,
+      externalAccountIds,
+    ],
   )
 
   return (

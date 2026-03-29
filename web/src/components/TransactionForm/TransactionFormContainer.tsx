@@ -17,10 +17,13 @@ import {
   deriveTransactionType,
   deriveAccount,
   deriveBucketId,
+  TransactionType,
 } from '@/utils'
 import StepByStepTransactionForm from './StepByStepTransactionForm'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTransactionFormDomain } from '@/hooks'
+import { useAtomValue } from 'jotai'
+import { externalAccountIdsAtom } from '@/state'
 
 export default function TransactionFormContainer({
   LimitedAccountSelect,
@@ -34,7 +37,7 @@ export default function TransactionFormContainer({
   }>
   onApply: (t: TransactionDTO) => Promise<void>
 }) {
-  const [type, setType] = useState<'income' | 'expense' | 'transfer' | ''>('expense')
+  const [type, setType] = useState<TransactionType | ''>('expense')
   const [amount, setAmount] = useState('')
   const [currency, setCurrency] = useState('')
   const [category, setCategory] = useState('')
@@ -44,6 +47,12 @@ export default function TransactionFormContainer({
   const [comment, setComment] = useState('')
   const [bucketId, setBucketId] = useState('default')
   const [datetime, setDatetime] = useState(new Date().toISOString())
+  const [accountFrom, setAccountFrom] = useState('')
+  const [accountTo, setAccountTo] = useState('')
+  const [bucketFrom, setBucketFrom] = useState('default')
+  const [bucketTo, setBucketTo] = useState('default')
+
+  const externalAccountIds = useAtomValue(externalAccountIdsAtom)
 
   const {
     categoryOptions,
@@ -67,20 +76,38 @@ export default function TransactionFormContainer({
   const lastSerializedTransactionRef = useRef('')
 
   const initializeFormFromTransaction = (t: TransactionDTO) => {
-    const txType = deriveTransactionType(t)
+    const txType = deriveTransactionType(t, externalAccountIds)
     setType(txType)
     setAmount(`${parseFloat(t.amount)}`.replace(',', '.'))
-    setAccount(deriveAccount(t))
     setCurrency(t.currency)
     setCategory(t.category)
-    if (txType === 'transfer') {
-      setPayeeTransferAccount(t.account_to)
-    } else {
-      setPayee(t.counterparty)
-    }
     setComment(t.comment)
-    setBucketId(deriveBucketId(t))
     setDatetime(convertToLocaleTime(t.datetime))
+
+    if (txType === 'custom') {
+      setAccountFrom(t.account_from)
+      setAccountTo(t.account_to)
+      setBucketFrom(t.bucket_from)
+      setBucketTo(t.bucket_to)
+      setPayee(t.counterparty)
+      setAccount('')
+      setPayeeTransferAccount('')
+      setBucketId('default')
+    } else {
+      setAccount(deriveAccount(t, externalAccountIds))
+      setBucketId(deriveBucketId(t, externalAccountIds))
+      setAccountFrom('')
+      setAccountTo('')
+      setBucketFrom('default')
+      setBucketTo('default')
+      if (txType === 'transfer') {
+        setPayeeTransferAccount(t.account_to)
+        setPayee('')
+      } else {
+        setPayee(t.counterparty)
+        setPayeeTransferAccount('')
+      }
+    }
   }
 
   useEffect(() => {
@@ -112,6 +139,10 @@ export default function TransactionFormContainer({
     setComment('')
     setBucketId('default')
     setDatetime(new Date().toISOString())
+    setAccountFrom('')
+    setAccountTo('')
+    setBucketFrom('default')
+    setBucketTo('default')
   }
 
   useEffect(() => {
@@ -160,13 +191,13 @@ export default function TransactionFormContainer({
   )
 
   const payees = useMemo(
-    () => domain.getPayeesByCategory(category, transactions, allPayees),
-    [domain, category, transactions, allPayees],
+    () => domain.getPayeesByCategory(category, transactions, allPayees, externalAccountIds),
+    [domain, category, transactions, allPayees, externalAccountIds],
   )
 
   const comments = useMemo(
-    () => domain.getCommentsByCategory(category, transactions, allComments),
-    [domain, category, transactions, allComments],
+    () => domain.getCommentsByCategory(category, transactions, allComments, externalAccountIds),
+    [domain, category, transactions, allComments, externalAccountIds],
   )
 
   const handleDatetimeChange = (value: Date | null) => {
@@ -185,6 +216,8 @@ export default function TransactionFormContainer({
     type,
     currency,
     payeeTransferAccount,
+    accountFrom,
+    accountTo,
   })
 
   const handleSave = async () => {
@@ -206,6 +239,10 @@ export default function TransactionFormContainer({
       payeeTransferAccount,
       comment,
       bucket_id: bucketId,
+      accountFrom,
+      accountTo,
+      bucketFrom,
+      bucketTo,
     })
     await onApply(transaction)
   }
@@ -222,7 +259,7 @@ export default function TransactionFormContainer({
     }
   }
 
-  const handleTypeChange = (type: 'income' | 'expense' | 'transfer') => {
+  const handleTypeChange = (type: TransactionType) => {
     setType(type)
     adjustCurrencyAndAccounts(type, currency)
   }
@@ -291,6 +328,15 @@ export default function TransactionFormContainer({
     return [...matching, ...nonMatching, ...(defaultOption ? [defaultOption] : [])]
   }, [bucketOptions, matchingBucketIds])
 
+  const allAccountOptions = useMemo(() => coloredAccounts, [coloredAccounts])
+
+  const allBucketOptions = useMemo(() => bucketOptions, [bucketOptions])
+
+  const handleAccountFromChange = (value: string) => setAccountFrom(value)
+  const handleAccountToChange = (value: string) => setAccountTo(value)
+  const handleBucketFromChange = (value: string) => setBucketFrom(value)
+  const handleBucketToChange = (value: string) => setBucketTo(value)
+
   const viewDatetime = new Date(datetime)
 
   if (coloredAccounts.length === 0) {
@@ -312,6 +358,17 @@ export default function TransactionFormContainer({
       payeeTransferAccount={payeeTransferAccount}
       comment={comment}
       datetime={viewDatetime}
+      // Custom type fields
+      accountFrom={accountFrom}
+      accountTo={accountTo}
+      bucketFrom={bucketFrom}
+      bucketTo={bucketTo}
+      allAccounts={allAccountOptions}
+      allBucketOptions={allBucketOptions}
+      onAccountFromChange={handleAccountFromChange}
+      onAccountToChange={handleAccountToChange}
+      onBucketFromChange={handleBucketFromChange}
+      onBucketToChange={handleBucketToChange}
       // Event handlers for basic transaction details
       onTypeChange={handleTypeChange}
       onAmountChange={handleAmountChange}

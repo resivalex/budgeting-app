@@ -6,6 +6,8 @@ import ruLocale from 'dayjs/locale/ru'
 import { TransactionDTO } from '@/types'
 import TransactionContent from './TransactionContent'
 import { useAccountNameResolver, useBucketNameResolver } from '@/hooks'
+import { useAtomValue } from 'jotai'
+import { externalAccountIdsAtom } from '@/state'
 
 dayjs.locale(ruLocale)
 
@@ -24,6 +26,7 @@ export default function TransactionTile({
 }: Props) {
   const resolveAccountName = useAccountNameResolver()
   const resolveBucketName = useBucketNameResolver()
+  const externalAccountIds = useAtomValue(externalAccountIdsAtom)
   const longPressBind = useLongPress(onLongPress, {
     onFinish: onLongPress,
     threshold: 500,
@@ -58,21 +61,31 @@ export default function TransactionTile({
             <div {...longPressBind()} className="box m-0 is-flex">
               <TransactionContent
                 category={t.category}
-                account={resolveAccountName(deriveAccount(t))}
+                account={resolveAccountName(deriveAccount(t, externalAccountIds))}
                 payee={
-                  deriveTransactionType(t) === 'transfer'
+                  deriveTransactionType(t, externalAccountIds) === 'transfer'
                     ? resolveAccountName(t.account_to)
                     : t.counterparty
                 }
                 comment={t.comment}
-                type={deriveTransactionType(t)}
+                type={deriveTransactionType(t, externalAccountIds)}
                 amount={t.amount}
                 currency={t.currency}
                 localTime={datetimeString.split(' ')[1]}
                 budgetName={(() => {
-                  const bid = deriveBucketId(t)
+                  const bid = deriveBucketId(t, externalAccountIds)
                   return bid && bid !== 'default' ? resolveBucketName(bid) : ''
                 })()}
+                accountFrom={resolveAccountName(t.account_from)}
+                accountTo={resolveAccountName(t.account_to)}
+                bucketFrom={
+                  t.bucket_from && t.bucket_from !== 'default'
+                    ? resolveBucketName(t.bucket_from)
+                    : ''
+                }
+                bucketTo={
+                  t.bucket_to && t.bucket_to !== 'default' ? resolveBucketName(t.bucket_to) : ''
+                }
               />
             </div>
           </div>

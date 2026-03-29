@@ -37,3 +37,14 @@ export const accountIdToNameAtom = atom((get) => {
   }
   return map
 })
+
+export const externalAccountIdsAtom = atom((get) => {
+  const accountProperties = get(accountPropertiesAtom)
+  const set = new Set<string>()
+  if (accountProperties) {
+    accountProperties.accounts.forEach((a) => {
+      if (a.external) set.add(a.id)
+    })
+  }
+  return set
+})

@@ -12,6 +12,7 @@ class CsvExporting:
         db = _get_or_create_database(self.__server, "budgeting")
         account_id_to_name = _load_account_id_to_name_map(db)
         bucket_id_to_name = _load_bucket_id_to_name_map(db)
+        external_account_ids = _load_external_account_ids(db)
         records = db.all()
         records = [
             doc["doc"] for doc in records
@@ -20,50 +21,45 @@ class CsvExporting:
         for record in records:
             account_from = record.get("account_from", "")
             account_to = record.get("account_to", "")
-            tx_type = _derive_transaction_type(account_from, account_to)
+            bucket_from = record.get("bucket_from", "default")
+            bucket_to = record.get("bucket_to", "default")
+            tx_type = _derive_transaction_type(
+                account_from, account_to, bucket_from, bucket_to, external_account_ids
+            )
             record["type"] = tx_type
-
-            if tx_type == "income":
-                own_account = account_to
-                bucket_id = record.get("bucket_from", "default")
-            elif tx_type == "expense":
-                own_account = account_from
-                bucket_id = record.get("bucket_to", "default")
-            else:
-                own_account = account_from
-                bucket_id = "default"
-
-            record["account"] = account_id_to_name.get(own_account, own_account)
-            if tx_type == "transfer":
-                record["payee"] = account_id_to_name.get(account_to, account_to)
-            else:
-                record["payee"] = record.get("counterparty", "")
-            record["bucket"] = bucket_id_to_name.get(bucket_id, bucket_id)
+            record["account_from_name"] = account_id_to_name.get(account_from, account_from)
+            record["account_to_name"] = account_id_to_name.get(account_to, account_to)
+            record["bucket_from_name"] = bucket_id_to_name.get(bucket_from, bucket_from)
+            record["bucket_to_name"] = bucket_id_to_name.get(bucket_to, bucket_to)
+            record["payee"] = record.get("counterparty", "")
         columns = [
             "datetime",
-            "account",
+            "account_from_name",
+            "account_to_name",
             "category",
             "type",
             "amount",
             "currency",
             "payee",
             "comment",
-            "bucket",
+            "bucket_from_name",
+            "bucket_to_name",
         ]
         if len(records) == 0:
             df = pd.DataFrame(columns=columns)
         else:
             df = pd.DataFrame(records)
-            drop_cols = [
-                c for c in [
-                    "_id", "_rev", "kind",
-                    "account_from", "account_to", "counterparty",
-                    "bucket_from", "bucket_to",
-                ] if c in df.columns
-            ]
-            df = df.drop(columns=drop_cols)
+            keep_cols = [c for c in columns if c in df.columns]
+            df = df[keep_cols]
             df = df.sort_values(by=["datetime"], ascending=False)
             df = df[columns]
+        column_renames = {
+            "account_from_name": "account_from",
+            "account_to_name": "account_to",
+            "bucket_from_name": "bucket_from",
+            "bucket_to_name": "bucket_to",
+        }
+        df = df.rename(columns=column_renames)
 
         stream = io.StringIO()
         df.to_csv(stream, index=False)
@@ -71,12 +67,22 @@ class CsvExporting:
         return stream.getvalue()
 
 
-def _derive_transaction_type(account_from, account_to):
-    if account_from.startswith("external_"):
+def _derive_transaction_type(account_from, account_to, bucket_from, bucket_to, external_account_ids):
+    from_external = account_from in external_account_ids
+    to_external = account_to in external_account_ids
+
+    if from_external and not to_external and bucket_to == "default":
         return "income"
-    if account_to.startswith("external_"):
+    if not from_external and to_external and bucket_from == "default":
         return "expense"
-    return "transfer"
+    if (
+        not from_external
+        and not to_external
+        and bucket_from == "default"
+        and bucket_to == "default"
+    ):
+        return "transfer"
+    return "custom"
 
 
 def _load_account_id_to_name_map(db):
@@ -86,6 +92,15 @@ def _load_account_id_to_name_map(db):
         return {}
     accounts = doc.get("value", {}).get("accounts", [])
     return {a["id"]: a["name"] for a in accounts if "id" in a and "name" in a}
+
+
+def _load_external_account_ids(db):
+    try:
+        doc = db.get("cfg:account_properties")
+    except pycouchdb.exceptions.NotFound:
+        return set()
+    accounts = doc.get("value", {}).get("accounts", [])
+    return {a["id"] for a in accounts if a.get("external", False)}
 
 
 def _load_bucket_id_to_name_map(db):

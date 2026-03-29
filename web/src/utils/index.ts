@@ -14,6 +14,7 @@ import {
   derivePayee,
   deriveBucketId,
 } from './transaction-utils'
+export type { TransactionType } from './transaction-utils'
 
 export {
   convertToLocaleTime,

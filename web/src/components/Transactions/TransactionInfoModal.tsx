@@ -11,6 +11,8 @@ import { TransactionDTO } from '@/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useAccountNameResolver, useBucketNameResolver } from '@/hooks'
+import { useAtomValue } from 'jotai'
+import { externalAccountIdsAtom } from '@/state'
 
 interface Props {
   transaction: TransactionDTO
@@ -23,12 +25,13 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
   const [isRemoveActive, setIsRemoveActive] = useState(false)
   const resolveAccountName = useAccountNameResolver()
   const resolveBucketName = useBucketNameResolver()
+  const externalAccountIds = useAtomValue(externalAccountIdsAtom)
   if (!transaction) return null
 
   const { datetime, category, amount, currency, comment } = transaction
-  const type = deriveTransactionType(transaction)
-  const accountId = deriveAccount(transaction)
-  const bucketId = deriveBucketId(transaction)
+  const type = deriveTransactionType(transaction, externalAccountIds)
+  const accountId = deriveAccount(transaction, externalAccountIds)
+  const bucketId = deriveBucketId(transaction, externalAccountIds)
 
   const datetimeString = convertToLocaleTime(datetime)
   const accountName = resolveAccountName(accountId)
@@ -47,6 +50,7 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
     if (type === 'expense') return 'Расход'
     if (type === 'income') return 'Доход'
     if (type === 'transfer') return 'Перевод'
+    if (type === 'custom') return 'Кастомный'
     return type
   }
 
@@ -62,17 +66,40 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
           <p>
             <strong>Дата и время:</strong> {datetimeString}
           </p>
-          <p>
-            <strong>Счёт:</strong> {accountName}
-          </p>
+          {type === 'custom' ? (
+            <>
+              <p>
+                <strong>Счёт откуда:</strong> {resolveAccountName(transaction.account_from)}
+              </p>
+              <p>
+                <strong>Счёт куда:</strong> {resolveAccountName(transaction.account_to)}
+              </p>
+              {transaction.bucket_from && transaction.bucket_from !== 'default' && (
+                <p>
+                  <strong>Бюджет откуда:</strong> {resolveBucketName(transaction.bucket_from)}
+                </p>
+              )}
+              {transaction.bucket_to && transaction.bucket_to !== 'default' && (
+                <p>
+                  <strong>Бюджет куда:</strong> {resolveBucketName(transaction.bucket_to)}
+                </p>
+              )}
+            </>
+          ) : (
+            <>
+              <p>
+                <strong>Счёт:</strong> {accountName}
+              </p>
+              {bucketId && bucketId !== 'default' && (
+                <p>
+                  <strong>Бюджет:</strong> {resolveBucketName(bucketId)}
+                </p>
+              )}
+            </>
+          )}
           <p>
             <strong>Категория:</strong> {category}
           </p>
-          {bucketId && bucketId !== 'default' && (
-            <p>
-              <strong>Бюджет:</strong> {resolveBucketName(bucketId)}
-            </p>
-          )}
           <p>
             <strong>Тип:</strong> {translateType(type)}
           </p>

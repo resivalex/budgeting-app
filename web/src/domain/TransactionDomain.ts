@@ -10,11 +10,14 @@ const emptyAggregations: TransactionsAggregations = {
 }
 
 class TransactionDomain {
-  static getAggregations(transactions: TransactionDTO[]): TransactionsAggregations {
+  static getAggregations(
+    transactions: TransactionDTO[],
+    externalAccountIds: Set<string>,
+  ): TransactionsAggregations {
     if (transactions.length === 0) {
       return emptyAggregations
     }
-    const aggregator = new TransactionAggregator(transactions)
+    const aggregator = new TransactionAggregator(transactions, externalAccountIds)
     return {
       accountDetails: aggregator.getAccountDetails(),
       categories: aggregator.getSortedCategories(),

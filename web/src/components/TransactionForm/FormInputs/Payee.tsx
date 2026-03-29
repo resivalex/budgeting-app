@@ -13,7 +13,7 @@ interface Props {
   onComplete: () => void
   onCollapse: () => void
   payees: string[]
-  type: 'expense' | 'income' | 'transfer' | ''
+  type: 'expense' | 'income' | 'transfer' | 'custom' | ''
 }
 
 const PayeeLabel = styled.div<{ $isExpanded: boolean }>`

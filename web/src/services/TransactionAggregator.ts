@@ -1,12 +1,14 @@
 import _ from 'lodash'
 import { TransactionDTO, AccountDetailsDTO } from '@/types'
-import { isExternalAccount, deriveTransactionType } from '@/utils'
+import { isExternalAccount } from '@/utils'
 
 export default class TransactionAggregator {
   transactions: TransactionDTO[]
+  externalAccountIds: Set<string>
 
-  constructor(transactions: any[]) {
+  constructor(transactions: any[], externalAccountIds: Set<string>) {
     this.transactions = transactions
+    this.externalAccountIds = externalAccountIds
   }
 
   getAccountDetails(): AccountDetailsDTO[] {
@@ -28,7 +30,7 @@ export default class TransactionAggregator {
     })
 
     const accountDetails = Object.keys(accountsStat)
-      .filter((account) => !isExternalAccount(account))
+      .filter((account) => !isExternalAccount(account, this.externalAccountIds))
       .map((account) => ({
         account,
         currency: accountsStat[account].currency,

@@ -83,6 +83,7 @@ class BudgetsDomain {
     currencyConfigs: CurrencyConfigsDTO,
     buckets: BucketsDTO,
     monthDate: string,
+    externalAccountIds: Set<string>,
   ): BudgetResult[] {
     const monthCurrencyConfig = currencyConfigs.monthCurrencyConfigs.find(
       (c) => c.date === monthDate,
@@ -96,7 +97,12 @@ class BudgetsDomain {
     buckets.buckets.forEach((b) => bucketMap.set(b.id, b))
 
     const conversionMap = this.buildConversionMap(currencyConfig)
-    const monthTransactions = this.filterMonthTransactions(transactions, monthDate, conversionMap)
+    const monthTransactions = this.filterMonthTransactions(
+      transactions,
+      monthDate,
+      conversionMap,
+      externalAccountIds,
+    )
     const monthSpendingLimits = this.extractMonthSpendingLimits(
       spendingLimits,
       bucketMap,
@@ -111,7 +117,12 @@ class BudgetsDomain {
     const restLimit = this.buildRestLimit(currencyConfig.mainCurrency)
 
     const realBudgets = monthSpendingLimits.map((spendingLimit) =>
-      this.calculateSingleBudget(monthTransactions, spendingLimit, conversionMap),
+      this.calculateSingleBudget(
+        monthTransactions,
+        spendingLimit,
+        conversionMap,
+        externalAccountIds,
+      ),
     )
 
     const assignedTransactionIds = new Set(
@@ -120,7 +131,12 @@ class BudgetsDomain {
     const unassignedTransactions = monthTransactions.filter(
       (t) => !assignedTransactionIds.has(t._id),
     )
-    const restBudget = this.calculateRestBudget(unassignedTransactions, restLimit, conversionMap)
+    const restBudget = this.calculateRestBudget(
+      unassignedTransactions,
+      restLimit,
+      conversionMap,
+      externalAccountIds,
+    )
 
     const totalBudget: BudgetResult = {
       bucketId: '',
@@ -206,10 +222,11 @@ class BudgetsDomain {
     transactions: TransactionDTO[],
     monthDate: string,
     conversionMap: ConversionMapType,
+    externalAccountIds: Set<string>,
   ): TransactionDTO[] {
     const monthDateObject = new Date(monthDate)
     return transactions.filter((transaction) => {
-      if (deriveTransactionType(transaction) === 'transfer') {
+      if (deriveTransactionType(transaction, externalAccountIds) === 'transfer') {
         return false
       }
       if (!conversionMap[transaction.currency]) {
@@ -294,6 +311,7 @@ class BudgetsDomain {
     transactions: TransactionDTO[],
     spendingLimit: MonthSpendingLimit,
     conversionMap: ConversionMapType,
+    externalAccountIds: Set<string>,
   ): BudgetResult {
     const budget: BudgetResult = {
       bucketId: spendingLimit.bucketId,
@@ -308,9 +326,9 @@ class BudgetsDomain {
     }
 
     transactions.forEach((transaction) => {
-      if (deriveBucketId(transaction) === spendingLimit.bucketId) {
+      if (deriveBucketId(transaction, externalAccountIds) === spendingLimit.bucketId) {
         budget.transactions.push(transaction)
-        const sign = deriveTransactionType(transaction) === 'expense' ? 1 : -1
+        const sign = deriveTransactionType(transaction, externalAccountIds) === 'expense' ? 1 : -1
         budget.spentAmount +=
           sign *
           parseFloat(transaction.amount) *
@@ -325,6 +343,7 @@ class BudgetsDomain {
     unassignedTransactions: TransactionDTO[],
     restLimit: MonthSpendingLimit,
     conversionMap: ConversionMapType,
+    externalAccountIds: Set<string>,
   ): BudgetResult {
     const budget: BudgetResult = {
       bucketId: '',
@@ -340,7 +359,7 @@ class BudgetsDomain {
 
     unassignedTransactions.forEach((transaction) => {
       budget.transactions.push(transaction)
-      const sign = deriveTransactionType(transaction) === 'expense' ? 1 : -1
+      const sign = deriveTransactionType(transaction, externalAccountIds) === 'expense' ? 1 : -1
       budget.spentAmount +=
         sign * parseFloat(transaction.amount) * conversionMap[transaction.currency][budget.currency]
     })

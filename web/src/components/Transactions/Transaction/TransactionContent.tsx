@@ -18,6 +18,10 @@ interface Props {
   currency: string
   localTime: string
   budgetName: string
+  accountFrom?: string
+  accountTo?: string
+  bucketFrom?: string
+  bucketTo?: string
 }
 
 export default function TransactionContent({
@@ -30,6 +34,10 @@ export default function TransactionContent({
   currency,
   localTime,
   budgetName,
+  accountFrom,
+  accountTo,
+  bucketFrom,
+  bucketTo,
 }: Props) {
   const [showTime, setShowTime] = useState(false)
 
@@ -42,7 +50,21 @@ export default function TransactionContent({
       <div>
         <div className="has-text-weight-semibold">{category}</div>
         {budgetName && <span className="tag is-small is-light">{budgetName}</span>}
-        {type === 'transfer' ? (
+        {type === 'custom' ? (
+          <>
+            <div className="has-text-weight-semibold">
+              {/* @ts-ignore */}
+              {accountFrom} <FontAwesomeIcon icon={faArrowRightLong} /> {accountTo}
+            </div>
+            {(bucketFrom || bucketTo) && (
+              <div className="is-size-7">
+                {bucketFrom && <span className="tag is-small is-light mr-1">{bucketFrom}</span>}
+                {bucketTo && <span className="tag is-small is-light">{bucketTo}</span>}
+              </div>
+            )}
+            {payee && <div className="is-size-7 has-text-weight-semibold">{payee}</div>}
+          </>
+        ) : type === 'transfer' ? (
           <div className="has-text-weight-semibold">
             {/* @ts-ignore */}
             {account} <FontAwesomeIcon icon={faArrowRightLong} /> {payee}

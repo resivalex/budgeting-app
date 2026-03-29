@@ -12,6 +12,7 @@ export {
   categoryExpansionsAtom,
   accountPropertiesAtom,
   accountIdToNameAtom,
+  externalAccountIdsAtom,
 } from './configAtom'
 export type { ConfigState } from './configAtom'
 

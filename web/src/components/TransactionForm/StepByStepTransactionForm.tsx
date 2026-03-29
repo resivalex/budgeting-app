@@ -1,5 +1,5 @@
 import { FC, useState, Ref, useCallback, useEffect } from 'react'
-import { convertCurrencyCodeToSymbol, formatFinancialAmount } from '@/utils'
+import { convertCurrencyCodeToSymbol, formatFinancialAmount, TransactionType } from '@/utils'
 import { ColoredAccountDetailsDTO } from '@/types'
 import {
   Type,
@@ -23,12 +23,15 @@ import FormLayout, {
   BudgetNameStepProps,
   PayeeStepProps,
   PayeeTransferAccountStepProps,
+  AccountFromStepProps,
+  AccountToStepProps,
+  BucketFromStepProps,
+  BucketToStepProps,
   CommentStepProps,
   DatetimeStepProps,
 } from './StepByStepTransactionForm/FormLayout'
 
 // Types
-type TransactionType = 'income' | 'expense' | 'transfer'
 
 interface SelectOption {
   value: string
@@ -65,6 +68,16 @@ function StepByStepTransactionForm({
   isValid,
   payees,
   comments,
+  accountFrom,
+  accountTo,
+  bucketFrom,
+  bucketTo,
+  onAccountFromChange,
+  onAccountToChange,
+  onBucketFromChange,
+  onBucketToChange,
+  allAccounts,
+  allBucketOptions,
 }: {
   // Functional components
   AccountSelect: FC<{
@@ -72,7 +85,6 @@ function StepByStepTransactionForm({
     onChange: (value: string) => void
     ref?: Ref<{ focus: () => void }>
   }>
-  // Basic transaction details
   type: TransactionType | ''
   currency: string
   amount: string
@@ -83,16 +95,20 @@ function StepByStepTransactionForm({
   payeeTransferAccount: string
   comment: string
   datetime: Date
+  accountFrom: string
+  accountTo: string
+  bucketFrom: string
+  bucketTo: string
 
-  // Options for dropdown/select inputs
   accounts: ColoredAccountDetailsDTO[]
   categoryOptions: SelectOption[]
   budgetNameOptions: SelectOption[]
   currencies: string[]
   payees: string[]
   comments: string[]
+  allAccounts: ColoredAccountDetailsDTO[]
+  allBucketOptions: SelectOption[]
 
-  // Event handlers
   onTypeChange: (type: TransactionType) => void
   onCurrencyChange: (currency: string) => void
   onAmountChange: (amount: string) => void
@@ -103,6 +119,10 @@ function StepByStepTransactionForm({
   onPayeeTransferAccountChange: (payeeTransferAccount: string) => void
   onCommentChange: (comment: string) => void
   onDatetimeChange: (datetime: Date | null) => void
+  onAccountFromChange: (accountFrom: string) => void
+  onAccountToChange: (accountTo: string) => void
+  onBucketFromChange: (bucketFrom: string) => void
+  onBucketToChange: (bucketTo: string) => void
 
   // Save event
   isValid: boolean
@@ -243,6 +263,74 @@ function StepByStepTransactionForm({
     )
   }
 
+  const allAccountOptions = allAccounts.map((a) => ({
+    value: a.account,
+    label: `${formatFinancialAmount(a.balance)} ${convertCurrencyCodeToSymbol(a.currency)} | ${a.name}`,
+    color: a.color,
+  }))
+
+  function AccountFromStep({ isExpanded, onExpand, onComplete, onCollapse }: AccountFromStepProps) {
+    return (
+      <Account
+        AccountSelect={AccountSelect}
+        account={accountFrom}
+        accountOptions={allAccountOptions}
+        onAccountChange={onAccountFromChange}
+        isExpanded={isExpanded}
+        onExpand={onExpand}
+        onComplete={onComplete}
+        onCollapse={onCollapse}
+        label="Со счёта"
+      />
+    )
+  }
+
+  function AccountToStep({ isExpanded, onExpand, onComplete, onCollapse }: AccountToStepProps) {
+    return (
+      <Account
+        AccountSelect={AccountSelect}
+        account={accountTo}
+        accountOptions={allAccountOptions}
+        onAccountChange={onAccountToChange}
+        isExpanded={isExpanded}
+        onExpand={onExpand}
+        onComplete={onComplete}
+        onCollapse={onCollapse}
+        label="На счёт"
+      />
+    )
+  }
+
+  function BucketFromStep({ isExpanded, onExpand, onComplete, onCollapse }: BucketFromStepProps) {
+    return (
+      <BudgetName
+        budgetName={bucketFrom}
+        budgetNameOptions={allBucketOptions}
+        onBudgetNameChange={onBucketFromChange}
+        isExpanded={isExpanded}
+        onExpand={onExpand}
+        onComplete={onComplete}
+        onCollapse={onCollapse}
+        label="Из назначения"
+      />
+    )
+  }
+
+  function BucketToStep({ isExpanded, onExpand, onComplete, onCollapse }: BucketToStepProps) {
+    return (
+      <BudgetName
+        budgetName={bucketTo}
+        budgetNameOptions={allBucketOptions}
+        onBudgetNameChange={onBucketToChange}
+        isExpanded={isExpanded}
+        onExpand={onExpand}
+        onComplete={onComplete}
+        onCollapse={onCollapse}
+        label="В назначение"
+      />
+    )
+  }
+
   function CommentStep({ isExpanded, onExpand, onComplete, onCollapse }: CommentStepProps) {
     return (
       <Comment
@@ -289,6 +377,10 @@ function StepByStepTransactionForm({
       BudgetNameStep={BudgetNameStep}
       PayeeStep={PayeeStep}
       PayeeTransferAccountStep={PayeeTransferAccountStep}
+      AccountFromStep={AccountFromStep}
+      AccountToStep={AccountToStep}
+      BucketFromStep={BucketFromStep}
+      BucketToStep={BucketToStep}
       CommentStep={CommentStep}
       DatetimeStep={DatetimeStep}
       SaveButton={SaveButtonWrapper}

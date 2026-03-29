@@ -27,6 +27,7 @@ export default function Account({
   onComplete,
   onCollapse,
   accountOptions,
+  label = 'Счёт',
 }: {
   AccountSelect: FC<{
     value: string
@@ -40,6 +41,7 @@ export default function Account({
   onExpand: () => void
   onCollapse: () => void
   accountOptions: { value: string; label: string; color: string }[]
+  label?: string
 }) {
   const accountSelectRef = useRef<{ focus: () => void }>(null)
   const isMobile = useIsMobile()
@@ -62,7 +64,7 @@ export default function Account({
       <div className="field" onClick={onExpand}>
         {!selectedOption && (
           <AccountLabel className="is-size-7" $isExpanded={isExpanded}>
-            Счёт
+            {label}
           </AccountLabel>
         )}
         <SelectedOption color={selectedOption?.color}>
@@ -74,7 +76,7 @@ export default function Account({
 
   if (isMobile) {
     return (
-      <FullscreenOverlay title="Счёт" onClose={onCollapse}>
+      <FullscreenOverlay title={label} onClose={onCollapse}>
         {accountOptions.map((option) => (
           <OverlayOption
             key={option.value}
@@ -92,7 +94,7 @@ export default function Account({
   return (
     <div className="field">
       <AccountLabel className="is-size-7" $isExpanded={isExpanded}>
-        Счёт
+        {label}
       </AccountLabel>
       <SelectContainer className="control" $isExpanded={isExpanded}>
         <AccountSelect value={account} onChange={handleAccountChange} ref={accountSelectRef} />

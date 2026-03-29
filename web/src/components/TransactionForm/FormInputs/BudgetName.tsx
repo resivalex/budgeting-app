@@ -13,6 +13,7 @@ interface Props {
   onComplete: () => void
   onCollapse: () => void
   budgetNameOptions: { value: string; label: string }[]
+  label?: string
 }
 
 const BudgetNameLabel = styled.div<{ $isExpanded: boolean }>`
@@ -32,6 +33,7 @@ export default function BudgetName({
   onComplete,
   onCollapse,
   budgetNameOptions,
+  label = 'Бюджет',
 }: Props) {
   const [menuIsOpen, setMenuOpen] = useState(false)
   const selectRef = useRef<any>(null)
@@ -64,7 +66,7 @@ export default function BudgetName({
     return (
       <div className="field" onClick={onExpand}>
         <BudgetNameLabel className="is-size-7" $isExpanded={isExpanded}>
-          Бюджет
+          {label}
         </BudgetNameLabel>
         <SelectedBudgetName>{selectedOption?.label || budgetName}</SelectedBudgetName>
       </div>
@@ -78,7 +80,7 @@ export default function BudgetName({
 
     return (
       <OverlayWithSearch
-        title="Бюджет"
+        title={label}
         onClose={onCollapse}
         searchRef={searchInputRef}
         searchValue={search}
@@ -101,7 +103,7 @@ export default function BudgetName({
   return (
     <div className="field">
       <BudgetNameLabel className="is-size-7" $isExpanded={isExpanded}>
-        Бюджет
+        {label}
       </BudgetNameLabel>
       <div className="control">
         {/* @ts-ignore */}{' '}

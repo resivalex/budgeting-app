@@ -2,6 +2,7 @@ import { atom } from 'jotai'
 import { TransactionDTO, TransactionsAggregations } from '@/types'
 import { TransactionDomain } from '@/domain'
 import _ from 'lodash'
+import { externalAccountIdsAtom } from './configAtom'
 
 export const rawTransactionsAtom = atom<TransactionDTO[]>([])
 
@@ -18,5 +19,6 @@ export const transactionsAtom = atom(
 
 export const transactionsAggregationsAtom = atom<TransactionsAggregations>((get) => {
   const transactions = get(rawTransactionsAtom)
-  return TransactionDomain.getAggregations(transactions)
+  const externalAccountIds = get(externalAccountIdsAtom)
+  return TransactionDomain.getAggregations(transactions, externalAccountIds)
 })

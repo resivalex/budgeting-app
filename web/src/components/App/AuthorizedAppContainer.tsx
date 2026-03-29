@@ -8,6 +8,8 @@ import { useTransactionsDomain, useSyncDomain, useSettingsDomain } from '@/hooks
 import { ExportDomain, AuthDomain } from '@/domain'
 import { deriveAccount } from '@/utils'
 import { v4 as uuidv4 } from 'uuid'
+import { useAtomValue } from 'jotai'
+import { externalAccountIdsAtom } from '@/state'
 
 const instanceId = uuidv4()
 
@@ -58,6 +60,7 @@ function AppWithTransactions({
   onDismissNotification: () => void
 } & SyncProps) {
   const navigate = useNavigate()
+  const externalAccountIds = useAtomValue(externalAccountIdsAtom)
 
   const {
     transactions,
@@ -71,7 +74,7 @@ function AppWithTransactions({
     await addDbTransaction(t)
     await addLocalTransaction(t)
     onNotify('Запись добавлена')
-    onFilterAccountNameChange(deriveAccount(t))
+    onFilterAccountNameChange(deriveAccount(t, externalAccountIds))
     navigate('/transactions', { replace: true })
   }
 

@@ -1,11 +1,12 @@
 import { useEffect, useRef, ReactNode } from 'react'
 import styled from 'styled-components'
+import { TransactionType } from '@/utils'
 
 interface Props {
   value: string
   isExpanded: boolean
   alwaysShowOptionsIfEmpty: boolean
-  onChange: (type: 'income' | 'expense' | 'transfer') => void
+  onChange: (type: TransactionType) => void
   onExpand: () => void
   onComplete: () => void
 }
@@ -88,6 +89,13 @@ export default function Type({
             Перевод
           </>
         )
+      case 'custom':
+        return (
+          <>
+            <TypeDot $dotColor="purple" />
+            Кастомный
+          </>
+        )
       default:
         return 'Тип?'
     }
@@ -99,7 +107,7 @@ export default function Type({
     }
   }, [isExpanded])
 
-  const handleOptionClick = (type: 'income' | 'expense' | 'transfer') => {
+  const handleOptionClick = (type: TransactionType) => {
     if (!isExpanded) {
       onExpand()
       // to prevent calling onComplete before onExpand
@@ -126,6 +134,10 @@ export default function Type({
       <Option $isActive={value === 'transfer'} onClick={() => handleOptionClick('transfer')}>
         <TypeDot $dotColor="orange" />
         Перевод
+      </Option>
+      <Option $isActive={value === 'custom'} onClick={() => handleOptionClick('custom')}>
+        <TypeDot $dotColor="purple" />
+        Кастомный
       </Option>
     </>
   )

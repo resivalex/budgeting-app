@@ -14,6 +14,7 @@ class TransactionFilterDomain {
   filterTransactions(
     transactions: TransactionDTO[],
     filters: TransactionFilters,
+    externalAccountIds: Set<string>,
   ): TransactionDTO[] {
     const { accountName, payee, comment, category, bucketId } = filters
 
@@ -34,7 +35,7 @@ class TransactionFilterDomain {
         return false
       }
 
-      if (!this.matchesBucketIdFilter(transaction, bucketId)) {
+      if (!this.matchesBucketIdFilter(transaction, bucketId, externalAccountIds)) {
         return false
       }
 
@@ -72,12 +73,16 @@ class TransactionFilterDomain {
     return transaction.category === filterCategory
   }
 
-  private matchesBucketIdFilter(transaction: TransactionDTO, filterBucketId: string): boolean {
+  private matchesBucketIdFilter(
+    transaction: TransactionDTO,
+    filterBucketId: string,
+    externalAccountIds: Set<string>,
+  ): boolean {
     if (!filterBucketId) {
       return true
     }
 
-    return deriveBucketId(transaction) === filterBucketId
+    return deriveBucketId(transaction, externalAccountIds) === filterBucketId
   }
 
   private matchesCommentFilter(transaction: TransactionDTO, filterComment: string): boolean {

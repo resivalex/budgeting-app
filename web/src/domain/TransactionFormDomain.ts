@@ -47,10 +47,10 @@ class TransactionFormDomain {
     allCurrencies: string[],
     coloredAccounts: ColoredAccountDetailsDTO[],
   ): AvailableCurrenciesAndAccounts {
-    const availableCurrencies =
-      type === 'transfer'
-        ? allCurrencies.filter((c) => coloredAccounts.filter((a) => a.currency === c).length > 1)
-        : allCurrencies
+    const needsMultipleAccounts = type === 'transfer' || type === 'custom'
+    const availableCurrencies = needsMultipleAccounts
+      ? allCurrencies.filter((c) => coloredAccounts.filter((a) => a.currency === c).length > 1)
+      : allCurrencies
 
     const availableColoredAccounts = coloredAccounts.filter((a) => a.currency === currency)
 
@@ -64,11 +64,12 @@ class TransactionFormDomain {
     category: string,
     transactions: TransactionDTO[],
     defaultPayees: string[],
+    externalAccountIds: Set<string>,
   ): string[] {
     if (!category) {
       return defaultPayees
     }
-    const aggregator = new TransactionAggregator(transactions)
+    const aggregator = new TransactionAggregator(transactions, externalAccountIds)
     return aggregator.getRecentPayeesByCategory(category)
   }
 
@@ -76,11 +77,12 @@ class TransactionFormDomain {
     category: string,
     transactions: TransactionDTO[],
     defaultComments: string[],
+    externalAccountIds: Set<string>,
   ): string[] {
     if (!category) {
       return defaultComments
     }
-    const aggregator = new TransactionAggregator(transactions)
+    const aggregator = new TransactionAggregator(transactions, externalAccountIds)
     return aggregator.getRecentCommentsByCategory(category)
   }
 
@@ -92,16 +94,30 @@ class TransactionFormDomain {
     type: string
     currency: string
     payeeTransferAccount: string
+    accountFrom: string
+    accountTo: string
   }): boolean {
-    const { datetime, amount, account, category, type, currency, payeeTransferAccount } = params
+    const {
+      datetime,
+      amount,
+      account,
+      category,
+      type,
+      currency,
+      payeeTransferAccount,
+      accountFrom,
+      accountTo,
+    } = params
+
+    if (!datetime || !amount || !type || !currency) return false
+
+    if (type === 'custom') {
+      return !!(accountFrom && accountTo)
+    }
 
     return !!(
-      datetime &&
-      amount &&
       account &&
       (type === 'transfer' || category) &&
-      type &&
-      currency &&
       (type !== 'transfer' || payeeTransferAccount)
     )
   }
@@ -117,17 +133,38 @@ class TransactionFormDomain {
     datetime: string
     account: string
     category: string
-    type: 'income' | 'expense' | 'transfer'
+    type: 'income' | 'expense' | 'transfer' | 'custom'
     amount: string
     currency: string
     payee: string
     payeeTransferAccount: string
     comment: string
     bucket_id: string
+    accountFrom: string
+    accountTo: string
+    bucketFrom: string
+    bucketTo: string
   }): TransactionDTO {
     const { type } = params
     const externalAccount = `external_${params.currency.toLowerCase()}`
     const bucketId = params.bucket_id || 'default'
+
+    if (type === 'custom') {
+      return {
+        _id: params.id,
+        datetime: params.datetime,
+        account_from: params.accountFrom,
+        account_to: params.accountTo,
+        category: params.category,
+        amount: (parseFloat(params.amount) || 0).toFixed(2),
+        currency: params.currency,
+        counterparty: params.payee,
+        comment: params.comment,
+        bucket_from: params.bucketFrom || 'default',
+        bucket_to: params.bucketTo || 'default',
+        kind: 'transaction',
+      }
+    }
 
     return {
       _id: params.id,

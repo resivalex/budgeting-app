@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { TransactionType } from '@/utils'
 
 export interface AmountStepProps {
   isExpanded: boolean
@@ -55,6 +56,34 @@ export interface PayeeTransferAccountStepProps {
   onCollapse: () => void
 }
 
+export interface AccountFromStepProps {
+  isExpanded: boolean
+  onExpand: () => void
+  onComplete: () => void
+  onCollapse: () => void
+}
+
+export interface AccountToStepProps {
+  isExpanded: boolean
+  onExpand: () => void
+  onComplete: () => void
+  onCollapse: () => void
+}
+
+export interface BucketFromStepProps {
+  isExpanded: boolean
+  onExpand: () => void
+  onComplete: () => void
+  onCollapse: () => void
+}
+
+export interface BucketToStepProps {
+  isExpanded: boolean
+  onExpand: () => void
+  onComplete: () => void
+  onCollapse: () => void
+}
+
 export interface CommentStepProps {
   isExpanded: boolean
   onExpand: () => void
@@ -77,6 +106,10 @@ const categoryStep = 'category'
 const budgetNameStep = 'budgetName'
 const payeeStep = 'payee'
 const payeeTransferAccountStep = 'payeeTransferAccount'
+const accountFromStep = 'accountFrom'
+const accountToStep = 'accountTo'
+const bucketFromStep = 'bucketFrom'
+const bucketToStep = 'bucketTo'
 const commentStep = 'comment'
 const datetimeStep = 'datetime'
 
@@ -90,11 +123,15 @@ function FormLayout({
   BudgetNameStep,
   PayeeStep,
   PayeeTransferAccountStep,
+  AccountFromStep,
+  AccountToStep,
+  BucketFromStep,
+  BucketToStep,
   CommentStep,
   DatetimeStep,
   SaveButton,
 }: {
-  type: 'expense' | 'income' | 'transfer' | ''
+  type: TransactionType | ''
   AmountStep: (props: AmountStepProps) => React.ReactNode
   CurrencyStep: (props: CurrencyStepProps) => React.ReactNode
   TypeStep: (props: TypeStepProps) => React.ReactNode
@@ -103,6 +140,10 @@ function FormLayout({
   BudgetNameStep: (props: BudgetNameStepProps) => React.ReactNode
   PayeeStep: (props: PayeeStepProps) => React.ReactNode
   PayeeTransferAccountStep: (props: PayeeTransferAccountStepProps) => React.ReactNode
+  AccountFromStep: (props: AccountFromStepProps) => React.ReactNode
+  AccountToStep: (props: AccountToStepProps) => React.ReactNode
+  BucketFromStep: (props: BucketFromStepProps) => React.ReactNode
+  BucketToStep: (props: BucketToStepProps) => React.ReactNode
   CommentStep: (props: CommentStepProps) => React.ReactNode
   DatetimeStep: (props: DatetimeStepProps) => React.ReactNode
   SaveButton: (props: SaveButtonProps) => React.ReactNode
@@ -150,30 +191,31 @@ function FormLayout({
         alwaysShowOptionsIfEmpty: true,
         isExpanded: currentStep === typeStep,
         onExpand: () => setCurrentStep(typeStep),
-        onComplete: () => setCurrentStep(accountStep),
+        onComplete: () => setCurrentStep(type === 'custom' ? accountFromStep : accountStep),
       })}
-      {AccountStep({
-        isExpanded: currentStep === accountStep,
-        onExpand: () => setCurrentStep(accountStep),
-        onComplete: () =>
-          setCurrentStep(type === 'transfer' ? payeeTransferAccountStep : budgetNameStep),
-        onCollapse: collapseStep,
-      })}
-      {type === 'transfer' ? (
-        PayeeTransferAccountStep({
-          isExpanded: currentStep === payeeTransferAccountStep,
-          onExpand: () => setCurrentStep(payeeTransferAccountStep),
-          onComplete: () => {
-            const nextStep = type === 'transfer' ? '' : commentStep
-            setCurrentStep(nextStep)
-          },
-          onCollapse: collapseStep,
-        })
-      ) : (
+      {type === 'custom' ? (
         <>
-          {BudgetNameStep({
-            isExpanded: currentStep === budgetNameStep,
-            onExpand: () => setCurrentStep(budgetNameStep),
+          {AccountFromStep({
+            isExpanded: currentStep === accountFromStep,
+            onExpand: () => setCurrentStep(accountFromStep),
+            onComplete: () => setCurrentStep(accountToStep),
+            onCollapse: collapseStep,
+          })}
+          {AccountToStep({
+            isExpanded: currentStep === accountToStep,
+            onExpand: () => setCurrentStep(accountToStep),
+            onComplete: () => setCurrentStep(bucketFromStep),
+            onCollapse: collapseStep,
+          })}
+          {BucketFromStep({
+            isExpanded: currentStep === bucketFromStep,
+            onExpand: () => setCurrentStep(bucketFromStep),
+            onComplete: () => setCurrentStep(bucketToStep),
+            onCollapse: collapseStep,
+          })}
+          {BucketToStep({
+            isExpanded: currentStep === bucketToStep,
+            onExpand: () => setCurrentStep(bucketToStep),
             onComplete: () => setCurrentStep(categoryStep),
             onCollapse: collapseStep,
           })}
@@ -189,6 +231,45 @@ function FormLayout({
             onComplete: () => setCurrentStep(commentStep),
             onCollapse: collapseStep,
           })}
+        </>
+      ) : (
+        <>
+          {AccountStep({
+            isExpanded: currentStep === accountStep,
+            onExpand: () => setCurrentStep(accountStep),
+            onComplete: () =>
+              setCurrentStep(type === 'transfer' ? payeeTransferAccountStep : budgetNameStep),
+            onCollapse: collapseStep,
+          })}
+          {type === 'transfer' ? (
+            PayeeTransferAccountStep({
+              isExpanded: currentStep === payeeTransferAccountStep,
+              onExpand: () => setCurrentStep(payeeTransferAccountStep),
+              onComplete: () => setCurrentStep(commentStep),
+              onCollapse: collapseStep,
+            })
+          ) : (
+            <>
+              {BudgetNameStep({
+                isExpanded: currentStep === budgetNameStep,
+                onExpand: () => setCurrentStep(budgetNameStep),
+                onComplete: () => setCurrentStep(categoryStep),
+                onCollapse: collapseStep,
+              })}
+              {CategoryStep({
+                isExpanded: currentStep === categoryStep,
+                onExpand: () => setCurrentStep(categoryStep),
+                onComplete: () => setCurrentStep(payeeStep),
+                onCollapse: collapseStep,
+              })}
+              {PayeeStep({
+                isExpanded: currentStep === payeeStep,
+                onExpand: () => setCurrentStep(payeeStep),
+                onComplete: () => setCurrentStep(commentStep),
+                onCollapse: collapseStep,
+              })}
+            </>
+          )}
         </>
       )}
       {CommentStep({
