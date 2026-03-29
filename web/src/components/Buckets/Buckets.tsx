@@ -10,17 +10,62 @@ interface BucketWithBalances {
   id: string
   name: string
   color: string
+  totalInMainCurrency: number | null
   balances: AccountBalance[]
+}
+
+interface LatestRate {
+  currency: string
+  rate: number
+  date: string
 }
 
 interface Props {
   buckets: BucketWithBalances[]
   accountInfoMap: Map<string, { name: string; color: string }>
+  availableCurrencies: string[]
+  mainCurrency: string
+  onMainCurrencyChange: (currency: string) => void
+  latestRates: LatestRate[]
 }
 
-export default function Buckets({ buckets, accountInfoMap }: Props) {
+export default function Buckets({
+  buckets,
+  accountInfoMap,
+  availableCurrencies,
+  mainCurrency,
+  onMainCurrencyChange,
+  latestRates,
+}: Props) {
+  const mainCurrencySymbol = convertCurrencyCodeToSymbol(mainCurrency)
+
   return (
     <div className="box py-0 px-2">
+      <div className="py-2">
+        <div className="field">
+          <div className="control">
+            <div className="select is-small">
+              <select value={mainCurrency} onChange={(e) => onMainCurrencyChange(e.target.value)}>
+                {availableCurrencies.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+        {latestRates.length > 0 && (
+          <div className="mb-2">
+            {latestRates.map((r) => (
+              <div key={r.currency} className="is-size-7 has-text-grey">
+                {convertCurrencyCodeToSymbol(r.currency)}/{mainCurrencySymbol}: {r.rate.toFixed(2)}{' '}
+                <span className="has-text-grey-light">({r.date})</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       {buckets.length === 0 && (
         <div className="has-text-centered has-text-grey my-4">Нет назначений</div>
       )}
@@ -32,7 +77,14 @@ export default function Buckets({ buckets, accountInfoMap }: Props) {
               style={{ backgroundColor: bucket.color, width: 5, borderBottomLeftRadius: 5 }}
             />
             <div className="is-flex-grow-1 py-2 px-1">
-              <div className="pb-1">{bucket.name}</div>
+              <div className="is-flex is-justify-content-space-between is-align-items-center pb-1">
+                <span>{bucket.name}</span>
+                {bucket.totalInMainCurrency != null && (
+                  <span className="has-text-weight-semibold is-size-7">
+                    {formatFinancialAmount(bucket.totalInMainCurrency)} {mainCurrencySymbol}
+                  </span>
+                )}
+              </div>
               {bucket.balances.length === 0 ? (
                 <p className="has-text-grey is-size-7">Нет транзакций</p>
               ) : (
