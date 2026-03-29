@@ -14,13 +14,15 @@ interface AccountBalance {
   account: string
   currency: string
   balance: number
+  external: boolean
 }
 
 interface BucketWithBalances {
   id: string
   name: string
   color: string
-  totalInMainCurrency: number | null
+  internalTotal: number | null
+  externalTotal: number | null
   balances: AccountBalance[]
 }
 
@@ -112,6 +114,7 @@ function calculateBucketBalances(
   }[],
   mainCurrency: string,
   latestRates: LatestRate[],
+  externalAccountIds: Set<string>,
 ): BucketWithBalances[] {
   const balanceMap = new Map<string, Map<string, number>>()
 
@@ -143,22 +146,25 @@ function calculateBucketBalances(
   return buckets.map((bucket) => {
     const accountMap = balanceMap.get(bucket.id) || new Map()
     const balances: AccountBalance[] = []
-    let totalInMainCurrency: number | null = 0
+    let internalTotal: number | null = 0
+    let externalTotal: number | null = 0
 
     accountMap.forEach((balance, key) => {
       if (balance !== 0) {
         const [account, currency] = key.split('\0')
-        balances.push({ account, currency, balance })
+        const external = externalAccountIds.has(account)
+        balances.push({ account, currency, balance, external })
 
-        if (currency === mainCurrency) {
-          totalInMainCurrency = (totalInMainCurrency ?? 0) + balance
+        const toMainCurrency = (amt: number, cur: string): number | null => {
+          if (cur === mainCurrency) return amt
+          const rate = rateForCurrency.get(cur)
+          return rate != null ? amt / rate : null
+        }
+        const converted = toMainCurrency(balance, currency)
+        if (external) {
+          externalTotal = converted == null ? null : (externalTotal ?? 0) + converted
         } else {
-          const rate = rateForCurrency.get(currency)
-          if (rate != null) {
-            totalInMainCurrency = (totalInMainCurrency ?? 0) + balance / rate
-          } else {
-            totalInMainCurrency = null
-          }
+          internalTotal = converted == null ? null : (internalTotal ?? 0) + converted
         }
       }
     })
@@ -168,7 +174,8 @@ function calculateBucketBalances(
       id: bucket.id,
       name: bucket.name,
       color: bucket.color,
-      totalInMainCurrency: balances.length > 0 ? totalInMainCurrency : null,
+      internalTotal: balances.some((b) => !b.external) ? internalTotal : null,
+      externalTotal: balances.some((b) => b.external) ? externalTotal : null,
       balances,
     }
   })
@@ -187,11 +194,19 @@ export default function BucketsContainer() {
   const selectedCurrency = mainCurrency || availableCurrencies[0] || ''
 
   const accountInfoMap = useMemo(() => {
-    const map = new Map<string, { name: string; color: string }>()
+    const map = new Map<string, { name: string; color: string; external: boolean }>()
     accountProperties?.accounts.forEach((a) => {
-      map.set(a.id, { name: a.name, color: a.color })
+      map.set(a.id, { name: a.name, color: a.color, external: a.external })
     })
     return map
+  }, [accountProperties])
+
+  const externalAccountIds = useMemo(() => {
+    const set = new Set<string>()
+    accountProperties?.accounts.forEach((a) => {
+      if (a.external) set.add(a.id)
+    })
+    return set
   }, [accountProperties])
 
   const latestRates = useMemo(
@@ -200,8 +215,15 @@ export default function BucketsContainer() {
   )
 
   const bucketBalances = useMemo(
-    () => calculateBucketBalances(buckets.buckets, transactions, selectedCurrency, latestRates),
-    [buckets, transactions, selectedCurrency, latestRates],
+    () =>
+      calculateBucketBalances(
+        buckets.buckets,
+        transactions,
+        selectedCurrency,
+        latestRates,
+        externalAccountIds,
+      ),
+    [buckets, transactions, selectedCurrency, latestRates, externalAccountIds],
   )
 
   return (
