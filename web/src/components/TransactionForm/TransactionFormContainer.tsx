@@ -87,8 +87,8 @@ export default function TransactionFormContainer({
     if (txType === 'custom') {
       setAccountFrom(t.account_from)
       setAccountTo(t.account_to)
-      setBucketFrom(t.bucket_from)
-      setBucketTo(t.bucket_to)
+      setBucketFrom(t.bucket_from || 'default')
+      setBucketTo(t.bucket_to || 'default')
       setPayee(t.counterparty)
       setAccount('')
       setPayeeTransferAccount('')
