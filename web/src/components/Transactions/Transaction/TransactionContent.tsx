@@ -10,7 +10,6 @@ dayjs.locale(ruLocale)
 
 interface Props {
   category: string
-  account: string
   payee: string
   comment: string
   type: string
@@ -18,15 +17,14 @@ interface Props {
   currency: string
   localTime: string
   budgetName: string
-  accountFrom?: string
-  accountTo?: string
+  accountFrom: string
+  accountTo: string
   bucketFrom?: string
   bucketTo?: string
 }
 
 export default function TransactionContent({
   category,
-  account,
   payee,
   comment,
   type,
@@ -45,34 +43,42 @@ export default function TransactionContent({
     setShowTime(!showTime)
   }
 
+  const internalAccount = type === 'income' ? accountTo : accountFrom
+
   return (
     <div className="is-flex is-justify-content-space-between is-flex-grow-1">
       <div>
-        <div className="has-text-weight-semibold">{category}</div>
-        {budgetName && <span className="tag is-small is-light">{budgetName}</span>}
-        {type === 'custom' ? (
+        {type === 'income' || type === 'expense' ? (
+          <>
+            <div className="has-text-weight-semibold">{budgetName || category}</div>
+            <div>{internalAccount}</div>
+            {budgetName && category && <div className="is-size-7 has-text-grey">{category}</div>}
+            {payee && <div className="is-size-7 has-text-weight-semibold">{payee}</div>}
+          </>
+        ) : type === 'transfer' ? (
+          <>
+            <div className="has-text-weight-semibold">
+              {/* @ts-ignore */}
+              {accountFrom} <FontAwesomeIcon icon={faArrowRightLong} /> {accountTo}
+            </div>
+            {category && <div className="is-size-7 has-text-grey">{category}</div>}
+          </>
+        ) : (
           <>
             <div className="has-text-weight-semibold">
               {/* @ts-ignore */}
               {accountFrom} <FontAwesomeIcon icon={faArrowRightLong} /> {accountTo}
             </div>
             {(bucketFrom || bucketTo) && (
-              <div className="is-size-7">
-                {bucketFrom && <span className="tag is-small is-light mr-1">{bucketFrom}</span>}
-                {bucketTo && <span className="tag is-small is-light">{bucketTo}</span>}
+              <div>
+                <span className="is-size-7 has-text-grey">
+                  {bucketFrom || '—'}
+                  {/* @ts-ignore */} <FontAwesomeIcon icon={faArrowRightLong} /> {bucketTo || '—'}
+                </span>
               </div>
             )}
+            {category && <div className="is-size-7 has-text-grey">{category}</div>}
             {payee && <div className="is-size-7 has-text-weight-semibold">{payee}</div>}
-          </>
-        ) : type === 'transfer' ? (
-          <div className="has-text-weight-semibold">
-            {/* @ts-ignore */}
-            {account} <FontAwesomeIcon icon={faArrowRightLong} /> {payee}
-          </div>
-        ) : (
-          <>
-            <div>{account}</div>
-            <div className="is-size-7 has-text-weight-semibold">{payee}</div>
           </>
         )}
         <div className="is-size-7">{comment}</div>
@@ -83,7 +89,7 @@ export default function TransactionContent({
             'has-text-success': type === 'income',
             'has-text-danger': type === 'expense',
           })}
-          style={{ whiteSpace: 'nowrap' }}
+          style={{ whiteSpace: 'nowrap', ...(type === 'custom' ? { color: 'purple' } : {}) }}
           onClick={toggleShowTime}
         >
           {type === 'expense' && '-'}

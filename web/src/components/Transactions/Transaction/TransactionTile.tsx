@@ -1,5 +1,5 @@
 import Measure from 'react-measure'
-import { convertToLocaleTime, deriveTransactionType, deriveAccount, deriveBucketId } from '@/utils'
+import { convertToLocaleTime, deriveTransactionType, deriveBucketId } from '@/utils'
 import { useLongPress, LongPressDetectEvents } from 'use-long-press'
 import dayjs from 'dayjs'
 import ruLocale from 'dayjs/locale/ru'
@@ -61,12 +61,7 @@ export default function TransactionTile({
             <div {...longPressBind()} className="box m-0 is-flex">
               <TransactionContent
                 category={t.category}
-                account={resolveAccountName(deriveAccount(t, externalAccountIds))}
-                payee={
-                  deriveTransactionType(t, externalAccountIds) === 'transfer'
-                    ? resolveAccountName(t.account_to)
-                    : t.counterparty
-                }
+                payee={t.counterparty}
                 comment={t.comment}
                 type={deriveTransactionType(t, externalAccountIds)}
                 amount={t.amount}
