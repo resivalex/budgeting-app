@@ -146,7 +146,10 @@ class BudgetsDomain {
       amount: totalLimit.amount,
       categories: totalLimit.categories,
       transactions: realBudgets.flatMap((b) => b.transactions),
-      spentAmount: realBudgets.reduce((sum, b) => sum + b.spentAmount, 0),
+      spentAmount: realBudgets.reduce(
+        (sum, b) => sum + b.spentAmount * conversionMap[b.currency][totalLimit.currency],
+        0,
+      ),
       isEditable: totalLimit.isEditable,
     }
 
