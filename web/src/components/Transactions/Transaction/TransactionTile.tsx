@@ -69,18 +69,12 @@ export default function TransactionTile({
                 localTime={datetimeString.split(' ')[1]}
                 budgetName={(() => {
                   const bid = deriveBucketId(t, externalAccountIds)
-                  return bid && bid !== 'default' ? resolveBucketName(bid) : ''
+                  return bid ? resolveBucketName(bid) : ''
                 })()}
                 accountFrom={resolveAccountName(t.account_from)}
                 accountTo={resolveAccountName(t.account_to)}
-                bucketFrom={
-                  t.bucket_from && t.bucket_from !== 'default'
-                    ? resolveBucketName(t.bucket_from)
-                    : ''
-                }
-                bucketTo={
-                  t.bucket_to && t.bucket_to !== 'default' ? resolveBucketName(t.bucket_to) : ''
-                }
+                bucketFrom={t.bucket_from ? resolveBucketName(t.bucket_from) : ''}
+                bucketTo={t.bucket_to ? resolveBucketName(t.bucket_to) : ''}
               />
             </div>
           </div>

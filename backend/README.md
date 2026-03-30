@@ -8,7 +8,7 @@ FastAPI backend for personal budgeting and expense tracking.
 
 **CouchDB Storage**:
 
-- **`budgeting` database**: All documents — transactions (`tx:`-prefixed, `kind: "transaction"`) and settings (`cfg:`-prefixed, `kind: "setting"`), synced with frontend's PouchDB. Transactions use `account_from`/`account_to` fields referencing account IDs (including `external_*` accounts for income/expense), with `counterparty`, `bucket_from`/`bucket_to` fields.
+- **`budgeting` database**: All documents — transactions (`tx:`-prefixed, `kind: "transaction"`) and settings (`cfg:`-prefixed, `kind: "setting"`), synced with frontend's PouchDB. Transactions use `account_from`/`account_to` fields referencing account IDs, with `counterparty`, `bucket_from`/`bucket_to` fields. External accounts (used to derive income/expense type) are identified by the `external: true` flag in the `cfg:account_properties` settings document.
 - **SQLite**: Legacy storage, kept for backward-compatible backup/restore
 
 **Module Structure**:

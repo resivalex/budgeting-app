@@ -8,7 +8,7 @@ Step-by-step transaction creation and editing interface with intelligent default
 
 - **Step-by-Step Flow**: Progressive form completion that guides users through transaction entry one field at a time
 - **Mobile Fullscreen Selection**: On mobile devices (≤768px), dropdown and suggestion fields open as fullscreen overlays instead of inline dropdowns, ensuring all options remain visible and accessible above the virtual keyboard. The overlay dynamically resizes to the visible viewport when the software keyboard is shown. Fields requiring explicit confirmation (free-text inputs and fields without auto-close on selection) display a floating confirm button at the bottom-right corner for comfortable one-handed use.
-- **Transaction Types**: Support for income, expense, and transfer transactions with conditional field display
+- **Transaction Types**: Support for income, expense, transfer, and **custom** transactions with conditional field display. Custom transactions allow free selection of both account_from/account_to and bucket_from/bucket_to without external-account constraints; amounts display in purple.
 - **Smart Initialization**: Automatically populates form fields when editing existing transactions
 - **Intelligent Defaults**: Pre-fills fields based on transaction history and user patterns
 - **Real-time Validation**: Validates form completeness and enables save only when all required fields are valid

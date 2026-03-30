@@ -67,16 +67,12 @@ export default function TransactionContent({
           <>
             <div className="has-text-weight-semibold">
               {/* @ts-ignore */}
-              {accountFrom} <FontAwesomeIcon icon={faArrowRightLong} /> {accountTo}
+              {bucketFrom || '—'} <FontAwesomeIcon icon={faArrowRightLong} /> {bucketTo || '—'}
             </div>
-            {(bucketFrom || bucketTo) && (
-              <div>
-                <span className="is-size-7 has-text-grey">
-                  {bucketFrom || '—'}
-                  {/* @ts-ignore */} <FontAwesomeIcon icon={faArrowRightLong} /> {bucketTo || '—'}
-                </span>
-              </div>
-            )}
+            <div>
+              {accountFrom}
+              {/* @ts-ignore */} <FontAwesomeIcon icon={faArrowRightLong} /> {accountTo}
+            </div>
             {category && <div className="is-size-7 has-text-grey">{category}</div>}
             {payee && <div className="is-size-7 has-text-weight-semibold">{payee}</div>}
           </>

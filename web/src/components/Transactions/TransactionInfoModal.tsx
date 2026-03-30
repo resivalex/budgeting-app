@@ -74,23 +74,21 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
               <p>
                 <strong>Счёт куда:</strong> {resolveAccountName(transaction.account_to)}
               </p>
-              {transaction.bucket_from && transaction.bucket_from !== 'default' && (
-                <p>
-                  <strong>Бюджет откуда:</strong> {resolveBucketName(transaction.bucket_from)}
-                </p>
-              )}
-              {transaction.bucket_to && transaction.bucket_to !== 'default' && (
-                <p>
-                  <strong>Бюджет куда:</strong> {resolveBucketName(transaction.bucket_to)}
-                </p>
-              )}
+              <p>
+                <strong>Бюджет откуда:</strong>{' '}
+                {transaction.bucket_from ? resolveBucketName(transaction.bucket_from) : '—'}
+              </p>
+              <p>
+                <strong>Бюджет куда:</strong>{' '}
+                {transaction.bucket_to ? resolveBucketName(transaction.bucket_to) : '—'}
+              </p>
             </>
           ) : (
             <>
               <p>
                 <strong>Счёт:</strong> {accountName}
               </p>
-              {bucketId && bucketId !== 'default' && (
+              {bucketId && (
                 <p>
                   <strong>Бюджет:</strong> {resolveBucketName(bucketId)}
                 </p>
