@@ -1,7 +1,9 @@
-import { useImperativeHandle, forwardRef, useRef, MutableRefObject, useState } from 'react'
+import { useImperativeHandle, forwardRef, useRef, MutableRefObject, useState, useMemo } from 'react'
 import Select from 'react-select'
 import { convertCurrencyCodeToSymbol, reactSelectColorStyles, formatFinancialAmount } from '@/utils'
 import { useColoredAccounts } from '@/hooks'
+import { useAtomValue } from 'jotai'
+import { accountPropertiesAtom } from '@/state'
 
 const ColoredAccountSelect = forwardRef(
   (
@@ -20,7 +22,22 @@ const ColoredAccountSelect = forwardRef(
   ) => {
     const [menuIsOpen, setMenuOpen] = useState(false)
     const coloredAccounts = useColoredAccounts()
-    const availableColoredAccounts = coloredAccounts.filter((a) =>
+    const accountProperties = useAtomValue(accountPropertiesAtom)
+
+    const allColoredAccounts = useMemo(() => {
+      const externalAccounts = (accountProperties?.accounts ?? [])
+        .filter((a) => a.external)
+        .map((a) => ({
+          account: a.id,
+          name: a.name,
+          currency: a.currency,
+          balance: 0,
+          color: a.color,
+        }))
+      return [...coloredAccounts, ...externalAccounts]
+    }, [coloredAccounts, accountProperties])
+
+    const availableColoredAccounts = allColoredAccounts.filter((a) =>
       availableAccountNames.includes(a.account),
     )
     const emptyOptions = emptyOption ? [{ value: '', label: emptyOption, color: '#ffffff' }] : []

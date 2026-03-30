@@ -10,7 +10,7 @@ import {
 } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
-import { TransactionDTO, TransactionsAggregations } from '@/types'
+import { TransactionDTO, TransactionsAggregations, ColoredAccountDetailsDTO } from '@/types'
 import {
   convertToLocaleTime,
   convertToUtcTime,
@@ -23,7 +23,7 @@ import StepByStepTransactionForm from './StepByStepTransactionForm'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useTransactionFormDomain } from '@/hooks'
 import { useAtomValue } from 'jotai'
-import { externalAccountIdsAtom } from '@/state'
+import { externalAccountIdsAtom, accountPropertiesAtom } from '@/state'
 
 export default function TransactionFormContainer({
   LimitedAccountSelect,
@@ -53,6 +53,7 @@ export default function TransactionFormContainer({
   const [bucketTo, setBucketTo] = useState('default')
 
   const externalAccountIds = useAtomValue(externalAccountIdsAtom)
+  const accountProperties = useAtomValue(accountPropertiesAtom)
 
   const {
     categoryOptions,
@@ -66,6 +67,19 @@ export default function TransactionFormContainer({
     spendingLimits,
     domain,
   } = useTransactionFormDomain()
+
+  const allColoredAccounts = useMemo((): ColoredAccountDetailsDTO[] => {
+    const externalColoredAccounts: ColoredAccountDetailsDTO[] = (accountProperties?.accounts ?? [])
+      .filter((a) => a.external)
+      .map((a) => ({
+        account: a.id,
+        name: a.name,
+        currency: a.currency,
+        balance: 0,
+        color: a.color,
+      }))
+    return [...coloredAccounts, ...externalColoredAccounts]
+  }, [coloredAccounts, accountProperties])
 
   const navigate = useNavigate()
   const { transactionId } = useParams()
@@ -152,8 +166,14 @@ export default function TransactionFormContainer({
   }, [transactionId])
 
   const { availableCurrencies, availableColoredAccounts } = useMemo(
-    () => domain.getAvailableCurrenciesAndAccounts(type, currency, allCurrencies, coloredAccounts),
-    [domain, type, currency, allCurrencies, coloredAccounts],
+    () =>
+      domain.getAvailableCurrenciesAndAccounts(
+        type,
+        currency,
+        allCurrencies,
+        type === 'custom' ? allColoredAccounts : coloredAccounts,
+      ),
+    [domain, type, currency, allCurrencies, coloredAccounts, allColoredAccounts],
   )
 
   const availableAccountNames = useMemo(
@@ -328,7 +348,7 @@ export default function TransactionFormContainer({
     return [...matching, ...nonMatching, ...(defaultOption ? [defaultOption] : [])]
   }, [bucketOptions, matchingBucketIds])
 
-  const allAccountOptions = useMemo(() => coloredAccounts, [coloredAccounts])
+  const allAccountOptions = useMemo(() => allColoredAccounts, [allColoredAccounts])
 
   const allBucketOptions = useMemo(() => bucketOptions, [bucketOptions])
 
