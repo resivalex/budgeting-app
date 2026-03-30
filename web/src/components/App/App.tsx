@@ -38,7 +38,6 @@ export default function App({
   isLoading,
   offlineMode,
   lastNotificationText,
-  onExport,
   onLogout,
   onFilterAccountNameChange,
   onFilterPayeeChange,
@@ -60,7 +59,6 @@ export default function App({
   isLoading: boolean
   offlineMode: boolean
   lastNotificationText: string
-  onExport: () => Promise<void>
   onLogout: () => void
   onFilterAccountNameChange: (accountName: string) => void
   onFilterPayeeChange: (payee: string) => void
@@ -139,7 +137,7 @@ export default function App({
           flexDirection: 'column',
         }}
       >
-        <Menu handleExport={onExport} handleLogout={onLogout} appVersion={appVersion} />
+        <Menu handleLogout={onLogout} appVersion={appVersion} />
         <Status isLoading={isLoading} />
         <div
           style={{

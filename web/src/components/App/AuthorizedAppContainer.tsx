@@ -5,7 +5,7 @@ import RenderErrorBoundary from './RenderErrorBoundary'
 import { useServices } from '@/services'
 import { TransactionDTO } from '@/types'
 import { useTransactionsDomain, useSyncDomain, useSettingsDomain } from '@/hooks'
-import { ExportDomain, AuthDomain } from '@/domain'
+import { AuthDomain } from '@/domain'
 import { deriveAccount } from '@/utils'
 import { v4 as uuidv4 } from 'uuid'
 import { useAtomValue } from 'jotai'
@@ -19,7 +19,6 @@ type SyncProps = {
   addDbTransaction: (t: TransactionDTO) => Promise<void>
   replaceDbTransaction: (t: TransactionDTO) => Promise<void>
   removeDbTransaction: (id: string) => Promise<void>
-  onExport: () => Promise<void>
   onLogout: () => void
   onNotify: (text: string) => void
 }
@@ -42,7 +41,6 @@ function AppWithTransactions({
   addDbTransaction,
   replaceDbTransaction,
   removeDbTransaction,
-  onExport,
   onLogout,
   onNotify,
 }: {
@@ -108,7 +106,6 @@ function AppWithTransactions({
       isLoading={isLoading}
       offlineMode={offlineMode}
       lastNotificationText={lastNotificationText}
-      onExport={onExport}
       onLogout={onLogout}
       onAddTransaction={addTransaction}
       onEditTransaction={editTransaction}
@@ -127,7 +124,6 @@ export default function AuthorizedAppContainer() {
   const [filterCategory, setFilterCategory] = useState('')
   const [filterBucketId, setFilterBucketId] = useState('')
 
-  const exportDomain = useMemo(() => new ExportDomain(backendService), [backendService])
   const authDomain = useMemo(() => new AuthDomain(storageService), [storageService])
 
   const { refreshSettings } = useSettingsDomain(dbService)
@@ -145,10 +141,6 @@ export default function AuthorizedAppContainer() {
 
   function handleLogout() {
     authDomain.logout()
-  }
-
-  async function handleExport() {
-    await exportDomain.exportToCsv()
   }
 
   const refreshAllData = useCallback(async () => {
@@ -173,7 +165,6 @@ export default function AuthorizedAppContainer() {
         offlineMode={offlineMode}
         lastNotificationText={lastNotificationText}
         onDismissNotification={() => setLastNotificationText('')}
-        onExport={handleExport}
         onLogout={handleLogout}
         addDbTransaction={addDbTransaction}
         replaceDbTransaction={replaceDbTransaction}
