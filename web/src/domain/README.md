@@ -30,11 +30,11 @@ Types are derived from `account_from`/`account_to` and `bucket_from`/`bucket_to`
 - **Transfer**: both accounts are internal, both buckets are `default`
 - **Custom**: everything else (mixed buckets, both accounts internal, etc.)
 
-External accounts are identified by the `external: true` flag in `cfg:account_properties` (not by a name prefix).
+External accounts are identified by `owner === 'external'` in `cfg:account_properties` (not by a name prefix).
 
 ## Key Patterns
 
 - **Dependency injection**: services passed to constructors, not imported as singletons
 - **Callback-based output**: `SyncDomain` uses `SyncCallbacks` (`onOfflineChange`, `onTransactionsLoaded`, `onLoadingChange`) to push updates without coupling to Jotai or any state library
 - **Static helpers**: `TransactionDomain.getAggregations()` is a pure static method usable without an instance
-- **`externalAccountIds` threading**: The `externalAccountIdsAtom` (Jotai) is derived from `accountPropertiesAtom` and passed down to `BudgetsDomain.calculateBudgets`, `TransactionFilterDomain.filterTransactions`, `TransactionFormDomain` methods, and transaction-display utilities wherever type derivation is needed.
+- **`externalAccountIds` threading**: The `externalAccountIdsAtom` (Jotai) is derived from `accountPropertiesAtom` by checking `owner === 'external'` and passed down to `BudgetsDomain.calculateBudgets`, `TransactionFilterDomain.filterTransactions`, `TransactionFormDomain` methods, and transaction-display utilities wherever type derivation is needed.

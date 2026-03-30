@@ -16,7 +16,7 @@ Tracks when the server-side database was last changed so the frontend can detect
 
 ### Data Export
 
-On-demand CSV export of all transactions, sorted newest first, with resolved human-readable names for all four account/bucket fields (`account_from`, `account_to`, `bucket_from`, `bucket_to`). Transaction types — income, expense, transfer, or custom — are derived using the `external: true` flag in `cfg:account_properties` (not by account name prefix).
+On-demand CSV export of all transactions, sorted newest first, with resolved human-readable names for all four account/bucket fields (`account_from`, `account_to`, `bucket_from`, `bucket_to`). Transaction types — income, expense, transfer, or custom — are derived using the `owner == "external"` check in `cfg:account_properties` (not by account name prefix).
 
 ### Backup & Restore
 

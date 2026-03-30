@@ -35,7 +35,7 @@ Each transaction's type is derived from its accounts and buckets:
 - **Transfer**: both accounts are internal and both buckets are `default`.
 - **Custom**: all other combinations.
 
-External accounts are identified by the `external: true` flag in the account's properties document (`cfg:account_properties` in CouchDB).
+External accounts are identified by `owner === 'external'` in the account's properties document (`cfg:account_properties` in CouchDB).
 
 ### Transaction Filtering
 

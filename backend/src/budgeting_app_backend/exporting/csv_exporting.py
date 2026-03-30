@@ -100,7 +100,7 @@ def _load_external_account_ids(db):
     except pycouchdb.exceptions.NotFound:
         return set()
     accounts = doc.get("value", {}).get("accounts", [])
-    return {a["id"] for a in accounts if a.get("external", False)}
+    return {a["id"] for a in accounts if a.get("owner") == "external"}
 
 
 def _load_bucket_id_to_name_map(db):

@@ -4,15 +4,14 @@ interface AccountBalance {
   account: string
   currency: string
   balance: number
-  external: boolean
+  owner: string
 }
 
 interface BucketWithBalances {
   id: string
   name: string
   color: string
-  internalTotal: number | null
-  externalTotal: number | null
+  ownerTotals: Record<string, number | null>
   balances: AccountBalance[]
 }
 
@@ -24,7 +23,7 @@ interface LatestRate {
 
 interface Props {
   buckets: BucketWithBalances[]
-  accountInfoMap: Map<string, { name: string; color: string; external: boolean }>
+  accountInfoMap: Map<string, { name: string; color: string; owner: string }>
   availableCurrencies: string[]
   mainCurrency: string
   onMainCurrencyChange: (currency: string) => void
@@ -81,70 +80,73 @@ export default function Buckets({
             <div className="is-flex-grow-1 py-2 px-1">
               <div className="is-flex is-justify-content-space-between is-align-items-center pb-1">
                 <span>{bucket.name}</span>
-                {(bucket.internalTotal != null || bucket.externalTotal != null) &&
-                  (() => {
-                    const total =
-                      bucket.internalTotal != null && bucket.externalTotal != null
-                        ? bucket.internalTotal + bucket.externalTotal
-                        : (bucket.internalTotal ?? bucket.externalTotal)!
-                    return (
-                      <span className="has-text-weight-semibold is-size-7">
-                        {formatFinancialAmount(total)} {mainCurrencySymbol}
-                      </span>
-                    )
-                  })()}
+                {(() => {
+                  const values = Object.values(bucket.ownerTotals)
+                  const nonNullValues = values.filter((v): v is number => v != null)
+                  if (nonNullValues.length === 0) return null
+                  const total = nonNullValues.reduce((sum, v) => sum + v, 0)
+                  return (
+                    <span className="has-text-weight-semibold is-size-7">
+                      {formatFinancialAmount(total)} {mainCurrencySymbol}
+                    </span>
+                  )
+                })()}
               </div>
               {bucket.balances.length === 0 ? (
                 <p className="has-text-grey is-size-7">Нет транзакций</p>
               ) : (
                 <div>
-                  {(['internal', 'external'] as const).map((group) => {
-                    const isExternal = group === 'external'
-                    const groupBalances = bucket.balances.filter((b) => b.external === isExternal)
-                    if (groupBalances.length === 0) return null
-                    const groupTotal = isExternal ? bucket.externalTotal : bucket.internalTotal
-                    return (
-                      <div key={group} className="mb-2">
-                        <div className="is-flex is-justify-content-space-between is-align-items-center mb-1">
-                          <span className="is-size-7 has-text-grey">
-                            {isExternal ? 'Внешние' : 'Внутренние'}
-                          </span>
-                          {groupTotal != null && (
-                            <span className="is-size-7 has-text-grey">
-                              {formatFinancialAmount(groupTotal)} {mainCurrencySymbol}
-                            </span>
-                          )}
-                        </div>
-                        {groupBalances.map((b) => {
-                          const info = accountInfoMap.get(b.account)
-                          const displayName = info?.name ?? b.account
-                          const dotColor = info?.color ?? '#cccccc'
-                          return (
-                            <div
-                              key={`${b.account}\0${b.currency}`}
-                              className="is-flex is-align-items-center is-size-7 mb-1"
-                            >
-                              <span
-                                style={{
-                                  display: 'inline-block',
-                                  width: 8,
-                                  height: 8,
-                                  borderRadius: '50%',
-                                  backgroundColor: dotColor,
-                                  flexShrink: 0,
-                                  marginRight: 6,
-                                }}
-                              />
-                              <span>
-                                {displayName}: {formatFinancialAmount(b.balance)}{' '}
-                                {convertCurrencyCodeToSymbol(b.currency)}
+                  {[...new Set(bucket.balances.map((b) => b.owner))]
+                    .sort((a, b) => {
+                      if (a === 'external') return 1
+                      if (b === 'external') return -1
+                      return a.localeCompare(b)
+                    })
+                    .map((owner) => {
+                      const groupBalances = bucket.balances.filter((b) => b.owner === owner)
+                      if (groupBalances.length === 0) return null
+                      const groupTotal = bucket.ownerTotals[owner] ?? null
+                      const displayName = owner.charAt(0).toUpperCase() + owner.slice(1)
+                      return (
+                        <div key={owner} className="mb-2">
+                          <div className="is-flex is-justify-content-space-between is-align-items-center mb-1">
+                            <span className="is-size-7 has-text-grey">{displayName}</span>
+                            {groupTotal != null && (
+                              <span className="is-size-7 has-text-grey">
+                                {formatFinancialAmount(groupTotal)} {mainCurrencySymbol}
                               </span>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    )
-                  })}
+                            )}
+                          </div>
+                          {groupBalances.map((b) => {
+                            const info = accountInfoMap.get(b.account)
+                            const displayName = info?.name ?? b.account
+                            const dotColor = info?.color ?? '#cccccc'
+                            return (
+                              <div
+                                key={`${b.account}\0${b.currency}`}
+                                className="is-flex is-align-items-center is-size-7 mb-1"
+                              >
+                                <span
+                                  style={{
+                                    display: 'inline-block',
+                                    width: 8,
+                                    height: 8,
+                                    borderRadius: '50%',
+                                    backgroundColor: dotColor,
+                                    flexShrink: 0,
+                                    marginRight: 6,
+                                  }}
+                                />
+                                <span>
+                                  {displayName}: {formatFinancialAmount(b.balance)}{' '}
+                                  {convertCurrencyCodeToSymbol(b.currency)}
+                                </span>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      )
+                    })}
                 </div>
               )}
             </div>

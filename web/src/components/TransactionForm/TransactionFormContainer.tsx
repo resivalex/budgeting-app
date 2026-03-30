@@ -70,7 +70,7 @@ export default function TransactionFormContainer({
 
   const allColoredAccounts = useMemo((): ColoredAccountDetailsDTO[] => {
     const externalColoredAccounts: ColoredAccountDetailsDTO[] = (accountProperties?.accounts ?? [])
-      .filter((a) => a.external)
+      .filter((a) => a.owner === 'external')
       .map((a) => ({
         account: a.id,
         name: a.name,

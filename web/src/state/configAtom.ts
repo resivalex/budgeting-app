@@ -43,7 +43,7 @@ export const externalAccountIdsAtom = atom((get) => {
   const set = new Set<string>()
   if (accountProperties) {
     accountProperties.accounts.forEach((a) => {
-      if (a.external) set.add(a.id)
+      if (a.owner === 'external') set.add(a.id)
     })
   }
   return set
