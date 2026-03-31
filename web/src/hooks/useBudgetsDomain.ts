@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import {
-  spendingLimitsAtom,
-  currencyConfigsAtom,
-  transactionsAtom,
-  bucketsAtom,
-  externalAccountIdsAtom,
-} from '@/state'
+import { spendingLimitsAtom, currencyConfigsAtom, transactionsAtom, bucketsAtom } from '@/state'
 import { BudgetsDomain, BudgetResult } from '@/domain'
 import { DbService } from '@/services'
 
@@ -25,7 +19,6 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
   const [currencyConfigs, setCurrencyConfigs] = useAtom(currencyConfigsAtom)
   const transactions = useAtomValue(transactionsAtom)
   const buckets = useAtomValue(bucketsAtom)
-  const externalAccountIds = useAtomValue(externalAccountIdsAtom)
   const [selectedMonth, setSelectedMonth] = useState<string>('')
 
   const budgetsDomain = useMemo(() => new BudgetsDomain(dbService), [dbService])
@@ -50,17 +43,8 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
       currencyConfigs,
       buckets,
       selectedMonth,
-      externalAccountIds,
     )
-  }, [
-    budgetsDomain,
-    transactions,
-    spendingLimits,
-    currencyConfigs,
-    buckets,
-    selectedMonth,
-    externalAccountIds,
-  ])
+  }, [budgetsDomain, transactions, spendingLimits, currencyConfigs, buckets, selectedMonth])
 
   const expectationRatio = useMemo(
     () => budgetsDomain.calculateExpectationRatio(selectedMonth),
