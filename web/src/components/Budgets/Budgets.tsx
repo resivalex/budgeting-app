@@ -8,6 +8,7 @@ interface Props {
   budgets: BudgetDTO[]
   selectedMonth: string
   availableMonths: string[]
+  commonBucketIds: string[]
   onMonthSelect: (month: string) => void
   onBudgetItemChange: (bucketId: string, currency: string, amount: number) => void
   onFocus: (name: string) => void
@@ -21,6 +22,7 @@ export default function Budgets({
   budgets,
   selectedMonth,
   availableMonths,
+  commonBucketIds,
   onMonthSelect,
   onBudgetItemChange,
   onFocus,
@@ -34,6 +36,28 @@ export default function Budgets({
     label: dayjs(month).format('MMMM YYYY'),
   }))
   monthOptions.reverse()
+
+  const commonBucketIdSet = new Set(commonBucketIds)
+  const [totalBudget, ...rest] = budgets
+  const restBudget = rest[rest.length - 1]
+  const realBudgets = rest.slice(0, -1)
+  const commonBudgets = realBudgets.filter((b) => commonBucketIdSet.has(b.bucketId))
+  const nonCommonBudgets = realBudgets.filter((b) => !commonBucketIdSet.has(b.bucketId))
+
+  function renderBudget(budget: BudgetDTO, index: number) {
+    return (
+      <Budget
+        key={index}
+        totalAmount={budget.amount}
+        spentAmount={budget.spentAmount}
+        currency={budget.currency}
+        name={budget.name}
+        color={budget.color}
+        commonBudgetsExpectationRatio={commonBudgetsExpectationRatio}
+        onLongPress={() => onFocus(budget.name)}
+      />
+    )
+  }
 
   return (
     <>
@@ -53,18 +77,15 @@ export default function Budgets({
         />
       </div>
       <div className="box py-0 px-2" style={{ flex: 1, overflow: 'scroll' }}>
-        {budgets.map((budget, index) => (
-          <Budget
-            key={index}
-            totalAmount={budget.amount}
-            spentAmount={budget.spentAmount}
-            currency={budget.currency}
-            name={budget.name}
-            color={budget.color}
-            commonBudgetsExpectationRatio={commonBudgetsExpectationRatio}
-            onLongPress={() => onFocus(budget.name)}
-          />
-        ))}
+        {totalBudget && renderBudget(totalBudget, 0)}
+        {commonBudgets.length > 0 && <div className="mt-6" />}
+        {commonBudgets.map((budget, index) => renderBudget(budget, index + 1))}
+        {nonCommonBudgets.length > 0 && <div className="mt-6" />}
+        {nonCommonBudgets.map((budget, index) =>
+          renderBudget(budget, commonBudgets.length + 1 + index),
+        )}
+        {restBudget && <div className="mt-6" />}
+        {restBudget && renderBudget(restBudget, realBudgets.length + 1)}
       </div>{' '}
       {focusedBudget && (
         <BudgetInfoModal

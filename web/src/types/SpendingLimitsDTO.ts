@@ -11,5 +11,6 @@ interface SpendingLimit {
 }
 
 export interface SpendingLimitsDTO {
+  commonBucketIds: string[]
   limits: SpendingLimit[]
 }

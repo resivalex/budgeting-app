@@ -9,6 +9,7 @@ interface UseBudgetsDomainReturn {
   availableMonths: string[]
   selectedMonth: string
   expectationRatio: number | null
+  commonBucketIds: string[]
   setSelectedMonth: (month: string) => void
   updateBudgetItem: (bucketId: string, currency: string, amount: number) => Promise<void>
   refreshSpendingLimits: () => Promise<void>
@@ -82,6 +83,7 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
     availableMonths,
     selectedMonth,
     expectationRatio,
+    commonBucketIds: spendingLimits.commonBucketIds,
     setSelectedMonth,
     updateBudgetItem,
     refreshSpendingLimits,

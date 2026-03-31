@@ -21,6 +21,7 @@ export default function BudgetsContainer({
     availableMonths,
     selectedMonth,
     expectationRatio,
+    commonBucketIds,
     setSelectedMonth,
     updateBudgetItem,
   } = useBudgetsDomain(dbService)
@@ -42,6 +43,7 @@ export default function BudgetsContainer({
       onFocus={setFocusedBudgetName}
       focusedBudget={focusedBudget}
       commonBudgetsExpectationRatio={expectationRatio}
+      commonBucketIds={commonBucketIds}
       onTransactionRemove={onTransactionRemove}
       availableCurrencies={availableCurrencies}
     />

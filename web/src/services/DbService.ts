@@ -91,6 +91,7 @@ export default class DbService {
       const doc = await this.localDB.get('cfg:spending_limits')
       const data = doc.value
       return {
+        commonBucketIds: data.common_bucket_ids || [],
         limits: (data.limits || []).map((limit: any) => ({
           bucketId: limit.bucket_id,
           categories: limit.categories || [],
@@ -102,7 +103,7 @@ export default class DbService {
         })),
       }
     } catch {
-      return { limits: [] }
+      return { commonBucketIds: [], limits: [] }
     }
   }
 
@@ -126,6 +127,7 @@ export default class DbService {
 
   async saveSpendingLimits(spendingLimits: SpendingLimitsDTO): Promise<void> {
     const snakeCaseValue = {
+      common_bucket_ids: spendingLimits.commonBucketIds,
       limits: spendingLimits.limits.map((limit) => ({
         bucket_id: limit.bucketId,
         categories: limit.categories,

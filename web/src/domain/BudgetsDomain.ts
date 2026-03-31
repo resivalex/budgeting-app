@@ -103,10 +103,12 @@ class BudgetsDomain {
       monthDate,
     )
 
+    const commonBucketIds = new Set(spendingLimits.commonBucketIds)
     const totalLimit = this.buildTotalLimit(
       monthSpendingLimits,
       currencyConfig.mainCurrency,
       conversionMap,
+      commonBucketIds,
     )
     const restLimit = this.buildRestLimit(currencyConfig.mainCurrency)
 
@@ -122,6 +124,9 @@ class BudgetsDomain {
     )
     const restBudget = this.calculateRestBudget(unassignedTransactions, restLimit, conversionMap)
 
+    const commonBudgets = realBudgets.filter((b) => commonBucketIds.has(b.bucketId))
+    const nonCommonBudgets = realBudgets.filter((b) => !commonBucketIds.has(b.bucketId))
+
     const totalBudget: BudgetResult = {
       bucketId: '',
       name: totalLimit.name,
@@ -129,15 +134,15 @@ class BudgetsDomain {
       currency: totalLimit.currency,
       amount: totalLimit.amount,
       categories: totalLimit.categories,
-      transactions: realBudgets.flatMap((b) => b.transactions),
-      spentAmount: realBudgets.reduce(
+      transactions: commonBudgets.flatMap((b) => b.transactions),
+      spentAmount: commonBudgets.reduce(
         (sum, b) => sum + b.spentAmount * conversionMap[b.currency][totalLimit.currency],
         0,
       ),
       isEditable: totalLimit.isEditable,
     }
 
-    return [totalBudget, ...realBudgets, restBudget]
+    return [totalBudget, ...commonBudgets, ...nonCommonBudgets, restBudget]
   }
 
   getAvailableMonths(spendingLimits: SpendingLimitsDTO): string[] {
@@ -263,6 +268,7 @@ class BudgetsDomain {
     monthSpendingLimits: MonthSpendingLimit[],
     mainCurrency: string,
     conversionMap: ConversionMapType,
+    commonBucketIds: Set<string>,
   ): MonthSpendingLimit {
     const totalLimit: MonthSpendingLimit = {
       bucketId: '',
@@ -273,11 +279,13 @@ class BudgetsDomain {
       amount: 0,
       isEditable: false,
     }
-    monthSpendingLimits.forEach((spendingLimit) => {
-      totalLimit.amount +=
-        spendingLimit.amount * conversionMap[spendingLimit.currency][mainCurrency]
-      totalLimit.categories = totalLimit.categories.concat(spendingLimit.categories)
-    })
+    monthSpendingLimits
+      .filter((sl) => commonBucketIds.has(sl.bucketId))
+      .forEach((spendingLimit) => {
+        totalLimit.amount +=
+          spendingLimit.amount * conversionMap[spendingLimit.currency][mainCurrency]
+        totalLimit.categories = totalLimit.categories.concat(spendingLimit.categories)
+      })
     return totalLimit
   }
 
