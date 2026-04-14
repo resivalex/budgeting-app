@@ -348,8 +348,6 @@ export default function TransactionFormContainer({
     return [...matching, ...nonMatching, ...(defaultOption ? [defaultOption] : [])]
   }, [bucketOptions, matchingBucketIds])
 
-  const allAccountOptions = useMemo(() => allColoredAccounts, [allColoredAccounts])
-
   const allBucketOptions = useMemo(() => bucketOptions, [bucketOptions])
 
   const handleAccountFromChange = (value: string) => setAccountFrom(value)
@@ -383,7 +381,6 @@ export default function TransactionFormContainer({
       accountTo={accountTo}
       bucketFrom={bucketFrom}
       bucketTo={bucketTo}
-      allAccounts={allAccountOptions}
       allBucketOptions={allBucketOptions}
       onAccountFromChange={handleAccountFromChange}
       onAccountToChange={handleAccountToChange}

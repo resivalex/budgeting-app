@@ -76,7 +76,6 @@ function StepByStepTransactionForm({
   onAccountToChange,
   onBucketFromChange,
   onBucketToChange,
-  allAccounts,
   allBucketOptions,
 }: {
   // Functional components
@@ -106,7 +105,6 @@ function StepByStepTransactionForm({
   currencies: string[]
   payees: string[]
   comments: string[]
-  allAccounts: ColoredAccountDetailsDTO[]
   allBucketOptions: SelectOption[]
 
   onTypeChange: (type: TransactionType) => void
@@ -263,18 +261,12 @@ function StepByStepTransactionForm({
     )
   }
 
-  const allAccountOptions = allAccounts.map((a) => ({
-    value: a.account,
-    label: `${formatFinancialAmount(a.balance)} ${convertCurrencyCodeToSymbol(a.currency)} | ${a.name}`,
-    color: a.color,
-  }))
-
   function AccountFromStep({ isExpanded, onExpand, onComplete, onCollapse }: AccountFromStepProps) {
     return (
       <Account
         AccountSelect={AccountSelect}
         account={accountFrom}
-        accountOptions={allAccountOptions}
+        accountOptions={accountOptions}
         onAccountChange={onAccountFromChange}
         isExpanded={isExpanded}
         onExpand={onExpand}
@@ -290,7 +282,7 @@ function StepByStepTransactionForm({
       <Account
         AccountSelect={AccountSelect}
         account={accountTo}
-        accountOptions={allAccountOptions}
+        accountOptions={accountOptions}
         onAccountChange={onAccountToChange}
         isExpanded={isExpanded}
         onExpand={onExpand}
