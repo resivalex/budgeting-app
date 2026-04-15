@@ -267,25 +267,34 @@ export default function TransactionFormContainer({
     let newBucketFrom = bucketFrom
     let newBucketTo = bucketTo
 
-    // Map main account between accountFrom/accountTo when the "visible" field changes
-    if (oldType === 'income' && (newType === 'expense' || newType === 'transfer')) {
-      if (!newAccountFrom && newAccountTo) {
-        newAccountFrom = newAccountTo
-        if (newType === 'expense') newAccountTo = ''
-      }
-    } else if ((oldType === 'expense' || oldType === 'transfer') && newType === 'income') {
-      if (!newAccountTo && newAccountFrom) {
+    // Map primary account to the new type's primary field if it's empty.
+    // Income uses accountTo as primary; expense/transfer use accountFrom.
+    if (newType !== 'custom') {
+      if (newType === 'income' && !newAccountTo && newAccountFrom) {
         newAccountTo = newAccountFrom
         newAccountFrom = ''
+      } else if (newType !== 'income' && !newAccountFrom && newAccountTo) {
+        newAccountFrom = newAccountTo
+        newAccountTo = ''
       }
     }
 
     // Map active bucket between bucketFrom (income) and bucketTo (expense)
     if (oldType === 'income' && newType === 'expense') {
       newBucketTo = newBucketFrom
-      newBucketFrom = 'default'
     } else if (oldType === 'expense' && newType === 'income') {
       newBucketFrom = newBucketTo
+    }
+
+    // Reset hidden fields to defaults
+    if (newType === 'income') {
+      newAccountFrom = ''
+      newBucketTo = 'default'
+    } else if (newType === 'expense') {
+      newAccountTo = ''
+      newBucketFrom = 'default'
+    } else if (newType === 'transfer') {
+      newBucketFrom = 'default'
       newBucketTo = 'default'
     }
 
