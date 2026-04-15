@@ -42,7 +42,6 @@ function StepByStepTransactionForm({
   onTypeChange,
   amount,
   onAmountChange,
-  account,
   currency,
   category,
   onCategoryChange,
@@ -54,7 +53,6 @@ function StepByStepTransactionForm({
   comment,
   onCommentChange,
   datetime,
-  onAccountChange,
   onDatetimeChange,
   onSave,
   accounts,
@@ -83,7 +81,6 @@ function StepByStepTransactionForm({
   type: TransactionType | ''
   currency: string
   amount: string
-  account: string
   category: string
   budgetName: string
   payee: string
@@ -105,7 +102,6 @@ function StepByStepTransactionForm({
   onTypeChange: (type: TransactionType) => void
   onCurrencyChange: (currency: string) => void
   onAmountChange: (amount: string) => void
-  onAccountChange: (account: string) => void
   onCategoryChange: (category: string) => void
   onBudgetNameChange: (budgetName: string) => void
   onPayeeChange: (payee: string) => void
@@ -181,9 +177,9 @@ function StepByStepTransactionForm({
     return (
       <Account
         AccountSelect={AccountSelect}
-        account={account}
+        account={type === 'income' ? accountTo : accountFrom}
         accountOptions={accountOptions}
-        onAccountChange={onAccountChange}
+        onAccountChange={type === 'income' ? onAccountToChange : onAccountFromChange}
         isExpanded={isExpanded}
         onExpand={onExpand}
         onComplete={onComplete}

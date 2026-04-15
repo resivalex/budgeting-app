@@ -89,7 +89,6 @@ class TransactionFormDomain {
   validateTransaction(params: {
     datetime: string
     amount: string
-    account: string
     category: string
     type: string
     currency: string
@@ -99,7 +98,6 @@ class TransactionFormDomain {
     const {
       datetime,
       amount,
-      account,
       category,
       type,
       currency,
@@ -113,11 +111,14 @@ class TransactionFormDomain {
       return !!(accountFrom && accountTo)
     }
 
-    return !!(
-      account &&
-      (type === 'transfer' || category) &&
-      (type !== 'transfer' || accountTo)
-    )
+    if (type === 'income') {
+      return !!(accountTo && category)
+    }
+    if (type === 'transfer') {
+      return !!(accountFrom && accountTo)
+    }
+    // expense
+    return !!(accountFrom && category)
   }
 
   getBucketIdsForCategory(category: string, spendingLimits: SpendingLimitsDTO): string[] {
@@ -129,7 +130,6 @@ class TransactionFormDomain {
   buildTransactionDTO(params: {
     id: string
     datetime: string
-    account: string
     category: string
     type: 'income' | 'expense' | 'transfer' | 'custom'
     amount: string
@@ -166,13 +166,8 @@ class TransactionFormDomain {
     return {
       _id: params.id,
       datetime: params.datetime,
-      account_from: type === 'income' ? externalAccount : params.account,
-      account_to:
-        type === 'expense'
-          ? externalAccount
-          : type === 'transfer'
-            ? params.accountTo
-            : params.account,
+      account_from: type === 'income' ? externalAccount : params.accountFrom,
+      account_to: type === 'expense' ? externalAccount : params.accountTo,
       category: type === 'transfer' ? '' : params.category,
       amount: (parseFloat(params.amount) || 0).toFixed(2),
       currency: params.currency,

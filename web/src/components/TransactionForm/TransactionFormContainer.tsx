@@ -15,7 +15,6 @@ import {
   convertToLocaleTime,
   convertToUtcTime,
   deriveTransactionType,
-  deriveAccount,
   deriveBucketId,
   TransactionType,
 } from '@/utils'
@@ -41,7 +40,6 @@ export default function TransactionFormContainer({
   const [amount, setAmount] = useState('')
   const [currency, setCurrency] = useState('')
   const [category, setCategory] = useState('')
-  const [account, setAccount] = useState('')
   const [payee, setPayee] = useState('')
   const [comment, setComment] = useState('')
   const [bucketId, setBucketId] = useState('default')
@@ -103,13 +101,11 @@ export default function TransactionFormContainer({
       setBucketFrom(t.bucket_from || 'default')
       setBucketTo(t.bucket_to || 'default')
       setPayee(t.counterparty)
-      setAccount('')
       setBucketId('default')
     } else {
-      setAccount(deriveAccount(t, externalAccountIds))
       setBucketId(deriveBucketId(t, externalAccountIds))
-      setAccountFrom('')
-      setAccountTo(txType === 'transfer' ? t.account_to : '')
+      setAccountFrom(txType === 'income' ? '' : t.account_from)
+      setAccountTo(txType === 'expense' ? '' : t.account_to)
       setBucketFrom('default')
       setBucketTo('default')
       if (txType === 'transfer') {
@@ -141,7 +137,6 @@ export default function TransactionFormContainer({
   const resetForm = () => {
     setType('')
     setAmount('')
-    setAccount('')
     setCurrency('')
     setCategory('')
     setPayee('')
@@ -226,7 +221,6 @@ export default function TransactionFormContainer({
   const isValid = domain.validateTransaction({
     datetime,
     amount,
-    account,
     category,
     type,
     currency,
@@ -244,7 +238,6 @@ export default function TransactionFormContainer({
     const transaction = domain.buildTransactionDTO({
       id: transactionId || 'tx:' + uuidv4(),
       datetime: convertToUtcTime(datetime),
-      account,
       category,
       type,
       amount,
@@ -264,8 +257,8 @@ export default function TransactionFormContainer({
     if (domain.shouldResetCurrency(newType, newCurrency, allCurrencies, coloredAccounts)) {
       setCurrency('')
     }
-    if (domain.shouldResetAccount(account, newCurrency, coloredAccounts)) {
-      setAccount('')
+    if (domain.shouldResetAccount(accountFrom, newCurrency, coloredAccounts)) {
+      setAccountFrom('')
     }
     if (domain.shouldResetAccount(accountTo, newCurrency, coloredAccounts)) {
       setAccountTo('')
@@ -283,12 +276,7 @@ export default function TransactionFormContainer({
 
   const handleCommentChange = (comment: string) => setComment(comment)
 
-  const handleAccountChange = (value: string) => {
-    if (accountTo === value) {
-      setAccountTo(account)
-    }
-    setAccount(value)
-  }
+
 
   const handleCurrencyChange = (currency: string) => {
     setCurrency(currency)
@@ -334,10 +322,15 @@ export default function TransactionFormContainer({
 
   const allBucketOptions = useMemo(() => bucketOptions, [bucketOptions])
 
-  const handleAccountFromChange = (value: string) => setAccountFrom(value)
+  const handleAccountFromChange = (value: string) => {
+    if (accountTo === value) {
+      setAccountTo(accountFrom)
+    }
+    setAccountFrom(value)
+  }
   const handleAccountToChange = (value: string) => {
-    if (account === value) {
-      setAccount(accountTo)
+    if (accountFrom === value) {
+      setAccountFrom(accountTo)
     }
     setAccountTo(value)
   }
@@ -357,7 +350,6 @@ export default function TransactionFormContainer({
       // Basic transaction details
       type={type}
       amount={amount}
-      account={account}
       currency={currency}
       category={category}
       budgetName={bucketId}
@@ -377,7 +369,6 @@ export default function TransactionFormContainer({
       // Event handlers for basic transaction details
       onTypeChange={handleTypeChange}
       onAmountChange={handleAmountChange}
-      onAccountChange={handleAccountChange}
       onCategoryChange={handleCategoryChange}
       onBudgetNameChange={handleBucketIdChange}
       onPayeeChange={handlePayeeChange}

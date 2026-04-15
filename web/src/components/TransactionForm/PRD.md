@@ -19,7 +19,7 @@ Step-by-step transaction creation and editing interface with intelligent default
 - **Budget-First Flow**: The budget (bucket) field is filled before category. After selecting an account, the user selects a budget first, then a category.
 - **Budget-Aware Category Ordering**: After a budget is selected, the category dropdown shows the categories belonging to that budget at the top, followed by all other categories.
 - **Bucket Dropdown**: Users can manually expand and change the bucket; the dropdown lists buckets matching the current category first, then non-matching buckets, with the default bucket always last.
-- **Transfer Account Swap**: If the user selects the same account for both source and destination in a transfer, they are automatically swapped to prevent duplicates. Transfers reuse the `accountTo` field (shared with custom type) for the destination account
+- **Transfer Account Swap**: If the user selects the same account for both source and destination, they are automatically swapped to prevent duplicates. All transaction types use unified `accountFrom`/`accountTo` fields — for income the Account step sets `accountTo`, for expense/transfer it sets `accountFrom`
 - **Date/Time Handling**: Proper timezone conversion between local and UTC times
 
 The form orchestrates all individual input components (see [FormInputs PRD](./FormInputs/PRD.md)) within a cohesive step-by-step interface that adapts based on transaction type and user progress.
