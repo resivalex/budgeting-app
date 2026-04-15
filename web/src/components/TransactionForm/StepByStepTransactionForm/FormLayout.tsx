@@ -49,13 +49,6 @@ export interface PayeeStepProps {
   onCollapse: () => void
 }
 
-export interface PayeeTransferAccountStepProps {
-  isExpanded: boolean
-  onExpand: () => void
-  onComplete: () => void
-  onCollapse: () => void
-}
-
 export interface AccountFromStepProps {
   isExpanded: boolean
   onExpand: () => void
@@ -105,7 +98,6 @@ const accountStep = 'account'
 const categoryStep = 'category'
 const budgetNameStep = 'budgetName'
 const payeeStep = 'payee'
-const payeeTransferAccountStep = 'payeeTransferAccount'
 const accountFromStep = 'accountFrom'
 const accountToStep = 'accountTo'
 const bucketFromStep = 'bucketFrom'
@@ -122,7 +114,6 @@ function FormLayout({
   CategoryStep,
   BudgetNameStep,
   PayeeStep,
-  PayeeTransferAccountStep,
   AccountFromStep,
   AccountToStep,
   BucketFromStep,
@@ -139,7 +130,6 @@ function FormLayout({
   CategoryStep: (props: CategoryStepProps) => React.ReactNode
   BudgetNameStep: (props: BudgetNameStepProps) => React.ReactNode
   PayeeStep: (props: PayeeStepProps) => React.ReactNode
-  PayeeTransferAccountStep: (props: PayeeTransferAccountStepProps) => React.ReactNode
   AccountFromStep: (props: AccountFromStepProps) => React.ReactNode
   AccountToStep: (props: AccountToStepProps) => React.ReactNode
   BucketFromStep: (props: BucketFromStepProps) => React.ReactNode
@@ -238,13 +228,13 @@ function FormLayout({
             isExpanded: currentStep === accountStep,
             onExpand: () => setCurrentStep(accountStep),
             onComplete: () =>
-              setCurrentStep(type === 'transfer' ? payeeTransferAccountStep : budgetNameStep),
+              setCurrentStep(type === 'transfer' ? accountToStep : budgetNameStep),
             onCollapse: collapseStep,
           })}
           {type === 'transfer' ? (
-            PayeeTransferAccountStep({
-              isExpanded: currentStep === payeeTransferAccountStep,
-              onExpand: () => setCurrentStep(payeeTransferAccountStep),
+            AccountToStep({
+              isExpanded: currentStep === accountToStep,
+              onExpand: () => setCurrentStep(accountToStep),
               onComplete: () => setCurrentStep(commentStep),
               onCollapse: collapseStep,
             })

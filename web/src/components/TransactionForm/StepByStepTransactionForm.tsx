@@ -6,7 +6,6 @@ import {
   Currency,
   Amount,
   Account,
-  PayeeTransferAccount,
   Category,
   BudgetName,
   Payee,
@@ -22,7 +21,6 @@ import FormLayout, {
   CategoryStepProps,
   BudgetNameStepProps,
   PayeeStepProps,
-  PayeeTransferAccountStepProps,
   AccountFromStepProps,
   AccountToStepProps,
   BucketFromStepProps,
@@ -53,8 +51,6 @@ function StepByStepTransactionForm({
   budgetNameOptions,
   payee,
   onPayeeChange,
-  payeeTransferAccount,
-  onPayeeTransferAccountChange,
   comment,
   onCommentChange,
   datetime,
@@ -91,7 +87,6 @@ function StepByStepTransactionForm({
   category: string
   budgetName: string
   payee: string
-  payeeTransferAccount: string
   comment: string
   datetime: Date
   accountFrom: string
@@ -114,7 +109,6 @@ function StepByStepTransactionForm({
   onCategoryChange: (category: string) => void
   onBudgetNameChange: (budgetName: string) => void
   onPayeeChange: (payee: string) => void
-  onPayeeTransferAccountChange: (payeeTransferAccount: string) => void
   onCommentChange: (comment: string) => void
   onDatetimeChange: (datetime: Date | null) => void
   onAccountFromChange: (accountFrom: string) => void
@@ -241,26 +235,6 @@ function StepByStepTransactionForm({
     )
   }
 
-  function PayeeTransferAccountStep({
-    isExpanded,
-    onExpand,
-    onComplete,
-    onCollapse,
-  }: PayeeTransferAccountStepProps) {
-    return (
-      <PayeeTransferAccount
-        AccountSelect={AccountSelect}
-        payeeTransferAccount={payeeTransferAccount}
-        accountOptions={accountOptions}
-        onPayeeTransferAccountChange={onPayeeTransferAccountChange}
-        isExpanded={isExpanded}
-        onExpand={onExpand}
-        onComplete={onComplete}
-        onCollapse={onCollapse}
-      />
-    )
-  }
-
   function AccountFromStep({ isExpanded, onExpand, onComplete, onCollapse }: AccountFromStepProps) {
     return (
       <Account
@@ -368,7 +342,6 @@ function StepByStepTransactionForm({
       CategoryStep={CategoryStep}
       BudgetNameStep={BudgetNameStep}
       PayeeStep={PayeeStep}
-      PayeeTransferAccountStep={PayeeTransferAccountStep}
       AccountFromStep={AccountFromStep}
       AccountToStep={AccountToStep}
       BucketFromStep={BucketFromStep}

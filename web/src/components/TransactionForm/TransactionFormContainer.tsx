@@ -42,7 +42,6 @@ export default function TransactionFormContainer({
   const [currency, setCurrency] = useState('')
   const [category, setCategory] = useState('')
   const [account, setAccount] = useState('')
-  const [payeeTransferAccount, setPayeeTransferAccount] = useState('')
   const [payee, setPayee] = useState('')
   const [comment, setComment] = useState('')
   const [bucketId, setBucketId] = useState('default')
@@ -105,21 +104,18 @@ export default function TransactionFormContainer({
       setBucketTo(t.bucket_to || 'default')
       setPayee(t.counterparty)
       setAccount('')
-      setPayeeTransferAccount('')
       setBucketId('default')
     } else {
       setAccount(deriveAccount(t, externalAccountIds))
       setBucketId(deriveBucketId(t, externalAccountIds))
       setAccountFrom('')
-      setAccountTo('')
+      setAccountTo(txType === 'transfer' ? t.account_to : '')
       setBucketFrom('default')
       setBucketTo('default')
       if (txType === 'transfer') {
-        setPayeeTransferAccount(t.account_to)
         setPayee('')
       } else {
         setPayee(t.counterparty)
-        setPayeeTransferAccount('')
       }
     }
   }
@@ -149,7 +145,6 @@ export default function TransactionFormContainer({
     setCurrency('')
     setCategory('')
     setPayee('')
-    setPayeeTransferAccount('')
     setComment('')
     setBucketId('default')
     setDatetime(new Date().toISOString())
@@ -235,7 +230,6 @@ export default function TransactionFormContainer({
     category,
     type,
     currency,
-    payeeTransferAccount,
     accountFrom,
     accountTo,
   })
@@ -256,7 +250,6 @@ export default function TransactionFormContainer({
       amount,
       currency,
       payee,
-      payeeTransferAccount,
       comment,
       bucket_id: bucketId,
       accountFrom,
@@ -274,8 +267,8 @@ export default function TransactionFormContainer({
     if (domain.shouldResetAccount(account, newCurrency, coloredAccounts)) {
       setAccount('')
     }
-    if (domain.shouldResetAccount(payeeTransferAccount, newCurrency, coloredAccounts)) {
-      setPayeeTransferAccount('')
+    if (domain.shouldResetAccount(accountTo, newCurrency, coloredAccounts)) {
+      setAccountTo('')
     }
   }
 
@@ -288,20 +281,11 @@ export default function TransactionFormContainer({
 
   const handlePayeeChange = (payee: string) => setPayee(payee)
 
-  const handlePayeeTransferAccountChange = (value: string) => {
-    // account and payeeTransferAccount should not be the same
-    if (account === value) {
-      setAccount(payeeTransferAccount)
-    }
-    setPayeeTransferAccount(value)
-  }
-
   const handleCommentChange = (comment: string) => setComment(comment)
 
   const handleAccountChange = (value: string) => {
-    // account and payeeTransferAccount should not be the same
-    if (payeeTransferAccount === value) {
-      setPayeeTransferAccount(account)
+    if (accountTo === value) {
+      setAccountTo(account)
     }
     setAccount(value)
   }
@@ -351,7 +335,12 @@ export default function TransactionFormContainer({
   const allBucketOptions = useMemo(() => bucketOptions, [bucketOptions])
 
   const handleAccountFromChange = (value: string) => setAccountFrom(value)
-  const handleAccountToChange = (value: string) => setAccountTo(value)
+  const handleAccountToChange = (value: string) => {
+    if (account === value) {
+      setAccount(accountTo)
+    }
+    setAccountTo(value)
+  }
   const handleBucketFromChange = (value: string) => setBucketFrom(value)
   const handleBucketToChange = (value: string) => setBucketTo(value)
 
@@ -373,7 +362,6 @@ export default function TransactionFormContainer({
       category={category}
       budgetName={bucketId}
       payee={payee}
-      payeeTransferAccount={payeeTransferAccount}
       comment={comment}
       datetime={viewDatetime}
       // Custom type fields
@@ -393,7 +381,6 @@ export default function TransactionFormContainer({
       onCategoryChange={handleCategoryChange}
       onBudgetNameChange={handleBucketIdChange}
       onPayeeChange={handlePayeeChange}
-      onPayeeTransferAccountChange={handlePayeeTransferAccountChange}
       onCommentChange={handleCommentChange}
       onDatetimeChange={handleDatetimeChange}
       // Dropdown options

@@ -93,7 +93,6 @@ class TransactionFormDomain {
     category: string
     type: string
     currency: string
-    payeeTransferAccount: string
     accountFrom: string
     accountTo: string
   }): boolean {
@@ -104,7 +103,6 @@ class TransactionFormDomain {
       category,
       type,
       currency,
-      payeeTransferAccount,
       accountFrom,
       accountTo,
     } = params
@@ -118,7 +116,7 @@ class TransactionFormDomain {
     return !!(
       account &&
       (type === 'transfer' || category) &&
-      (type !== 'transfer' || payeeTransferAccount)
+      (type !== 'transfer' || accountTo)
     )
   }
 
@@ -137,7 +135,6 @@ class TransactionFormDomain {
     amount: string
     currency: string
     payee: string
-    payeeTransferAccount: string
     comment: string
     bucket_id: string
     accountFrom: string
@@ -174,7 +171,7 @@ class TransactionFormDomain {
         type === 'expense'
           ? externalAccount
           : type === 'transfer'
-            ? params.payeeTransferAccount
+            ? params.accountTo
             : params.account,
       category: type === 'transfer' ? '' : params.category,
       amount: (parseFloat(params.amount) || 0).toFixed(2),

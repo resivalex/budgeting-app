@@ -2,7 +2,6 @@ import Type from './Type'
 import Currency from './Currency'
 import Amount from './Amount'
 import Account from './Account'
-import PayeeTransferAccount from './PayeeTransferAccount'
 import Category from './Category'
 import BudgetName from './BudgetName'
 import Payee from './Payee'
@@ -15,7 +14,6 @@ export {
   Currency,
   Amount,
   Account,
-  PayeeTransferAccount,
   Category,
   BudgetName,
   Payee,
