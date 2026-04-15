@@ -265,9 +265,56 @@ export default function TransactionFormContainer({
     }
   }
 
-  const handleTypeChange = (type: TransactionType) => {
-    setType(type)
-    adjustCurrencyAndAccounts(type, currency)
+  const handleTypeChange = (newType: TransactionType) => {
+    const oldType = type
+
+    let newAccountFrom = accountFrom
+    let newAccountTo = accountTo
+    let newBucketId = bucketId
+    let newBucketFrom = bucketFrom
+    let newBucketTo = bucketTo
+
+    // Map main account between accountFrom/accountTo when the "visible" field changes
+    if (oldType === 'income' && (newType === 'expense' || newType === 'transfer')) {
+      if (!newAccountFrom && newAccountTo) {
+        newAccountFrom = newAccountTo
+        if (newType === 'expense') newAccountTo = ''
+      }
+    } else if ((oldType === 'expense' || oldType === 'transfer') && newType === 'income') {
+      if (!newAccountTo && newAccountFrom) {
+        newAccountTo = newAccountFrom
+        newAccountFrom = ''
+      }
+    }
+
+    // Map buckets between bucketId (standard) and bucketFrom/bucketTo (custom)
+    if (oldType !== 'custom' && newType === 'custom') {
+      if (oldType === 'income') newBucketFrom = newBucketId
+      else if (oldType === 'expense') newBucketTo = newBucketId
+    } else if (oldType === 'custom' && newType !== 'custom') {
+      if (newType === 'income') newBucketId = newBucketFrom
+      else if (newType === 'expense') newBucketId = newBucketTo
+    }
+
+    // Validate currency and accounts for the new type
+    let newCurrency = currency
+    if (domain.shouldResetCurrency(newType, newCurrency, allCurrencies, coloredAccounts)) {
+      newCurrency = ''
+    }
+    if (domain.shouldResetAccount(newAccountFrom, newCurrency, coloredAccounts)) {
+      newAccountFrom = ''
+    }
+    if (domain.shouldResetAccount(newAccountTo, newCurrency, coloredAccounts)) {
+      newAccountTo = ''
+    }
+
+    setType(newType)
+    setCurrency(newCurrency)
+    setAccountFrom(newAccountFrom)
+    setAccountTo(newAccountTo)
+    setBucketId(newBucketId)
+    setBucketFrom(newBucketFrom)
+    setBucketTo(newBucketTo)
   }
 
   const handleAmountChange = (amount: string) => setAmount(amount)
