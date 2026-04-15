@@ -95,15 +95,7 @@ class TransactionFormDomain {
     accountFrom: string
     accountTo: string
   }): boolean {
-    const {
-      datetime,
-      amount,
-      category,
-      type,
-      currency,
-      accountFrom,
-      accountTo,
-    } = params
+    const { datetime, amount, category, type, currency, accountFrom, accountTo } = params
 
     if (!datetime || !amount || !type || !currency) return false
 
@@ -136,7 +128,6 @@ class TransactionFormDomain {
     currency: string
     payee: string
     comment: string
-    bucket_id: string
     accountFrom: string
     accountTo: string
     bucketFrom: string
@@ -144,7 +135,6 @@ class TransactionFormDomain {
   }): TransactionDTO {
     const { type } = params
     const externalAccount = `external_${params.currency.toLowerCase()}`
-    const bucketId = params.bucket_id || 'default'
 
     if (type === 'custom') {
       return {
@@ -173,8 +163,8 @@ class TransactionFormDomain {
       currency: params.currency,
       counterparty: type === 'transfer' ? '' : params.payee,
       comment: params.comment,
-      bucket_from: type === 'income' ? bucketId : 'default',
-      bucket_to: type === 'expense' ? bucketId : 'default',
+      bucket_from: params.bucketFrom || 'default',
+      bucket_to: params.bucketTo || 'default',
       kind: 'transaction',
     }
   }

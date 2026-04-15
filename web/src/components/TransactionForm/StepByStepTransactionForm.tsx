@@ -45,8 +45,6 @@ function StepByStepTransactionForm({
   currency,
   category,
   onCategoryChange,
-  budgetName,
-  onBudgetNameChange,
   budgetNameOptions,
   payee,
   onPayeeChange,
@@ -82,7 +80,6 @@ function StepByStepTransactionForm({
   currency: string
   amount: string
   category: string
-  budgetName: string
   payee: string
   comment: string
   datetime: Date
@@ -103,7 +100,6 @@ function StepByStepTransactionForm({
   onCurrencyChange: (currency: string) => void
   onAmountChange: (amount: string) => void
   onCategoryChange: (category: string) => void
-  onBudgetNameChange: (budgetName: string) => void
   onPayeeChange: (payee: string) => void
   onCommentChange: (comment: string) => void
   onDatetimeChange: (datetime: Date | null) => void
@@ -205,9 +201,9 @@ function StepByStepTransactionForm({
   function BudgetNameStep({ isExpanded, onExpand, onComplete, onCollapse }: BudgetNameStepProps) {
     return (
       <BudgetName
-        budgetName={budgetName}
+        budgetName={type === 'income' ? bucketFrom : bucketTo}
         budgetNameOptions={budgetNameOptions}
-        onBudgetNameChange={onBudgetNameChange}
+        onBudgetNameChange={type === 'income' ? onBucketFromChange : onBucketToChange}
         isExpanded={isExpanded}
         onExpand={onExpand}
         onComplete={onComplete}

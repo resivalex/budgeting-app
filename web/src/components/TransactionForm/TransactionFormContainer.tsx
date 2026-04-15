@@ -15,7 +15,6 @@ import {
   convertToLocaleTime,
   convertToUtcTime,
   deriveTransactionType,
-  deriveBucketId,
   TransactionType,
 } from '@/utils'
 import StepByStepTransactionForm from './StepByStepTransactionForm'
@@ -42,7 +41,6 @@ export default function TransactionFormContainer({
   const [category, setCategory] = useState('')
   const [payee, setPayee] = useState('')
   const [comment, setComment] = useState('')
-  const [bucketId, setBucketId] = useState('default')
   const [datetime, setDatetime] = useState(new Date().toISOString())
   const [accountFrom, setAccountFrom] = useState('')
   const [accountTo, setAccountTo] = useState('')
@@ -101,13 +99,11 @@ export default function TransactionFormContainer({
       setBucketFrom(t.bucket_from || 'default')
       setBucketTo(t.bucket_to || 'default')
       setPayee(t.counterparty)
-      setBucketId('default')
     } else {
-      setBucketId(deriveBucketId(t, externalAccountIds))
       setAccountFrom(txType === 'income' ? '' : t.account_from)
       setAccountTo(txType === 'expense' ? '' : t.account_to)
-      setBucketFrom('default')
-      setBucketTo('default')
+      setBucketFrom(txType === 'income' ? t.bucket_from || 'default' : 'default')
+      setBucketTo(txType === 'expense' ? t.bucket_to || 'default' : 'default')
       if (txType === 'transfer') {
         setPayee('')
       } else {
@@ -141,7 +137,6 @@ export default function TransactionFormContainer({
     setCategory('')
     setPayee('')
     setComment('')
-    setBucketId('default')
     setDatetime(new Date().toISOString())
     setAccountFrom('')
     setAccountTo('')
@@ -244,7 +239,6 @@ export default function TransactionFormContainer({
       currency,
       payee,
       comment,
-      bucket_id: bucketId,
       accountFrom,
       accountTo,
       bucketFrom,
@@ -270,7 +264,6 @@ export default function TransactionFormContainer({
 
     let newAccountFrom = accountFrom
     let newAccountTo = accountTo
-    let newBucketId = bucketId
     let newBucketFrom = bucketFrom
     let newBucketTo = bucketTo
 
@@ -287,13 +280,13 @@ export default function TransactionFormContainer({
       }
     }
 
-    // Map buckets between bucketId (standard) and bucketFrom/bucketTo (custom)
-    if (oldType !== 'custom' && newType === 'custom') {
-      if (oldType === 'income') newBucketFrom = newBucketId
-      else if (oldType === 'expense') newBucketTo = newBucketId
-    } else if (oldType === 'custom' && newType !== 'custom') {
-      if (newType === 'income') newBucketId = newBucketFrom
-      else if (newType === 'expense') newBucketId = newBucketTo
+    // Map active bucket between bucketFrom (income) and bucketTo (expense)
+    if (oldType === 'income' && newType === 'expense') {
+      newBucketTo = newBucketFrom
+      newBucketFrom = 'default'
+    } else if (oldType === 'expense' && newType === 'income') {
+      newBucketFrom = newBucketTo
+      newBucketTo = 'default'
     }
 
     // Validate currency and accounts for the new type
@@ -312,7 +305,6 @@ export default function TransactionFormContainer({
     setCurrency(newCurrency)
     setAccountFrom(newAccountFrom)
     setAccountTo(newAccountTo)
-    setBucketId(newBucketId)
     setBucketFrom(newBucketFrom)
     setBucketTo(newBucketTo)
   }
@@ -323,8 +315,6 @@ export default function TransactionFormContainer({
 
   const handleCommentChange = (comment: string) => setComment(comment)
 
-
-
   const handleCurrencyChange = (currency: string) => {
     setCurrency(currency)
     adjustCurrencyAndAccounts(type, currency)
@@ -332,18 +322,18 @@ export default function TransactionFormContainer({
 
   const handleCategoryChange = (category: string) => setCategory(category)
 
-  const handleBucketIdChange = (id: string) => setBucketId(id)
-
   const matchingBucketIds = useMemo(
     () => domain.getBucketIdsForCategory(category, spendingLimits),
     [domain, category, spendingLimits],
   )
 
+  const activeBucket = type === 'income' ? bucketFrom : type === 'expense' ? bucketTo : 'default'
+
   const orderedCategoryOptions = useMemo(() => {
-    if (bucketId === 'default') {
+    if (activeBucket === 'default') {
       return categoryOptions
     }
-    const spendingLimit = spendingLimits.limits.find((l) => l.bucketId === bucketId)
+    const spendingLimit = spendingLimits.limits.find((l) => l.bucketId === activeBucket)
     if (!spendingLimit) {
       return categoryOptions
     }
@@ -354,7 +344,7 @@ export default function TransactionFormContainer({
       (o) => !spendingLimit.categories.includes(o.value),
     )
     return [...budgetCategories, ...otherCategories]
-  }, [categoryOptions, bucketId, spendingLimits])
+  }, [categoryOptions, activeBucket, spendingLimits])
 
   const orderedBucketOptions = useMemo(() => {
     const matching = bucketOptions.filter(
@@ -399,7 +389,6 @@ export default function TransactionFormContainer({
       amount={amount}
       currency={currency}
       category={category}
-      budgetName={bucketId}
       payee={payee}
       comment={comment}
       datetime={viewDatetime}
@@ -417,7 +406,6 @@ export default function TransactionFormContainer({
       onTypeChange={handleTypeChange}
       onAmountChange={handleAmountChange}
       onCategoryChange={handleCategoryChange}
-      onBudgetNameChange={handleBucketIdChange}
       onPayeeChange={handlePayeeChange}
       onCommentChange={handleCommentChange}
       onDatetimeChange={handleDatetimeChange}

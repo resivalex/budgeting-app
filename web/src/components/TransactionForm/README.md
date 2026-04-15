@@ -11,7 +11,7 @@ TransactionFormContainer         ← state management, domain logic, routing
               └── FormInputs/    ← individual field input components
 ```
 
-- **`TransactionFormContainer`**: Owns all form state, initializes from an existing transaction in edit mode (via `:transactionId` URL param), delegates business logic to `useTransactionFormDomain`, and converts between UTC and local time on load/save. All transaction types use `accountFrom`/`accountTo` directly — the Account step maps to `accountTo` for income, `accountFrom` for expense/transfer.
+- **`TransactionFormContainer`**: Owns all form state, initializes from an existing transaction in edit mode (via `:transactionId` URL param), delegates business logic to `useTransactionFormDomain`, and converts between UTC and local time on load/save. All transaction types use `accountFrom`/`accountTo` and `bucketFrom`/`bucketTo` directly — the Account step maps to `accountTo` for income, `accountFrom` for expense/transfer; the BudgetName step maps to `bucketFrom` for income, `bucketTo` for expense.
 - **`StepByStepTransactionForm`**: Pure presentational component. Wraps each `FormInputs` field in a step adapter and passes them to `FormLayout`.
 - **`FormLayout`** (`StepByStepTransactionForm/`): Orchestrates step progression and conditional field visibility based on transaction type (income / expense / transfer). Provides `onCollapse` callbacks for mobile overlay dismissal.
 - **`FormInputs/`**: Individual step components — Type, Currency, Amount, Account, Category, BudgetName, Payee, Comment, Datetime, SaveButton.

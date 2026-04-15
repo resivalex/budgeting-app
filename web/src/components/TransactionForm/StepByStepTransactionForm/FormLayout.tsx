@@ -227,8 +227,7 @@ function FormLayout({
           {AccountStep({
             isExpanded: currentStep === accountStep,
             onExpand: () => setCurrentStep(accountStep),
-            onComplete: () =>
-              setCurrentStep(type === 'transfer' ? accountToStep : budgetNameStep),
+            onComplete: () => setCurrentStep(type === 'transfer' ? accountToStep : budgetNameStep),
             onCollapse: collapseStep,
           })}
           {type === 'transfer' ? (
