@@ -20,7 +20,7 @@ Category expansions (human-readable category labels) and account visual properti
 
 ### Budgets
 
-Users can define monthly spending limits per bucket and track actuals against them. Every transaction is assigned to a bucket; unassigned transactions appear in a "Другое" (Other) group. A "ОБЩИЙ" (Total) budget summarizes spending across all defined buckets. Multi-currency accounts are supported through currency conversion. Budget limits can be updated in-app.
+Users can define monthly spending limits per bucket and track actuals against them. Spending is determined purely by `bucket_from`/`bucket_to` fields: `bucket_to` matching a budget increases its spent amount, `bucket_from` matching reduces it. This means a single transaction can affect two budgets simultaneously (e.g., a transfer between tracked buckets). Unassigned transactions appear in a "Другое" (Other) group. A "ОБЩИЙ" (Total) budget summarizes spending across all defined buckets. Multi-currency accounts are supported through currency conversion. Budget limits can be updated in-app.
 
 ### Transaction Form
 

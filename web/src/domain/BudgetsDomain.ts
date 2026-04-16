@@ -319,15 +319,15 @@ class BudgetsDomain {
     }
 
     transactions.forEach((transaction) => {
-      const bucketId =
-        transaction.bucket_to !== 'default' ? transaction.bucket_to : transaction.bucket_from
-      if (bucketId === spendingLimit.bucketId) {
+      const convertedAmount =
+        parseFloat(transaction.amount) * conversionMap[transaction.currency][budget.currency]
+      let delta = 0
+      if (transaction.bucket_to === spendingLimit.bucketId) delta += convertedAmount
+      if (transaction.bucket_from === spendingLimit.bucketId) delta -= convertedAmount
+
+      if (delta !== 0) {
         budget.transactions.push(transaction)
-        const sign = transaction.bucket_to !== 'default' ? 1 : -1
-        budget.spentAmount +=
-          sign *
-          parseFloat(transaction.amount) *
-          conversionMap[transaction.currency][budget.currency]
+        budget.spentAmount += delta
       }
     })
 
@@ -353,9 +353,10 @@ class BudgetsDomain {
 
     unassignedTransactions.forEach((transaction) => {
       budget.transactions.push(transaction)
-      const sign = transaction.bucket_to !== 'default' ? 1 : -1
-      budget.spentAmount +=
-        sign * parseFloat(transaction.amount) * conversionMap[transaction.currency][budget.currency]
+      const convertedAmount =
+        parseFloat(transaction.amount) * conversionMap[transaction.currency][budget.currency]
+      if (transaction.bucket_to !== 'default') budget.spentAmount += convertedAmount
+      if (transaction.bucket_from !== 'default') budget.spentAmount -= convertedAmount
     })
 
     return budget
