@@ -39,7 +39,7 @@ External accounts are identified by `owner === 'external'` in the account's prop
 
 ### Transaction Filtering
 
-Users can filter the transaction list by account, payee, comment, category, and bucket. Text search supports mistyped input due to cross-layout (English/Russian keyboard) matching. Account filter matches against both `account_from` and `account_to` fields.
+Users can filter the transaction list by account, payee, comment, category, and bucket. Text search supports mistyped input due to cross-layout (English/Russian keyboard) matching. Account filter matches against both `account_from` and `account_to` fields. Bucket filter matches against both `bucket_from` and `bucket_to` fields.
 
 ### Export
 
