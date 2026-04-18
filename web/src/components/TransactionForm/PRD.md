@@ -4,23 +4,35 @@
 
 Step-by-step transaction creation and editing interface with intelligent defaults, validation, and bucket assignment.
 
-## Functionality
+## Step-by-Step Workflow
 
-- **Step-by-Step Flow**: Progressive form completion that guides users through transaction entry one field at a time
-- **Mobile Fullscreen Selection**: On mobile devices (≤768px), dropdown and suggestion fields open as fullscreen overlays instead of inline dropdowns, ensuring all options remain visible and accessible above the virtual keyboard. The overlay dynamically resizes to the visible viewport when the software keyboard is shown. Fields requiring explicit confirmation (free-text inputs and fields without auto-close on selection) display a floating confirm button at the bottom-right corner for comfortable one-handed use.
-- **Transaction Types**: Support for income, expense, transfer, and **custom** transactions with conditional field display. Custom transactions allow free selection of both account_from/account_to and bucket_from/bucket_to from all accounts (including external); account lists are filtered by the selected currency, same as other transaction types. For custom and transfer types, origin and destination accounts are independent and may have equal values. Custom amounts display in purple.
-- **Smart Initialization**: Automatically populates form fields when editing existing transactions
-- **Intelligent Defaults**: Pre-fills fields based on transaction history and user patterns
-- **Real-time Validation**: Validates form completeness and enables save only when all required fields are valid
-- **Edit Mode**: Users can navigate directly to a transaction's edit URL to modify an existing transaction; navigating to an invalid transaction ID redirects to the home screen
-- **Historical Data Integration**: Leverages past transaction history for smart suggestions and autocomplete
-- **Multi-currency Support**: Handles different currencies with proper conversion and display
-- **Category Extensions**: Supports expanded category names for better organization
-- **Budget-First Flow**: The budget (bucket) field is filled before category. After selecting an account, the user selects a budget first, then a category.
-- **Budget-Aware Category Ordering**: After a budget is selected, the category dropdown shows the categories belonging to that budget at the top, followed by all other categories.
-- **Bucket Dropdown**: Users can manually expand and change the bucket; the dropdown lists buckets matching the current category first, then non-matching buckets, with the default bucket always last.
-- **Independent Account Selection**: For custom and transfer transaction types, origin and destination accounts are fully independent — selecting the same value for both is allowed. All transaction types use unified `accountFrom`/`accountTo` fields — for income the Account step sets `accountTo`, for expense/transfer it sets `accountFrom`
-- **Value Preservation on Type Switch**: Switching transaction type preserves the user's primary account and active bucket while resetting all hidden fields to defaults. The primary account maps to `accountTo` for income and `accountFrom` for expense/transfer — if the new primary field is empty, the value is moved from the old primary. The active bucket moves between `bucketFrom` (income) and `bucketTo` (expense) on income↔expense switches. Hidden account fields reset to `''` and hidden bucket fields reset to `'default'`
-- **Date/Time Handling**: Proper timezone conversion between local and UTC times
+The form guides users through fields one at a time. See [FormInputs PRD](./FormInputs/PRD.md) for individual field behavior and mobile experience.
 
-The form orchestrates all individual input components (see [FormInputs PRD](./FormInputs/PRD.md)) within a cohesive step-by-step interface that adapts based on transaction type and user progress.
+## Transaction Type Rules
+
+Supports income, expense, transfer, and custom types. For transaction type derivation rules, see [Domain PRD](../../domain/PRD.md).
+
+- **Custom transactions**: Allow free selection of both account_from/account_to and bucket_from/bucket_to from all accounts (including external); account lists are filtered by selected currency. Custom amounts display in purple.
+- **Custom and transfer**: Origin and destination accounts are independent and may be equal.
+
+## Field Visibility by Type
+
+- **Income/Expense**: Account, Category, BudgetName, Payee, Comment
+- **Transfer**: Account (source), Account (destination), Category
+- **Custom**: Account From, Account To, Bucket From, Bucket To, Category, Payee, Comment
+
+## Smart Initialization & Defaults
+
+- Edit mode: pre-fills all fields from the existing transaction; navigating to an invalid transaction ID redirects to home
+- Bucket auto-assigned from selected category
+- Budget-first flow: after account selection, user picks budget before category
+- Budget-aware category ordering: categories belonging to the selected budget appear first
+- Bucket dropdown: matching buckets first, then non-matching, default bucket always last
+- Payee/comment suggestions filtered by context from transaction history
+
+## Value Preservation on Type Switch
+
+Switching transaction type preserves the primary account and active bucket while resetting hidden fields:
+- Primary account maps to `accountTo` for income, `accountFrom` for expense/transfer — if the new primary field is empty, the value moves from the old primary
+- Active bucket moves between `bucketFrom` (income) and `bucketTo` (expense) on income↔expense switches
+- Hidden account fields reset to `''`, hidden bucket fields reset to `'default'`

@@ -1,119 +1,32 @@
-# Budgeting App Web 💰
+# Budgeting App Web
 
-A sophisticated personal finance application that works seamlessly online and offline. Track expenses, manage budgets, and gain insights into your spending patterns across multiple currencies and accounts.
+React PWA frontend. See [root README](../README.md) for full-stack setup and dev commands.
 
-## Architecture
+## Design Decisions
 
-**Offline-First Design**: Uses PouchDB for local storage with bidirectional sync to CouchDB. Full functionality works offline; changes sync automatically when online.
+**Offline-First**: PouchDB for local storage with bidirectional sync to CouchDB. Full functionality works offline; changes sync automatically when online. Sync is intentionally one-shot (not live) to give the app explicit control over push/pull timing.
 
-**Domain Services + Jotai Atoms Pattern**:
-
-Clean separation between business logic and UI using a layered architecture:
-
-```
-React Components (UI)
-    ↓ useAtom, domain.method()
-Jotai Atoms (State)
-    ↓ atom.set()
-Domain Services (Business Logic)
-    ↓ service.method()
-Infrastructure Services (DB, API)
-```
-
-- **Infrastructure Layer** (`services/`): PouchDB wrapper, backend API client, typed localStorage, balance aggregation, React context for dependency injection
-- **Domain Layer** (`domain/`): Pure TypeScript classes encapsulating all business logic with no React dependencies
-- **State Layer** (`state/`): Jotai atoms holding transactions, sync status, settings config, and spending limits
-- **Hooks Layer** (`hooks/`): React hooks that wire domain services to atoms, providing components with reactive state
-- **Component Layer** (`components/`): Container components read atoms and call domain methods; presentational components handle pure rendering
+**Domain Services + Jotai Atoms**: Clean separation between business logic and UI. Domain classes are pure TypeScript with no React dependencies — they receive services via constructor injection and push state updates through callbacks. Jotai atoms hold reactive state; hooks wire domains to atoms. This allows unit-testing business logic without React and swapping state libraries without touching domain code.
 
 **Key Technical Choices**:
 
-- React 19 + TypeScript for type safety
-- Jotai for centralized state management
-- Domain-driven design isolates all business logic from UI
-- Bulma CSS for responsive design
-- react-virtualized for large transaction lists
-- Service workers for PWA offline support
+- React 19 + TypeScript strict mode
+- Jotai over Redux/Zustand: simpler atom-based model fits the app's independent state slices (transactions, sync, settings, budgets)
+- react-virtualized for transaction lists — necessary for smooth scrolling with 1000+ rows
+- Bulma CSS + styled-components for scoped overrides
+- vite-plugin-pwa with Workbox for service worker generation
 
-## Setup 🚀
+## Cache Strategy
 
-### Local Development
+`public/serve.json` configures HTTP cache headers for production (`serve`):
 
-```shell
-cd web
-yarn install
-cp .env.example .env
-yarn dev
-```
+- **Hashed assets** (`assets/**`): `Cache-Control: public, max-age=31536000, immutable` — Vite content-hashes filenames so they change on every build
+- **HTML & service worker files**: `Cache-Control: no-cache` — browsers always revalidate, ensuring they pick up the latest asset hashes after each deployment
 
-### Docker Development
-
-```shell
-cd web
-cp .env.example .env
-docker-compose -f docker-compose.dev.yml up
-```
-
-## Production 🏗️
-
-```shell
-docker-compose up
-```
-
-## Development 💻
-
-### Tech Stack
-
-- **Framework**: React 19 + TypeScript (strict mode)
-- **Styling**: Bulma CSS framework with styled-components for custom elements
-- **Storage**: PouchDB (local) → CouchDB (remote sync)
-- **State**: Jotai for global state, React hooks for local
-- **Routing**: React Router v7
-- **Build**: Vite with vite-plugin-pwa for service worker support
-- **PWA**: Service workers via vite-plugin-pwa with Workbox
-
-### Project Structure
-
-```
-src/
-  state/              # Jotai atoms (reactive state holders)
-  domain/             # Domain services (pure business logic)
-  hooks/              # Domain adapter hooks
-  services/           # Infrastructure (API, DB, Storage)
-  components/
-    App/              # Main app container with auth
-    TransactionForm/  # Guided transaction entry
-    Transactions/     # Transaction list with virtualization
-    Budgets/          # Budget tracking and planning
-    Buckets/          # Bucket balances overview
-    Home/             # Account dashboard
-  types/              # TypeScript DTOs and interfaces
-  utils/              # Date formatting, account coloring
-```
-
-### Development Workflow
-
-```bash
-yarn dev             # Dev server at :3000
-yarn build           # Production build
-yarn preview         # Preview production build
-```
-
-### Cache Strategy
-
-`public/serve.json` configures HTTP cache headers when running in production with `serve`:
-
-- **Hashed assets** (`assets/**`): `Cache-Control: public, max-age=31536000, immutable` — browsers cache indefinitely; Vite content-hashes filenames so they change on every build
-- **HTML & service worker files** (`*.html`, `service-worker.js`, `registerSW.js`): `Cache-Control: no-cache` — browsers always revalidate, ensuring they pick up the latest asset hashes after each deployment
-
-### Environment Variables
+## Environment Variables
 
 Create `.env` from `.env.example`:
 
 ```
 REACT_APP_BACKEND_URL=http://localhost:8000
 ```
-
-## License 📝
-
-[MIT License](LICENSE)

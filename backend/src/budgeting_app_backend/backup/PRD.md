@@ -4,13 +4,11 @@
 
 Full-database backup and restore system. Captures a consistent snapshot of the unified `budgeting` CouchDB database (containing both transactions and settings) in a single ZIP archive. Supports manual download, API-driven restore, and optional automated uploads to Google Drive.
 
-## Features
+## Key Behaviors
 
-- **Full backup**: Captures the entire database (transactions and settings) as a ZIP archive.
-- **Full restore**: Uploading a backup archive replaces the `budgeting` database, rolling the system back to the archived state.
-- **Automated daily backups**: Scheduler runs a backup once per day (configurable time, default 3:00 AM UTC) and uploads to Google Drive when credentials are present.
-- **Manual trigger**: On-demand backup and upload via API without waiting for the schedule.
-- **Optional cloud storage**: Google Drive upload is activated only when credentials and a target folder ID are configured; backups still succeed without it.
+- **Full restore is destructive**: Uploading a backup archive replaces the entire `budgeting` database
+- **Graceful degradation**: Google Drive upload is optional; backups succeed without credentials
+- **Scheduled backups**: Daily at configurable time (default 3:00 AM UTC)
 
 ## User Workflows
 

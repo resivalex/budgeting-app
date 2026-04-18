@@ -20,54 +20,22 @@ Containerized CouchDB instance providing document storage and sync for the budge
 - Development: port 9002 exposed for direct browser access
 - Production: no exposed ports, internal network only via reverse proxy
 
-## Prerequisites
+## Environment Variables
 
-- [Docker](https://www.docker.com/get-started)
+Create `.env` from `.env.example` and configure:
 
-## Setup
+```plaintext
+COUCHDB_USER=admin
+COUCHDB_PASSWORD=your_secure_password
 
-1. Navigate to the database directory:
+COUCHDB_CORS_ORIGINS=*
+COUCHDB_CORS_CREDENTIALS=true
+COUCHDB_CORS_METHODS=GET,PUT,POST,HEAD,DELETE,OPTIONS
+COUCHDB_CORS_HEADERS=accept,authorization,content-type,origin,referer,x-csrf-token
+PORT=9002
+```
 
-   ```shell
-   cd db
-   ```
-
-2. Create an `.env` file:
-
-   ```shell
-   cp .env.example .env
-   ```
-
-   Configure with your settings:
-
-   ```plaintext
-   COUCHDB_USER=admin
-   COUCHDB_PASSWORD=your_secure_password
-
-   COUCHDB_CORS_ORIGINS=*
-   COUCHDB_CORS_CREDENTIALS=true
-   COUCHDB_CORS_METHODS=GET,PUT,POST,HEAD,DELETE,OPTIONS
-   COUCHDB_CORS_HEADERS=accept,authorization,content-type,origin,referer,x-csrf-token
-   PORT=9002
-   ```
-
-3. Start the container:
-
-   ```shell
-   # Development
-   docker-compose -f docker-compose.dev.yml up -d
-
-   # Production
-   docker-compose up -d
-   ```
-
-4. Access CouchDB at [http://localhost:9002](http://localhost:9002)
-
-## Configuration Files
-
-- `docker-compose.base.yml` — shared base configuration
-- `docker-compose.dev.yml` — development (port 9002 exposed)
-- `docker-compose.yml` — production (no exposed ports)
+See [root README](../README.md) for build/run commands.
 
 ## CORS
 

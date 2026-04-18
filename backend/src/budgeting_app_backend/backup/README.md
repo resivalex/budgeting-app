@@ -1,11 +1,6 @@
 # Backup Module
 
-## Architecture
-
-Two classes with clear separation of concerns:
-
-- **`BackupService`** — creates and restores ZIP archives containing the unified `budgeting` database
-- **`BackupScheduler`** — wraps `BackupService` with APScheduler cron scheduling and Google Drive upload
+Creates and restores ZIP archives of the `budgeting` database, with optional scheduled uploads to Google Drive.
 
 ## ZIP Archive Structure
 
@@ -18,13 +13,4 @@ backup.zip
 
 - **Clean CouchDB restore**: `_rev` fields are stripped on export so documents can be bulk-inserted without conflicts
 - **Optional Google Drive**: scheduler skips upload gracefully when credentials are not configured
-
-## Dependencies
-
-- `pycouchdb` — CouchDB document dump and bulk restore
-- `apscheduler` — background cron scheduling (default 03:00 UTC daily)
-- `budgeting_app_backend.services.GoogleDriveService` — lazy import for optional Drive upload
-
-## Integration
-
-Instantiated in `main.py`. FastAPI routes delegate to `BackupService` and `BackupScheduler` for all backup operations.
+- **Scheduling**: APScheduler cron job runs daily (default 03:00 UTC)

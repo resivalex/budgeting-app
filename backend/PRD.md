@@ -8,7 +8,7 @@ FastAPI backend providing transaction access, configuration management, CSV expo
 
 ### Authentication
 
-Password-protected access control for the frontend. Successful authentication returns the credentials needed to connect to the database and make further requests.
+Returns database connection credentials on successful login, enabling direct PouchDB↔CouchDB sync from the frontend.
 
 ### Configuration Management
 
@@ -16,8 +16,8 @@ Tracks when the server-side database was last changed so the frontend can detect
 
 ### Data Export
 
-On-demand CSV export of all transactions, sorted newest first, with resolved human-readable names for all four account/bucket fields (`account_from`, `account_to`, `bucket_from`, `bucket_to`). Transaction types — income, expense, transfer, or custom — are derived using the `owner == "external"` check in `cfg:account_properties` (not by account name prefix).
+On-demand CSV export of all transactions with resolved human-readable names. Transaction types derived from account ownership — see [Transaction Domain PRD](../web/src/domain/PRD.md) for derivation rules.
 
 ### Backup & Restore
 
-Full database snapshot (all transactions and settings) can be downloaded as a ZIP, restored from a previously downloaded ZIP, and optionally uploaded to Google Drive. Daily automated backups run at a configurable time.
+Full database snapshot as a ZIP, with restore and optional Google Drive upload. Daily automated backups at a configurable time.

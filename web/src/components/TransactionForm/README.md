@@ -1,25 +1,13 @@
 # TransactionForm
 
-Transaction creation and editing module. Exports `TransactionFormContainer` as the public entry point.
-
-## Architecture
-
-```
-TransactionFormContainer         ← state management, domain logic, routing
-  └── StepByStepTransactionForm  ← presentational, assembles step components
-        └── FormLayout           ← step order and visibility by transaction type
-              └── FormInputs/    ← individual field input components
-```
-
-- **`TransactionFormContainer`**: Owns all form state, initializes from an existing transaction in edit mode (via `:transactionId` URL param), delegates business logic to `useTransactionFormDomain`, and converts between UTC and local time on load/save. All transaction types use `accountFrom`/`accountTo` and `bucketFrom`/`bucketTo` directly — the Account step maps to `accountTo` for income, `accountFrom` for expense/transfer; the BudgetName step maps to `bucketFrom` for income, `bucketTo` for expense.
-- **`StepByStepTransactionForm`**: Pure presentational component. Wraps each `FormInputs` field in a step adapter and passes them to `FormLayout`.
-- **`FormLayout`** (`StepByStepTransactionForm/`): Orchestrates step progression and conditional field visibility based on transaction type (income / expense / transfer). Provides `onCollapse` callbacks for mobile overlay dismissal.
-- **`FormInputs/`**: Individual step components — Type, Currency, Amount, Account, Category, BudgetName, Payee, Comment, Datetime, SaveButton.
+Transaction creation and editing module.
 
 ## Key Patterns
 
-**`LimitedAccountSelect` injection** — the parent passes in an account selector component, keeping account-fetching logic outside this module.
+**UTC/local time conversion** — Datetimes are stored in UTC; `TransactionFormContainer` converts to local time on load and back to UTC on save.
 
-**UTC/local time conversion** — datetimes are stored in UTC; `TransactionFormContainer` converts to local time on load and back to UTC on save.
+**Account step mapping** — All transaction types use `accountFrom`/`accountTo` directly. The Account step maps to `accountTo` for income, `accountFrom` for expense/transfer. The BudgetName step maps to `bucketFrom` for income, `bucketTo` for expense.
 
-**Mobile fullscreen overlays** — dropdown and suggestion fields use `FullscreenOverlay` on mobile (≤768px) to render options in a portal-based fullscreen panel, avoiding viewport overflow issues. The overlay uses the Visual Viewport API (`window.visualViewport`) to resize when the software keyboard opens, keeping content fully visible. Fields requiring explicit confirmation show a floating circular confirm button (FAB) at the bottom-right. Desktop retains inline `react-select` and `SuggestingInput` components.
+**`LimitedAccountSelect` injection** — The parent passes in an account selector component, keeping account-fetching logic outside this module.
+
+**Mobile fullscreen overlays** — Dropdown and suggestion fields use `FullscreenOverlay` on mobile (≤768px) to render options in a portal-based fullscreen panel, avoiding viewport overflow. The overlay uses the Visual Viewport API (`window.visualViewport`) to resize when the software keyboard opens. Fields requiring explicit confirmation show a floating circular confirm button (FAB). Desktop retains inline `react-select` and `SuggestingInput` components. See [FormInputs README](./FormInputs/README.md) for details.

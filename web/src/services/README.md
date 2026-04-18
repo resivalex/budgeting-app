@@ -2,37 +2,16 @@
 
 Infrastructure layer providing API communication, local database management, typed local storage, and transaction aggregation.
 
-## Architecture
-
-Services are instantiated at the app root and injected via `ServiceContext` / `ServiceProvider`. Components access them through the `useServices()` hook.
-
-```
-ServiceProvider
-  ├── BackendService   — axios wrapper for REST API
-  ├── DbService        — PouchDB local ↔ CouchDB remote
-  └── StorageService   — typed localStorage wrapper (created inside provider)
-```
-
-`TransactionAggregator` is a standalone computation class, not a service — it receives a `TransactionDTO[]` snapshot and derives derived data synchronously.
-
 ## Key Design Decisions
 
-### `BackendService`
+**Service injection via React Context**: Services are instantiated at the app root and injected via `ServiceProvider` / `useServices()`. `useServices()` throws if called outside the provider to surface misconfiguration early.
 
-Authenticated HTTP client targeting a configurable backend URL. Handles login config, settings retrieval, and CSV export.
+**One-shot sync**: PouchDB↔CouchDB sync is intentionally one-shot (not live) to give the app explicit control over when data is pushed or pulled. `pushChanges` replicates local → remote; `pullChanges` replicates remote → local.
 
-### `DbService`
+**Database reset handling**: When the server signals a data reset, `DbService` destroys and recreates the local PouchDB instance to mirror the server state.
 
-PouchDB-based local store synced with a remote CouchDB instance. Sync is intentionally one-shot (not live) to give the app explicit control over when data is pushed or pulled. `pushChanges` replicates local → remote; `pullChanges` replicates remote → local. Database reset destroys and recreates the local instance to mirror a server-side data reset. Settings (category expansions, account properties, bucket definitions, spending limits, currency configs) are read and written from the `budgeting` database using `cfg:`-prefixed keys, with snake_case ↔ camelCase mapping handled internally. Bucket definitions (`cfg:buckets`), `spending_limits`, and `currency_configs` are stored as separate documents and loaded independently. `DbService` has no UI dependencies — it is a pure data service with no knowledge of React state or loading indicators.
+**Settings storage convention**: Settings (category expansions, account properties, bucket definitions, spending limits, currency configs) use `cfg:`-prefixed keys in PouchDB, with snake_case ↔ camelCase mapping handled internally.
 
-### `StorageService`
+**Typed localStorage**: `StorageService` wraps `localStorage` with a `StorageKeys` type map enforcing correct key–value types at compile time.
 
-Typed wrapper over `localStorage`. The `StorageKeys` type map enforces correct key–value types at compile time.
-
-### `ServiceContext`
-
-React Context distributing `{ backendService, dbService, storageService }` to the component tree. `useServices()` throws if called outside the provider to surface misconfiguration early.
-
-### `TransactionAggregator`
-
-Pure, synchronous computation over a transaction snapshot. Designed as a standalone class (not a service) because it has no side effects and requires no async operations.
+**Aggregator as standalone class**: `TransactionAggregator` is a pure synchronous computation class (not a service) — it has no side effects, no async operations, and requires no injection.

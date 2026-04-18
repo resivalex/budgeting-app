@@ -89,7 +89,6 @@ docker-compose -f docker-compose.dev.yml up -d
 ```bash
 cd backend
 cp .env.example .env
-poetry install
 poetry run alembic upgrade head
 poetry run uvicorn main:app --reload
 ```
@@ -99,7 +98,6 @@ poetry run uvicorn main:app --reload
 ```bash
 cd web
 cp .env.example .env
-yarn install
 yarn start
 ```
 

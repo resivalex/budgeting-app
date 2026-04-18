@@ -4,16 +4,8 @@ Exports all CouchDB transactions as an in-memory CSV string — no temp files.
 
 ## Architecture
 
-**`CsvExporting`** — accepts a CouchDB URL, fetches all documents from the `budgeting` database, loads `cfg:account_properties` to build an ID-to-name map, replaces account IDs with human-readable names in the exported CSV (including transfer payee fields), drops CouchDB system fields (`_id`, `_rev`), and returns a CSV string via pandas and StringIO.
+Fetches all documents from the `budgeting` database, loads `cfg:account_properties` to build an ID-to-name map, replaces account/bucket IDs with human-readable names, and drops CouchDB system fields (`_id`, `_rev`). Uses pandas and StringIO for CSV generation.
 
-## Usage
+## External Account Resolution
 
-```python
-from budgeting_app_backend.exporting import CsvExporting
-
-csv_data = CsvExporting(couchdb_url).perform()  # returns str
-```
-
-## Integration
-
-Exposed via `State.exporting()`. Called by the `GET /exporting` endpoint.
+Reads the `owner` field from the `cfg:account_properties` CouchDB document and selects accounts where `owner == "external"` to build the set of external account IDs. The backend independently resolves account ownership for CSV export.

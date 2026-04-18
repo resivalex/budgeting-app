@@ -1,73 +1,57 @@
 ---
 name: readme-sync
-description: Keep README.md and PRD.md files synchronized with code changes. Identifies affected directories, reads existing docs, then updates README (technical/developer focus) and PRD (requirements/feature focus) files to reflect changes.
+description: Keep README.md and PRD.md files synchronized with code changes. Reads existing docs, then updates only what changed.
 ---
 
 # README & PRD Synchronization Skill
 
-This skill keeps README.md and PRD.md files in sync with code changes. Always read both before updating either.
+Keep documentation in sync with code. Always read both README.md and PRD.md in affected directories before editing either.
 
-## When to Use This Skill
+## What Goes Where
 
-Use this skill whenever:
+**README.md** — For developers modifying the code. Answers "how does this work and why was it built this way?"
 
-- Making changes to code that affect project structure or features
-- Adding new functionality or components
-- Modifying architectural decisions or design patterns
-- Changing public APIs or usage patterns
+Write:
 
-## Workflow
+- Design decision rationale and tradeoffs (e.g. "why CouchDB", "why one-shot sync instead of live")
+- Non-obvious technical patterns not self-evident from reading code (concurrency control, UTC/local conversion strategy, viewport API workarounds)
+- Setup steps only when non-trivial (custom env vars, credentials, migrations)
 
-### Step 1: Identify Affected Directories
+Skip:
 
-- Determine which directories contain modified files
-- Apply updates to README and PRD files in each affected directory
+- File/directory listings (visible from file tree)
+- Module or class enumerations with one-line summaries (that's what code navigation is for)
+- Anything already documented elsewhere — link instead
 
-### Step 2: Read Existing Documentation
+**PRD.md** — For understanding what the feature does. Answers "what does the user get and what are the rules?"
 
-- **Critical:** Fully read both README.md and PRD.md in each affected directory before making any changes
-- This ensures updates preserve existing structure and context
+Write:
 
-### Step 3: Update README Files (Developer-focused)
+- User workflows (what the user does step by step)
+- Business rules that are hard to reverse-engineer from code (transaction type derivation, budget calculation, field visibility by type)
+- Edge cases and special behavior (error recovery, empty states, fallback logic)
+- Field mappings and transformation rules when non-obvious
 
-**Audience**: Developers setting up, running, or modifying the code
+Skip:
 
-✅ **DO include:**
+- Implementation details, architecture, code structure (belongs in README)
+- Simple feature lists that just mirror UI element names
+- Anything already documented elsewhere — link instead
 
-- Setup instructions, commands, architecture decisions, technical workflows
-- High-level architecture, key innovations, design rationale
-- Usage examples and API surface
+## Single Source of Truth
 
-❌ **DO NOT include:**
+Each fact lives in exactly one file. Other files reference it with a brief mention and a link.
 
-- Specific method signatures, line-by-line explanations, low-level algorithms
-- Implementation details (how the code works internally)
+Canonical locations:
 
-### Step 4: Update PRD Files (Requirement-focused)
+- **Database schema and document structure** → `db/README.md`
+- **Transaction type derivation rules** → `web/src/domain/PRD.md`
+- **Architecture overview** → root `README.md`
+- **Setup and dev commands** → root `README.md`
 
-**Audience**: Understanding what features do and why they exist
+## Core Principles
 
-✅ **DO include:**
-
-- Feature descriptions, user workflows, business logic, data flows
-- Integration points and system interactions
-- "What" and "why" — requirements without implementation details
-
-❌ **DO NOT include:**
-
-- Technical implementation, code structure, deployment details
-- Architectural decisions (those belong in README)
-
-## Key Files in This Project
-
-- Root: `README.md`, `PRD.md`
-- Backend: `backend/README.md`, `backend/PRD.md`, module-level `PRD.md` files
-- Frontend: `web/README.md`, `web/PRD.md`, component-level `PRD.md` files
-- Database: `db/README.md`, `db/PRD.md`
-
-## Best Practices
-
-- **Keep docs concise** - focus on high-level concepts
-- **Ensure documentation matches implementation** - verify accuracy
-- **Update incrementally** - sync docs with each meaningful change
-- **Think like the audience** - README for developers, PRD for requirements
+1. **Don't document the obvious** — if reading the code answers the question, skip it
+2. **Always preserve "why"** — rationale and reasoning survive even when "what" is clear
+3. **No duplication** — one canonical source, everything else links to it
+4. **Keep it short** — every sentence must earn its place
