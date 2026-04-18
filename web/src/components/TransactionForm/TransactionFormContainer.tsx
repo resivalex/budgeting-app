@@ -153,7 +153,6 @@ export default function TransactionFormContainer({
   const { availableCurrencies, availableColoredAccounts } = useMemo(
     () =>
       domain.getAvailableCurrenciesAndAccounts(
-        type,
         currency,
         allCurrencies,
         type === 'custom' ? allColoredAccounts : coloredAccounts,
@@ -248,7 +247,7 @@ export default function TransactionFormContainer({
   }
 
   const adjustCurrencyAndAccounts = (newType: string, newCurrency: string) => {
-    if (domain.shouldResetCurrency(newType, newCurrency, allCurrencies, coloredAccounts)) {
+    if (domain.shouldResetCurrency(newCurrency, allCurrencies, coloredAccounts)) {
       setCurrency('')
     }
     if (domain.shouldResetAccount(accountFrom, newCurrency, coloredAccounts)) {
@@ -267,40 +266,31 @@ export default function TransactionFormContainer({
     let newBucketFrom = bucketFrom
     let newBucketTo = bucketTo
 
-    // Map primary account to the new type's primary field if it's empty.
-    // Income uses accountTo as primary; expense/transfer use accountFrom.
-    if (newType !== 'custom') {
-      if (newType === 'income' && !newAccountTo && newAccountFrom) {
+    // Map main account between accountFrom/accountTo when the "visible" field changes
+    if (oldType === 'income' && (newType === 'expense' || newType === 'transfer')) {
+      if (!newAccountFrom && newAccountTo) {
+        newAccountFrom = newAccountTo
+        if (newType === 'expense') newAccountTo = ''
+      }
+    } else if ((oldType === 'expense' || oldType === 'transfer') && newType === 'income') {
+      if (!newAccountTo && newAccountFrom) {
         newAccountTo = newAccountFrom
         newAccountFrom = ''
-      } else if (newType !== 'income' && !newAccountFrom && newAccountTo) {
-        newAccountFrom = newAccountTo
-        newAccountTo = ''
       }
     }
 
     // Map active bucket between bucketFrom (income) and bucketTo (expense)
     if (oldType === 'income' && newType === 'expense') {
       newBucketTo = newBucketFrom
+      newBucketFrom = 'default'
     } else if (oldType === 'expense' && newType === 'income') {
       newBucketFrom = newBucketTo
-    }
-
-    // Reset hidden fields to defaults
-    if (newType === 'income') {
-      newAccountFrom = ''
-      newBucketTo = 'default'
-    } else if (newType === 'expense') {
-      newAccountTo = ''
-      newBucketFrom = 'default'
-    } else if (newType === 'transfer') {
-      newBucketFrom = 'default'
       newBucketTo = 'default'
     }
 
     // Validate currency and accounts for the new type
     let newCurrency = currency
-    if (domain.shouldResetCurrency(newType, newCurrency, allCurrencies, coloredAccounts)) {
+    if (domain.shouldResetCurrency(newCurrency, allCurrencies, coloredAccounts)) {
       newCurrency = ''
     }
     if (domain.shouldResetAccount(newAccountFrom, newCurrency, coloredAccounts)) {
@@ -368,18 +358,8 @@ export default function TransactionFormContainer({
 
   const allBucketOptions = useMemo(() => bucketOptions, [bucketOptions])
 
-  const handleAccountFromChange = (value: string) => {
-    if (accountTo === value) {
-      setAccountTo(accountFrom)
-    }
-    setAccountFrom(value)
-  }
-  const handleAccountToChange = (value: string) => {
-    if (accountFrom === value) {
-      setAccountFrom(accountTo)
-    }
-    setAccountTo(value)
-  }
+  const handleAccountFromChange = (value: string) => setAccountFrom(value)
+  const handleAccountToChange = (value: string) => setAccountTo(value)
   const handleBucketFromChange = (value: string) => setBucketFrom(value)
   const handleBucketToChange = (value: string) => setBucketTo(value)
 

@@ -42,15 +42,11 @@ class TransactionFormDomain {
   }
 
   getAvailableCurrenciesAndAccounts(
-    type: string,
     currency: string,
     allCurrencies: string[],
     coloredAccounts: ColoredAccountDetailsDTO[],
   ): AvailableCurrenciesAndAccounts {
-    const needsMultipleAccounts = type === 'transfer' || type === 'custom'
-    const availableCurrencies = needsMultipleAccounts
-      ? allCurrencies.filter((c) => coloredAccounts.filter((a) => a.currency === c).length > 1)
-      : allCurrencies
+    const availableCurrencies = allCurrencies
 
     const availableColoredAccounts = coloredAccounts.filter((a) => a.currency === currency)
 
@@ -170,13 +166,11 @@ class TransactionFormDomain {
   }
 
   shouldResetCurrency(
-    type: string,
     currency: string,
     allCurrencies: string[],
     coloredAccounts: ColoredAccountDetailsDTO[],
   ): boolean {
     const { availableCurrencies } = this.getAvailableCurrenciesAndAccounts(
-      type,
       currency,
       allCurrencies,
       coloredAccounts,
