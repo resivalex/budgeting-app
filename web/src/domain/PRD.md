@@ -23,7 +23,7 @@ The app stays in sync with the remote backend while remaining fully usable offli
 
 ### Budget Spending Calculation
 
-Spending is determined purely by `bucket_from`/`bucket_to` fields: `bucket_to` matching a budget increases its spent amount, `bucket_from` matching reduces it. A single transaction can affect two budgets simultaneously (e.g., a transfer between tracked buckets). Unassigned transactions appear in a "Другое" (Other) group.
+Spending is determined purely by `bucket_from`/`bucket_to` fields: `bucket_to` matching a budget increases its spent amount, `bucket_from` matching reduces it. A single transaction can affect two budgets simultaneously (e.g., a transfer between tracked buckets). Unassigned transactions appear in a "Другое" (Other) group. Transactions in unsupported currencies are listed in the budget but excluded from amount totals.
 
 ### Transaction Form
 

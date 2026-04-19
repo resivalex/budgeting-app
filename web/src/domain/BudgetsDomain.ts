@@ -96,7 +96,7 @@ class BudgetsDomain {
     buckets.buckets.forEach((b) => bucketMap.set(b.id, b))
 
     const conversionMap = this.buildConversionMap(currencyConfig)
-    const monthTransactions = this.filterMonthTransactions(transactions, monthDate, conversionMap)
+    const monthTransactions = this.filterMonthTransactions(transactions, monthDate)
     const monthSpendingLimits = this.extractMonthSpendingLimits(
       spendingLimits,
       bucketMap,
@@ -213,14 +213,10 @@ class BudgetsDomain {
   private filterMonthTransactions(
     transactions: TransactionDTO[],
     monthDate: string,
-    conversionMap: ConversionMapType,
   ): TransactionDTO[] {
     const monthDateObject = new Date(monthDate)
     return transactions.filter((transaction) => {
       if (transaction.bucket_from === 'default' && transaction.bucket_to === 'default') {
-        return false
-      }
-      if (!conversionMap[transaction.currency]) {
         return false
       }
       const transactionDate = new Date(convertToLocaleTime(transaction.datetime))
@@ -319,15 +315,21 @@ class BudgetsDomain {
     }
 
     transactions.forEach((transaction) => {
-      const convertedAmount =
-        parseFloat(transaction.amount) * conversionMap[transaction.currency][budget.currency]
-      let delta = 0
-      if (transaction.bucket_to === spendingLimit.bucketId) delta += convertedAmount
-      if (transaction.bucket_from === spendingLimit.bucketId) delta -= convertedAmount
+      const matchesBucket =
+        transaction.bucket_from === spendingLimit.bucketId ||
+        transaction.bucket_to === spendingLimit.bucketId
 
-      if (delta !== 0) {
+      if (matchesBucket) {
         budget.transactions.push(transaction)
-        budget.spentAmount += delta
+        const currencyConversion = conversionMap[transaction.currency]
+        if (currencyConversion) {
+          const convertedAmount =
+            parseFloat(transaction.amount) * currencyConversion[budget.currency]
+          let delta = 0
+          if (transaction.bucket_to === spendingLimit.bucketId) delta += convertedAmount
+          if (transaction.bucket_from === spendingLimit.bucketId) delta -= convertedAmount
+          budget.spentAmount += delta
+        }
       }
     })
 
@@ -353,10 +355,12 @@ class BudgetsDomain {
 
     unassignedTransactions.forEach((transaction) => {
       budget.transactions.push(transaction)
-      const convertedAmount =
-        parseFloat(transaction.amount) * conversionMap[transaction.currency][budget.currency]
-      if (transaction.bucket_to !== 'default') budget.spentAmount += convertedAmount
-      if (transaction.bucket_from !== 'default') budget.spentAmount -= convertedAmount
+      const currencyConversion = conversionMap[transaction.currency]
+      if (currencyConversion) {
+        const convertedAmount = parseFloat(transaction.amount) * currencyConversion[budget.currency]
+        if (transaction.bucket_to !== 'default') budget.spentAmount += convertedAmount
+        if (transaction.bucket_from !== 'default') budget.spentAmount -= convertedAmount
+      }
     })
 
     return budget
