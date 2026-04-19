@@ -3,12 +3,14 @@ import BudgetInfoModal from './BudgetInfoModal'
 import Select from 'react-select'
 import dayjs from 'dayjs'
 import { BudgetDTO } from './BudgetDTO'
+import { CurrencyWeight } from '@/hooks/useBudgetsDomain'
 
 interface Props {
   budgets: BudgetDTO[]
   selectedMonth: string
   availableMonths: string[]
   commonBucketIds: string[]
+  currencyWeights: CurrencyWeight[]
   onMonthSelect: (month: string) => void
   onBudgetItemChange: (bucketId: string, currency: string, amount: number) => void
   onFocus: (name: string) => void
@@ -23,6 +25,7 @@ export default function Budgets({
   selectedMonth,
   availableMonths,
   commonBucketIds,
+  currencyWeights,
   onMonthSelect,
   onBudgetItemChange,
   onFocus,
@@ -86,6 +89,15 @@ export default function Budgets({
         )}
         {restBudget && <div className="mt-6" />}
         {restBudget && renderBudget(restBudget, realBudgets.length + 1)}
+        {currencyWeights.length > 0 && (
+          <div className="mt-6 mb-2" style={{ fontSize: '0.85rem', color: '#888' }}>
+            {currencyWeights.map(({ currency, weight }) => (
+              <div key={currency}>
+                {currency}: {weight.toFixed(8)}
+              </div>
+            ))}
+          </div>
+        )}
       </div>{' '}
       {focusedBudget && (
         <BudgetInfoModal

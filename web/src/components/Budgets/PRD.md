@@ -24,3 +24,7 @@ Spending is computed from `bucket_from`/`bucket_to` fields — see [Domain PRD](
 ### Multi-Currency Support
 
 Per-month currency configurations define a main currency and conversion rates. All budget totals are converted to the month's main currency for comparison.
+
+### Currency Weights
+
+Below all budget lines, relative currency weights are displayed (8 decimal places). USD is the base currency (weight 1.00000000). If USD is not present in the month's config, the most expensive currency (highest value per unit) is used as the base instead.

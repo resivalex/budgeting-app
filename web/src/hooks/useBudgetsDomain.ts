@@ -4,12 +4,18 @@ import { spendingLimitsAtom, currencyConfigsAtom, transactionsAtom, bucketsAtom 
 import { BudgetsDomain, BudgetResult } from '@/domain'
 import { DbService } from '@/services'
 
+export interface CurrencyWeight {
+  currency: string
+  weight: number
+}
+
 interface UseBudgetsDomainReturn {
   budgets: BudgetResult[]
   availableMonths: string[]
   selectedMonth: string
   expectationRatio: number | null
   commonBucketIds: string[]
+  currencyWeights: CurrencyWeight[]
   setSelectedMonth: (month: string) => void
   updateBudgetItem: (bucketId: string, currency: string, amount: number) => Promise<void>
   refreshSpendingLimits: () => Promise<void>
@@ -52,6 +58,28 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
     [budgetsDomain, selectedMonth],
   )
 
+  const currencyWeights = useMemo(() => {
+    if (!selectedMonth) return []
+    const monthConfig = currencyConfigs.monthCurrencyConfigs.find((c) => c.date === selectedMonth)
+    if (!monthConfig) return []
+
+    const { mainCurrency, conversionRates } = monthConfig.config
+    const valueInMain: Record<string, number> = { [mainCurrency]: 1 }
+    conversionRates.forEach(({ currency, rate }) => {
+      valueInMain[currency] = 1 / rate
+    })
+
+    let baseCurrency = 'USD'
+    if (!(baseCurrency in valueInMain)) {
+      baseCurrency = Object.entries(valueInMain).reduce((a, b) => (b[1] > a[1] ? b : a))[0]
+    }
+    const baseValue = valueInMain[baseCurrency]
+
+    return Object.entries(valueInMain)
+      .map(([currency, value]) => ({ currency, weight: value / baseValue }))
+      .sort((a, b) => b.weight - a.weight)
+  }, [currencyConfigs, selectedMonth])
+
   const refreshSpendingLimits = useCallback(async () => {
     const [limits, currencyConfigsData] = await Promise.all([
       budgetsDomain.loadSpendingLimits(),
@@ -84,6 +112,7 @@ export function useBudgetsDomain(dbService: DbService): UseBudgetsDomainReturn {
     selectedMonth,
     expectationRatio,
     commonBucketIds: spendingLimits.commonBucketIds,
+    currencyWeights,
     setSelectedMonth,
     updateBudgetItem,
     refreshSpendingLimits,

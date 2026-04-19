@@ -9,7 +9,7 @@ import { DbService } from '@/services'
 import { convertToLocaleTime } from '@/utils'
 import _ from 'lodash'
 
-type ConversionMapType = { [sourceCurrency: string]: { [targetCurrency: string]: number } }
+type CurrencyWeightsType = Record<string, number>
 
 interface MonthSpendingLimit {
   bucketId: string
@@ -95,7 +95,7 @@ class BudgetsDomain {
     const bucketMap = new Map<string, BucketDTO>()
     buckets.buckets.forEach((b) => bucketMap.set(b.id, b))
 
-    const conversionMap = this.buildConversionMap(currencyConfig)
+    const currencyWeights = this.buildCurrencyWeights(currencyConfig)
     const monthTransactions = this.filterMonthTransactions(transactions, monthDate)
     const monthSpendingLimits = this.extractMonthSpendingLimits(
       spendingLimits,
@@ -107,13 +107,13 @@ class BudgetsDomain {
     const totalLimit = this.buildTotalLimit(
       monthSpendingLimits,
       currencyConfig.mainCurrency,
-      conversionMap,
+      currencyWeights,
       commonBucketIds,
     )
     const restLimit = this.buildRestLimit(currencyConfig.mainCurrency)
 
     const realBudgets = monthSpendingLimits.map((spendingLimit) =>
-      this.calculateSingleBudget(monthTransactions, spendingLimit, conversionMap),
+      this.calculateSingleBudget(monthTransactions, spendingLimit, currencyWeights),
     )
 
     const assignedTransactionIds = new Set(
@@ -122,7 +122,7 @@ class BudgetsDomain {
     const unassignedTransactions = monthTransactions.filter(
       (t) => !assignedTransactionIds.has(t._id),
     )
-    const restBudget = this.calculateRestBudget(unassignedTransactions, restLimit, conversionMap)
+    const restBudget = this.calculateRestBudget(unassignedTransactions, restLimit, currencyWeights)
 
     const commonBudgets = realBudgets.filter((b) => commonBucketIds.has(b.bucketId))
     const nonCommonBudgets = realBudgets.filter((b) => !commonBucketIds.has(b.bucketId))
@@ -136,7 +136,9 @@ class BudgetsDomain {
       categories: totalLimit.categories,
       transactions: commonBudgets.flatMap((b) => b.transactions),
       spentAmount: commonBudgets.reduce(
-        (sum, b) => sum + b.spentAmount * conversionMap[b.currency][totalLimit.currency],
+        (sum, b) =>
+          sum +
+          this.convertCurrency(b.spentAmount, b.currency, totalLimit.currency, currencyWeights),
         0,
       ),
       isEditable: totalLimit.isEditable,
@@ -181,33 +183,24 @@ class BudgetsDomain {
     return millisecondsFromSelectedMonth / millisecondsInMonth
   }
 
-  private buildConversionMap(currencyConfig: {
+  private buildCurrencyWeights(currencyConfig: {
     mainCurrency: string
     conversionRates: { currency: string; rate: number }[]
-  }): ConversionMapType {
-    const conversionMap: ConversionMapType = {
-      [currencyConfig.mainCurrency]: { [currencyConfig.mainCurrency]: 1 },
-    }
-
-    currencyConfig.conversionRates.forEach((conversionRate) => {
-      const invertedRate = 1.0 / conversionRate.rate
-      conversionMap[currencyConfig.mainCurrency][conversionRate.currency] = conversionRate.rate
-      conversionMap[conversionRate.currency] = {
-        [conversionRate.currency]: 1,
-        [currencyConfig.mainCurrency]: invertedRate,
-      }
+  }): CurrencyWeightsType {
+    const currencyWeights: CurrencyWeightsType = { [currencyConfig.mainCurrency]: 1 }
+    currencyConfig.conversionRates.forEach(({ currency, rate }) => {
+      currencyWeights[currency] = 1 / rate
     })
+    return currencyWeights
+  }
 
-    currencyConfig.conversionRates.forEach((conversionRate) => {
-      currencyConfig.conversionRates.forEach((anotherConversionRate) => {
-        if (anotherConversionRate.currency !== conversionRate.currency) {
-          conversionMap[conversionRate.currency][anotherConversionRate.currency] =
-            anotherConversionRate.rate / conversionRate.rate
-        }
-      })
-    })
-
-    return conversionMap
+  private convertCurrency(
+    amount: number,
+    from: string,
+    to: string,
+    currencyWeights: CurrencyWeightsType,
+  ): number {
+    return amount * (currencyWeights[from] / currencyWeights[to])
   }
 
   private filterMonthTransactions(
@@ -263,7 +256,7 @@ class BudgetsDomain {
   private buildTotalLimit(
     monthSpendingLimits: MonthSpendingLimit[],
     mainCurrency: string,
-    conversionMap: ConversionMapType,
+    currencyWeights: CurrencyWeightsType,
     commonBucketIds: Set<string>,
   ): MonthSpendingLimit {
     const totalLimit: MonthSpendingLimit = {
@@ -278,8 +271,12 @@ class BudgetsDomain {
     monthSpendingLimits
       .filter((sl) => commonBucketIds.has(sl.bucketId))
       .forEach((spendingLimit) => {
-        totalLimit.amount +=
-          spendingLimit.amount * conversionMap[spendingLimit.currency][mainCurrency]
+        totalLimit.amount += this.convertCurrency(
+          spendingLimit.amount,
+          spendingLimit.currency,
+          mainCurrency,
+          currencyWeights,
+        )
         totalLimit.categories = totalLimit.categories.concat(spendingLimit.categories)
       })
     return totalLimit
@@ -300,7 +297,7 @@ class BudgetsDomain {
   private calculateSingleBudget(
     transactions: TransactionDTO[],
     spendingLimit: MonthSpendingLimit,
-    conversionMap: ConversionMapType,
+    currencyWeights: CurrencyWeightsType,
   ): BudgetResult {
     const budget: BudgetResult = {
       bucketId: spendingLimit.bucketId,
@@ -321,10 +318,13 @@ class BudgetsDomain {
 
       if (matchesBucket) {
         budget.transactions.push(transaction)
-        const currencyConversion = conversionMap[transaction.currency]
-        if (currencyConversion) {
-          const convertedAmount =
-            parseFloat(transaction.amount) * currencyConversion[budget.currency]
+        if (currencyWeights[transaction.currency] !== undefined) {
+          const convertedAmount = this.convertCurrency(
+            parseFloat(transaction.amount),
+            transaction.currency,
+            budget.currency,
+            currencyWeights,
+          )
           let delta = 0
           if (transaction.bucket_to === spendingLimit.bucketId) delta += convertedAmount
           if (transaction.bucket_from === spendingLimit.bucketId) delta -= convertedAmount
@@ -339,7 +339,7 @@ class BudgetsDomain {
   private calculateRestBudget(
     unassignedTransactions: TransactionDTO[],
     restLimit: MonthSpendingLimit,
-    conversionMap: ConversionMapType,
+    currencyWeights: CurrencyWeightsType,
   ): BudgetResult {
     const budget: BudgetResult = {
       bucketId: '',
@@ -355,9 +355,13 @@ class BudgetsDomain {
 
     unassignedTransactions.forEach((transaction) => {
       budget.transactions.push(transaction)
-      const currencyConversion = conversionMap[transaction.currency]
-      if (currencyConversion) {
-        const convertedAmount = parseFloat(transaction.amount) * currencyConversion[budget.currency]
+      if (currencyWeights[transaction.currency] !== undefined) {
+        const convertedAmount = this.convertCurrency(
+          parseFloat(transaction.amount),
+          transaction.currency,
+          budget.currency,
+          currencyWeights,
+        )
         if (transaction.bucket_to !== 'default') budget.spentAmount += convertedAmount
         if (transaction.bucket_from !== 'default') budget.spentAmount -= convertedAmount
       }
