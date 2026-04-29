@@ -12,7 +12,6 @@ class CsvExporting:
         db = _get_or_create_database(self.__server, "budgeting")
         account_id_to_name = _load_account_id_to_name_map(db)
         bucket_id_to_name = _load_bucket_id_to_name_map(db)
-        external_account_ids = _load_external_account_ids(db)
         records = db.all()
         records = [
             doc["doc"] for doc in records
@@ -23,10 +22,6 @@ class CsvExporting:
             account_to = record.get("account_to", "")
             bucket_from = record.get("bucket_from", "default")
             bucket_to = record.get("bucket_to", "default")
-            tx_type = _derive_transaction_type(
-                account_from, account_to, bucket_from, bucket_to, external_account_ids
-            )
-            record["type"] = tx_type
             record["account_from_name"] = account_id_to_name.get(account_from, account_from)
             record["account_to_name"] = account_id_to_name.get(account_to, account_to)
             record["bucket_from_name"] = bucket_id_to_name.get(bucket_from, bucket_from)
@@ -37,7 +32,6 @@ class CsvExporting:
             "account_from_name",
             "account_to_name",
             "category",
-            "type",
             "amount",
             "currency",
             "payee",
@@ -67,24 +61,6 @@ class CsvExporting:
         return stream.getvalue()
 
 
-def _derive_transaction_type(account_from, account_to, bucket_from, bucket_to, external_account_ids):
-    from_external = account_from in external_account_ids
-    to_external = account_to in external_account_ids
-
-    if from_external and not to_external and bucket_to == "default":
-        return "income"
-    if not from_external and to_external and bucket_from == "default":
-        return "expense"
-    if (
-        not from_external
-        and not to_external
-        and bucket_from == "default"
-        and bucket_to == "default"
-    ):
-        return "transfer"
-    return "custom"
-
-
 def _load_account_id_to_name_map(db):
     try:
         doc = db.get("cfg:account_properties")
@@ -92,15 +68,6 @@ def _load_account_id_to_name_map(db):
         return {}
     accounts = doc.get("value", {}).get("accounts", [])
     return {a["id"]: a["name"] for a in accounts if "id" in a and "name" in a}
-
-
-def _load_external_account_ids(db):
-    try:
-        doc = db.get("cfg:account_properties")
-    except pycouchdb.exceptions.NotFound:
-        return set()
-    accounts = doc.get("value", {}).get("accounts", [])
-    return {a["id"] for a in accounts if a.get("owner") == "external"}
 
 
 def _load_bucket_id_to_name_map(db):
