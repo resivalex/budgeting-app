@@ -2,7 +2,6 @@ import { convertToLocaleTime, convertToUtcTime } from './date-utils'
 import { convertCurrencyCodeToSymbol, formatFinancialAmount } from './finance-utils'
 import { reactSelectSmallStyles, reactSelectColorStyles } from './react-select-styles'
 import { mergeAccountDetailsAndProperties } from './account-coloring'
-import { useColoredAccounts } from './useColoredAccounts'
 import {
   isExternalAccount,
   deriveTransactionType,
@@ -20,7 +19,6 @@ export {
   reactSelectSmallStyles,
   mergeAccountDetailsAndProperties,
   reactSelectColorStyles,
-  useColoredAccounts,
   isExternalAccount,
   deriveTransactionType,
   deriveAccount,
