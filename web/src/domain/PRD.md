@@ -25,6 +25,8 @@ The app stays in sync with the remote backend while remaining fully usable offli
 
 Spending is determined purely by `bucket_from`/`bucket_to` fields: `bucket_to` matching a budget increases its spent amount, `bucket_from` matching reduces it. A single transaction can affect two budgets simultaneously (e.g., a transfer between tracked buckets). Unassigned transactions appear in a "Другое" (Other) group. Transactions in unsupported currencies are listed in the budget but excluded from amount totals.
 
+The shared implementation model is a bucket posting: every transaction produces one negative posting from `bucket_from` and one positive posting to `bucket_to`. Budget totals and bucket balances use those postings instead of reimplementing the debit/credit rule.
+
 ### Transaction Form
 
 See [TransactionForm PRD](../components/TransactionForm/PRD.md) for form-to-schema mapping rules.

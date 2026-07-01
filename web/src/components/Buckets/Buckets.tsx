@@ -1,29 +1,9 @@
 import { convertCurrencyCodeToSymbol, formatFinancialAmount } from '@/utils'
-
-interface AccountBalance {
-  account: string
-  currency: string
-  balance: number
-  owner: string
-}
-
-interface BucketWithBalances {
-  id: string
-  name: string
-  color: string
-  ownerTotals: Record<string, number | null>
-  balances: AccountBalance[]
-}
-
-interface LatestRate {
-  currency: string
-  rate: number
-  date: string
-}
+import type { AccountInfo, BucketWithBalances, LatestRate } from '@/domain'
 
 interface Props {
   buckets: BucketWithBalances[]
-  accountInfoMap: Map<string, { name: string; color: string; owner: string }>
+  accountInfoMap: Map<string, AccountInfo>
   availableCurrencies: string[]
   mainCurrency: string
   onMainCurrencyChange: (currency: string) => void

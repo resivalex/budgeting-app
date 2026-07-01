@@ -4,6 +4,13 @@ export type { SyncCallbacks } from './SyncDomain'
 export { default as SettingsDomain } from './SettingsDomain'
 export { default as BudgetsDomain } from './BudgetsDomain'
 export type { BudgetResult } from './BudgetsDomain'
+export { default as BucketsDomain } from './BucketsDomain'
+export type {
+  AccountInfo,
+  BucketBalanceView,
+  BucketWithBalances,
+  LatestRate,
+} from './BucketsDomain'
 export { default as TransactionFormDomain } from './TransactionFormDomain'
 export { default as TransactionFilterDomain } from './TransactionFilterDomain'
 export { default as AuthDomain } from './AuthDomain'

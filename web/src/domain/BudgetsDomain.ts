@@ -8,6 +8,7 @@ import {
 import { DbService } from '@/services'
 import { convertToLocaleTime } from '@/utils'
 import _ from 'lodash'
+import { BucketPosting, DEFAULT_BUCKET_ID, getBucketPostings } from './BucketPostings'
 
 type CurrencyWeightsType = Record<string, number>
 
@@ -92,8 +93,7 @@ class BudgetsDomain {
     }
     const currencyConfig = { ...monthCurrencyConfig.config }
 
-    const bucketMap = new Map<string, BucketDTO>()
-    buckets.buckets.forEach((b) => bucketMap.set(b.id, b))
+    const bucketMap = new Map<string, BucketDTO>(buckets.buckets.map((b) => [b.id, b]))
 
     const currencyWeights = this.buildCurrencyWeights(currencyConfig)
     const monthTransactions = this.filterMonthTransactions(transactions, monthDate)
@@ -110,10 +110,14 @@ class BudgetsDomain {
       currencyWeights,
       commonBucketIds,
     )
-    const restLimit = this.buildRestLimit(currencyConfig.mainCurrency)
 
     const realBudgets = monthSpendingLimits.map((spendingLimit) =>
-      this.calculateSingleBudget(monthTransactions, spendingLimit, currencyWeights),
+      this.calculateBudget(
+        monthTransactions,
+        spendingLimit,
+        currencyWeights,
+        (posting) => posting.bucketId === spendingLimit.bucketId,
+      ),
     )
 
     const assignedTransactionIds = new Set(
@@ -122,7 +126,20 @@ class BudgetsDomain {
     const unassignedTransactions = monthTransactions.filter(
       (t) => !assignedTransactionIds.has(t._id),
     )
-    const restBudget = this.calculateRestBudget(unassignedTransactions, restLimit, currencyWeights)
+    const restBudget = this.calculateBudget(
+      unassignedTransactions,
+      {
+        bucketId: '',
+        name: 'Другое',
+        color: '#b6b6b6',
+        currency: currencyConfig.mainCurrency,
+        amount: 0,
+        categories: [],
+        isEditable: false,
+      },
+      currencyWeights,
+      (posting) => posting.bucketId !== DEFAULT_BUCKET_ID,
+    )
 
     const commonBudgets = realBudgets.filter((b) => commonBucketIds.has(b.bucketId))
     const nonCommonBudgets = realBudgets.filter((b) => !commonBucketIds.has(b.bucketId))
@@ -209,7 +226,9 @@ class BudgetsDomain {
   ): TransactionDTO[] {
     const monthDateObject = new Date(monthDate)
     return transactions.filter((transaction) => {
-      if (transaction.bucket_from === 'default' && transaction.bucket_to === 'default') {
+      if (
+        !getBucketPostings(transaction).some((posting) => posting.bucketId !== DEFAULT_BUCKET_ID)
+      ) {
         return false
       }
       const transactionDate = new Date(convertToLocaleTime(transaction.datetime))
@@ -282,22 +301,11 @@ class BudgetsDomain {
     return totalLimit
   }
 
-  private buildRestLimit(mainCurrency: string): MonthSpendingLimit {
-    return {
-      bucketId: '',
-      name: 'Другое',
-      color: '#b6b6b6',
-      currency: mainCurrency,
-      amount: 0,
-      categories: [],
-      isEditable: false,
-    }
-  }
-
-  private calculateSingleBudget(
+  private calculateBudget(
     transactions: TransactionDTO[],
     spendingLimit: MonthSpendingLimit,
     currencyWeights: CurrencyWeightsType,
+    includePosting: (posting: BucketPosting) => boolean,
   ): BudgetResult {
     const budget: BudgetResult = {
       bucketId: spendingLimit.bucketId,
@@ -312,58 +320,23 @@ class BudgetsDomain {
     }
 
     transactions.forEach((transaction) => {
-      const matchesBucket =
-        transaction.bucket_from === spendingLimit.bucketId ||
-        transaction.bucket_to === spendingLimit.bucketId
+      const postings = getBucketPostings(transaction).filter(includePosting)
 
-      if (matchesBucket) {
-        budget.transactions.push(transaction)
-        if (currencyWeights[transaction.currency] !== undefined) {
-          const convertedAmount = this.convertCurrency(
-            parseFloat(transaction.amount),
-            transaction.currency,
-            budget.currency,
-            currencyWeights,
-          )
-          let delta = 0
-          if (transaction.bucket_to === spendingLimit.bucketId) delta += convertedAmount
-          if (transaction.bucket_from === spendingLimit.bucketId) delta -= convertedAmount
-          budget.spentAmount += delta
-        }
-      }
-    })
+      if (postings.length === 0) return
 
-    return budget
-  }
-
-  private calculateRestBudget(
-    unassignedTransactions: TransactionDTO[],
-    restLimit: MonthSpendingLimit,
-    currencyWeights: CurrencyWeightsType,
-  ): BudgetResult {
-    const budget: BudgetResult = {
-      bucketId: '',
-      name: restLimit.name,
-      color: restLimit.color,
-      currency: restLimit.currency,
-      amount: restLimit.amount,
-      categories: restLimit.categories,
-      transactions: [],
-      spentAmount: 0,
-      isEditable: restLimit.isEditable,
-    }
-
-    unassignedTransactions.forEach((transaction) => {
       budget.transactions.push(transaction)
       if (currencyWeights[transaction.currency] !== undefined) {
-        const convertedAmount = this.convertCurrency(
-          parseFloat(transaction.amount),
-          transaction.currency,
-          budget.currency,
-          currencyWeights,
+        budget.spentAmount += postings.reduce(
+          (sum, posting) =>
+            sum +
+            this.convertCurrency(
+              posting.amount,
+              posting.currency,
+              budget.currency,
+              currencyWeights,
+            ),
+          0,
         )
-        if (transaction.bucket_to !== 'default') budget.spentAmount += convertedAmount
-        if (transaction.bucket_from !== 'default') budget.spentAmount -= convertedAmount
       }
     })
 

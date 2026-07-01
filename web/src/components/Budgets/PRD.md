@@ -8,7 +8,7 @@ Budget management system providing visual tracking of spending limits across cat
 
 ### Spending Calculation
 
-Spending is computed from `bucket_from`/`bucket_to` fields — see [Domain PRD](../../domain/PRD.md) for canonical rules. Budget-specific: transfer transactions are excluded to avoid double-counting, and each transaction falls into exactly one named bucket or the uncategorized pool.
+Spending is computed from bucket postings — see [Domain PRD](../../domain/PRD.md) for canonical rules. Default-to-default transfers are excluded from budget spending. A transaction can contribute to every named bucket it touches; transactions that touch no named bucket appear in the uncategorized pool.
 
 ### Budget Categories
 
