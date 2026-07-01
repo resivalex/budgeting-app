@@ -58,12 +58,14 @@ export default function Transactions({
   }, [scrollConsumed, scrollToTransactionId, transactions])
 
   useEffect(() => {
-    // react-virtualized reapplies scrollToIndex on every recomputeRowHeights call, so
-    // clear it after the first scroll or every later height recompute forces us back here.
-    if (scrollToIndex !== undefined) {
-      setScrollConsumed(true)
-    }
-  }, [scrollToIndex])
+    // Rows measure their real height lazily (react-measure), so the first scroll uses 80px
+    // estimates and lands on the wrong row. react-virtualized re-snaps to scrollToIndex on
+    // every recomputeRowHeights, so keep it alive until heights stop changing, then release
+    // so the user can scroll freely. ponytail: 300ms settle window, bump if tall rows drift.
+    if (scrollConsumed || scrollToIndex === undefined) return
+    const id = setTimeout(() => setScrollConsumed(true), 300)
+    return () => clearTimeout(id)
+  }, [scrollConsumed, scrollToIndex, heights])
 
   if (transactions.length === 0) {
     return <div className="box">Empty</div>
