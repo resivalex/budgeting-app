@@ -1,5 +1,5 @@
 import BudgetProgressBar from './BudgetProgressBar'
-import { convertCurrencyCodeToSymbol, formatFinancialAmountRounded } from '@/utils'
+import { convertCurrencyCodeToSymbol, formatFinancialAmount } from '@/utils'
 import { LongPressDetectEvents, useLongPress } from 'use-long-press'
 
 interface Props {
@@ -16,21 +16,21 @@ function outputAmountDifference(totalAmount: number, spentAmount: number, curren
   if (spentAmount > totalAmount) {
     return (
       <span style={{ color: '#8f2626' }}>
-        -{formatFinancialAmountRounded(spentAmount - totalAmount)} {currencySymbol}
+        -{formatFinancialAmount(spentAmount - totalAmount)} {currencySymbol}
       </span>
     )
   }
   if (spentAmount < 0) {
     return (
       <span style={{ color: '#23672e' }}>
-        +{formatFinancialAmountRounded(-spentAmount)} {currencySymbol}
+        +{formatFinancialAmount(-spentAmount)} {currencySymbol}
       </span>
     )
   }
   if (spentAmount <= totalAmount) {
     return (
       <span>
-        {formatFinancialAmountRounded(totalAmount - spentAmount)} {currencySymbol}
+        {formatFinancialAmount(totalAmount - spentAmount)} {currencySymbol}
       </span>
     )
   }
@@ -65,7 +65,7 @@ export default function Budget({
           <div className="is-flex is-justify-content-space-between pb-1">
             <div className="is-flex pr-1">{name}</div>
             <div className="is-flex pl-1" style={{ color: '#c7c7c7' }}>
-              {formatFinancialAmountRounded(totalAmount)} {currencySymbol}
+              {formatFinancialAmount(totalAmount)} {currencySymbol}
             </div>
           </div>
           <BudgetProgressBar
@@ -75,7 +75,7 @@ export default function Budget({
           />
           <div className="is-flex is-justify-content-space-between pt-1">
             <div className="is-flex pr-1">
-              {formatFinancialAmountRounded(spentAmount)} {currencySymbol}
+              {formatFinancialAmount(spentAmount)} {currencySymbol}
             </div>
             <div className="is-flex pl-1">
               {outputAmountDifference(totalAmount, spentAmount, currencySymbol)}

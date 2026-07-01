@@ -15,21 +15,12 @@ export function convertCurrencyCodeToSymbol(currencyCode: string): string {
   }
 }
 
-export function formatFinancialAmount(amount: number): string {
+export function formatFinancialAmount(amount: number, maxDecimals = 0): string {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: maxDecimals,
     useGrouping: true,
   })
     .format(amount)
-    .replace(/,/g, ' ') // Replace all commas with spaces
-}
-
-export function formatFinancialAmountRounded(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: 0,
-    useGrouping: true,
-  })
-    .format(amount)
-    .replace(',', ' ') // Replace commas with spaces
+    .replace(/,/g, ' ')
 }

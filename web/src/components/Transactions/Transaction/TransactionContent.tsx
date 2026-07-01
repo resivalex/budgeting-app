@@ -90,7 +90,7 @@ export default function TransactionContent({
         >
           {type === 'expense' && '-'}
           {type === 'income' && '+'}
-          {formatFinancialAmount(parseFloat(amount))} {convertCurrencyCodeToSymbol(currency)}
+          {formatFinancialAmount(parseFloat(amount), 2)} {convertCurrencyCodeToSymbol(currency)}
         </div>
         {showTime && (
           <div className="is-size-7">

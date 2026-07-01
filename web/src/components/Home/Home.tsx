@@ -23,7 +23,7 @@ export default function Home({ accounts }: Props) {
               </div>
               <div className="column has-text-right">
                 <p>
-                  {formatFinancialAmount(balance)} {convertCurrencyCodeToSymbol(currency)}
+                  {formatFinancialAmount(balance, 2)} {convertCurrencyCodeToSymbol(currency)}
                 </p>
               </div>
             </div>

@@ -93,7 +93,7 @@ export default function BudgetInfoModal({
               </span>
             ) : (
               <strong>
-                {formatFinancialAmount(amount)} {convertCurrencyCodeToSymbol(currency)}{' '}
+                {formatFinancialAmount(amount, 2)} {convertCurrencyCodeToSymbol(currency)}{' '}
                 {isEditable && (
                   <button onClick={() => setIsEditing(true)}>
                     {/* @ts-ignore */}
@@ -106,13 +106,14 @@ export default function BudgetInfoModal({
           <p>
             Потрачено:{' '}
             <strong>
-              {formatFinancialAmount(spentAmount)} {convertCurrencyCodeToSymbol(currency)}
+              {formatFinancialAmount(spentAmount, 2)} {convertCurrencyCodeToSymbol(currency)}
             </strong>
           </p>
           <p>
             Осталось:{' '}
             <strong>
-              {formatFinancialAmount(amount - spentAmount)} {convertCurrencyCodeToSymbol(currency)}
+              {formatFinancialAmount(amount - spentAmount, 2)}{' '}
+              {convertCurrencyCodeToSymbol(currency)}
             </strong>
           </p>
           <p>

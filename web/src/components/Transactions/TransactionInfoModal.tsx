@@ -102,7 +102,7 @@ export default function TransactionInfoModal({ transaction, onClose, onRemove, o
             <strong>Тип:</strong> {translateType(type)}
           </p>
           <p>
-            <strong>Сумма:</strong> {formatFinancialAmount(parseFloat(amount))}{' '}
+            <strong>Сумма:</strong> {formatFinancialAmount(parseFloat(amount), 2)}{' '}
             {convertCurrencyCodeToSymbol(currency)}
           </p>
           <p>
