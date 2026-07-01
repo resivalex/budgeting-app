@@ -68,19 +68,23 @@ function AppWithTransactions({
     deleteTransaction: deleteLocalTransaction,
   } = useTransactionsDomain()
 
+  function goToTransactionFocused(id: string) {
+    navigate('/transactions', { replace: true, state: { focusTransactionId: id } })
+  }
+
   async function addTransaction(t: TransactionDTO) {
     await addDbTransaction(t)
     await addLocalTransaction(t)
     onNotify('Запись добавлена')
     onFilterAccountNameChange(deriveAccount(t, externalAccountIds))
-    navigate('/transactions', { replace: true })
+    goToTransactionFocused(t._id)
   }
 
   async function editTransaction(t: TransactionDTO) {
     await replaceDbTransaction(t)
     await updateLocalTransaction(t)
     onNotify('Запись изменена')
-    navigate('/transactions', { replace: true, state: { focusTransactionId: t._id } })
+    goToTransactionFocused(t._id)
   }
 
   async function removeTransaction(id: string) {
