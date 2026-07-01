@@ -80,7 +80,7 @@ function AppWithTransactions({
     await replaceDbTransaction(t)
     await updateLocalTransaction(t)
     onNotify('Запись изменена')
-    navigate('/transactions', { replace: true })
+    navigate('/transactions', { replace: true, state: { focusTransactionId: t._id } })
   }
 
   async function removeTransaction(id: string) {

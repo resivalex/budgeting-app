@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 interface Props {
   transactions: TransactionDTO[]
   focusedTransaction?: TransactionDTO
+  scrollToTransactionId?: string
   onRemove: (id: string) => Promise<void>
   onEdit: (id: string) => void
   onFocus: (id: string) => void
@@ -18,6 +19,7 @@ interface Props {
 export default function Transactions({
   transactions,
   focusedTransaction,
+  scrollToTransactionId,
   onRemove,
   onEdit,
   onFocus,
@@ -46,6 +48,22 @@ export default function Transactions({
 
     return headerMap
   }, [transactions])
+
+  const [scrollConsumed, setScrollConsumed] = useState(false)
+
+  const scrollToIndex = useMemo(() => {
+    if (scrollConsumed || !scrollToTransactionId) return undefined
+    const index = transactions.findIndex((t) => t._id === scrollToTransactionId)
+    return index >= 0 ? index : undefined
+  }, [scrollConsumed, scrollToTransactionId, transactions])
+
+  useEffect(() => {
+    // react-virtualized reapplies scrollToIndex on every recomputeRowHeights call, so
+    // clear it after the first scroll or every later height recompute forces us back here.
+    if (scrollToIndex !== undefined) {
+      setScrollConsumed(true)
+    }
+  }, [scrollToIndex])
 
   if (transactions.length === 0) {
     return <div className="box">Empty</div>
@@ -94,6 +112,7 @@ export default function Transactions({
               return 80
             }}
             rowRenderer={rowRenderer}
+            scrollToIndex={scrollToIndex}
             width={width}
           />
         )}

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import Transactions from './Transactions'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { TransactionDTO } from '@/types'
 
 export default function TransactionsContainer({
@@ -10,7 +10,9 @@ export default function TransactionsContainer({
   transactions: TransactionDTO[]
   onRemove: (id: string) => Promise<void>
 }) {
+  const location = useLocation()
   const [focusedTransactionId, setFocusedTransactionId] = useState<string>('')
+  const [scrollToTransactionId] = useState<string>(() => location.state?.focusTransactionId || '')
 
   const navigate = useNavigate()
 
@@ -31,6 +33,7 @@ export default function TransactionsContainer({
     <Transactions
       transactions={transactions}
       focusedTransaction={focusedTransaction}
+      scrollToTransactionId={scrollToTransactionId}
       onRemove={onRemove}
       onEdit={handleEdit}
       onFocus={setFocusedTransactionId}
