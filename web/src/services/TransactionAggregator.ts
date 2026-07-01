@@ -67,68 +67,43 @@ export default class TransactionAggregator {
   }
 
   getRecentPayees() {
-    const payeesSet: { [name: string]: boolean } = {}
-    const result: string[] = []
-    const sortedTransactions = _.sortBy(this.transactions, (t) => -new Date(t.datetime).getTime())
-    for (const transaction of sortedTransactions) {
-      if (transaction.counterparty && !payeesSet[transaction.counterparty]) {
-        payeesSet[transaction.counterparty] = true
-        result.push(transaction.counterparty)
-      }
-    }
-
-    return result
+    return this._getRecentValues('counterparty', this._sortedByDate())
   }
 
   getRecentPayeesByCategory(category: string) {
-    const payeesSet: { [name: string]: boolean } = {}
-    const result: string[] = []
-    const sortedTransactions = _.sortBy(this.transactions, (t) => -new Date(t.datetime).getTime())
-    const orderedTransactions = [
-      ...sortedTransactions.filter((t) => t.category === category),
-      ...sortedTransactions.filter((t) => t.category !== category),
-    ]
-
-    for (const transaction of orderedTransactions) {
-      if (transaction.counterparty && !payeesSet[transaction.counterparty]) {
-        payeesSet[transaction.counterparty] = true
-        result.push(transaction.counterparty)
-      }
-    }
-
-    return result
+    return this._getRecentValues('counterparty', this._sortedByDateWithCategoryFirst(category))
   }
 
   getRecentComments() {
-    const commentsSet: { [name: string]: boolean } = {}
-    const result: string[] = []
-    const sortedTransactions = _.sortBy(this.transactions, (t) => -new Date(t.datetime).getTime())
-    for (const transaction of sortedTransactions) {
-      if (transaction.comment && !commentsSet[transaction.comment]) {
-        commentsSet[transaction.comment] = true
-        result.push(transaction.comment)
-      }
-    }
-
-    return result
+    return this._getRecentValues('comment', this._sortedByDate())
   }
 
   getRecentCommentsByCategory(category: string) {
-    const commentsSet: { [name: string]: boolean } = {}
-    const result: string[] = []
-    const sortedTransactions = _.sortBy(this.transactions, (t) => -new Date(t.datetime).getTime())
-    const orderedTransactions = [
-      ...sortedTransactions.filter((t) => t.category === category),
-      ...sortedTransactions.filter((t) => t.category !== category),
-    ]
+    return this._getRecentValues('comment', this._sortedByDateWithCategoryFirst(category))
+  }
 
-    for (const transaction of orderedTransactions) {
-      if (transaction.comment && !commentsSet[transaction.comment]) {
-        commentsSet[transaction.comment] = true
-        result.push(transaction.comment)
+  private _sortedByDate() {
+    return _.sortBy(this.transactions, (t) => -new Date(t.datetime).getTime())
+  }
+
+  private _sortedByDateWithCategoryFirst(category: string) {
+    const sorted = this._sortedByDate()
+    return [
+      ...sorted.filter((t) => t.category === category),
+      ...sorted.filter((t) => t.category !== category),
+    ]
+  }
+
+  private _getRecentValues(field: 'counterparty' | 'comment', transactions: TransactionDTO[]) {
+    const seen: { [name: string]: boolean } = {}
+    const result: string[] = []
+    for (const transaction of transactions) {
+      const value = transaction[field]
+      if (value && !seen[value]) {
+        seen[value] = true
+        result.push(value)
       }
     }
-
     return result
   }
 }
